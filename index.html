@@ -501,6 +501,10 @@
       .hz th, .hz td { font-size: 0.9rem; }
       .legend { flex-direction: column; gap: 6px; }
     }
+    .credit { margin: 2px 0 4px; font-size: 0.85rem; color: var(--gold); font-weight: 500; }
+    .credit strong { font-weight: 700; }
+    .site-foot { text-align: center; color: var(--muted); font-size: 0.8rem; padding: 8px 0 0; }
+    .site-foot strong { color: var(--text); font-weight: 600; }
   </style>
 </head>
 <body>
@@ -509,6 +513,7 @@
       <div class="ball" aria-hidden="true"></div>
       <div>
         <h1>Calculadora de Hazard</h1>
+        <p class="credit">Criado por <strong>Morthus</strong> · Titan 3 Server</p>
         <p class="sub">Tudo é editável direto na página: nomes, danos, stars, held, precisão, bônus dos times, um Pokémon novo para testar e a própria tabela. Os dados ficam salvos no seu navegador.</p>
       </div>
     </header>
@@ -618,6 +623,7 @@
       </div>
       <p class="hint foot">Precisão em pontos (1 ponto = 0,2%), editável. Cada um dos 6 pokémon precisa ter a precisão do Hazard; o Hazard oficial já considera isso. A tabela medida foi criada por xandin; testes feitos com prey de ataque, podem conter erro.</p>
     </section>
+    <footer class="site-foot">Calculadora de Hazard · criado por <strong>Morthus</strong> · Titan 3 Server</footer>
   </div>
 
   <script>
