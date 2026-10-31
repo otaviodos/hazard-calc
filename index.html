@@ -1,0 +1,1956 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora de Hazard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0b0f1d;
+      --panel: #121830;
+      --sunken: #0a0d19;
+      --line: #263052;
+      --line-strong: #3a4672;
+      --text: #eef1fb;
+      --muted: #8f9ac0;
+      --gold: #f4d03f;
+      --ok: #6ee7b7;
+      --warn: #f0a04b;
+      --bad: #ff7a6b;
+      --blue: #5b8def;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      min-height: 100vh;
+    }
+    .wrap { width: min(1600px, calc(100% - 32px)); margin: 0 auto; padding: 26px 0 60px; }
+    header.top { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+    .ball {
+      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(#e85d4c 50%, #f4f6fb 50%);
+      border: 3px solid #141a30; box-shadow: 0 0 0 2px #b8962a; position: relative;
+    }
+    .ball::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 3px; background: #141a30; transform: translateY(-50%); }
+    .ball::after { content: ""; position: absolute; width: 12px; height: 12px; border-radius: 50%; background: #f4f6fb; border: 3px solid #141a30; left: 50%; top: 50%; transform: translate(-50%, -50%); }
+    h1 { margin: 0; font-size: 1.4rem; letter-spacing: -0.01em; }
+    .sub { margin: 2px 0 0; color: var(--muted); font-size: 0.9rem; }
+
+    section.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px 18px; margin-bottom: 18px; }
+    .head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-bottom: 12px; }
+    h2 { margin: 0; font-size: 1.05rem; font-weight: 700; }
+    .hint { margin: 0; color: var(--muted); font-size: 0.8rem; }
+
+    button, input, select { font: inherit; color: var(--text); }
+    .btn { border: 1px solid var(--line-strong); background: transparent; border-radius: 8px; padding: 6px 12px; font-weight: 650; font-size: 0.8rem; cursor: pointer; }
+    .btn:hover { background: rgba(255, 255, 255, 0.05); }
+    .btn.gold { background: var(--gold); border-color: var(--gold); color: #1a1403; }
+    .btn.gold:hover { filter: brightness(1.06); }
+    .tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .seg { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 8px; overflow: hidden; }
+    .seg label { padding: 6px 12px; font-size: 0.8rem; font-weight: 650; cursor: pointer; color: var(--muted); user-select: none; }
+    .seg input { position: absolute; opacity: 0; pointer-events: none; }
+    .seg label:has(input:checked) { background: rgba(244, 208, 63, 0.14); color: var(--gold); }
+    .seg label:has(input:focus-visible) { outline: 2px solid var(--blue); outline-offset: -2px; }
+    .chk { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--muted); cursor: pointer; }
+    .chk input { accent-color: var(--gold); }
+
+    .in {
+      background: var(--sunken); border: 1px solid var(--line-strong); border-radius: 8px;
+      padding: 7px 10px; min-width: 0; width: 100%; outline: none;
+    }
+    .in:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(91, 141, 239, 0.22); }
+    .in.invalid { border-color: var(--bad); box-shadow: 0 0 0 3px rgba(255, 122, 107, 0.2); }
+    .in.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+    .runes { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+    .rune {
+      display: grid; grid-template-columns: auto 1fr; column-gap: 10px; align-items: center; text-align: left;
+      background: var(--sunken); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; cursor: pointer;
+    }
+    .rune:hover { border-color: var(--rc); }
+    .rune .gem { grid-row: 1 / span 3; width: 22px; height: 22px; background: var(--rc); transform: rotate(45deg) scale(0.72); border-radius: 4px; }
+    .rune .rn { font-weight: 700; font-size: 0.92rem; }
+    .rune .rb { color: var(--muted); font-size: 0.75rem; }
+    .rune .rh { font-size: 0.82rem; font-weight: 700; color: var(--rc); }
+    .rune.on { border-color: var(--rc); background: color-mix(in srgb, var(--rc) 14%, var(--sunken)); box-shadow: inset 0 0 0 1px var(--rc); }
+
+    .teams-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: start; }
+    .teams-grid.f3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .fmt-switch { display: inline-flex; align-items: center; gap: 10px; padding: 4px 12px; min-height: 40px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--sunken); }
+    .fs-lbl { display: inline-flex; flex-direction: column; align-items: center; line-height: 1.1; font-size: 0.86rem; font-weight: 600; color: var(--muted); cursor: pointer; user-select: none; padding: 2px 2px; }
+    .fs-lbl small { font-size: 0.75rem; font-weight: 500; }
+    .fs-lbl:hover { color: var(--text); }
+    .fs-lbl.on { color: var(--gold); font-weight: 800; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 2px; }
+    .fs-lbl.on small { text-decoration: none; color: #CBD5E1; font-weight: 600; }
+    .sw { position: relative; width: 48px; height: 28px; flex-shrink: 0; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--raise, #131A2E); cursor: pointer; padding: 0; transition: background-color .18s, border-color .18s; }
+    .sw .knob { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--gold); box-shadow: 0 1px 2px rgba(0,0,0,.4); transition: transform .18s cubic-bezier(.2,.7,.3,1); }
+    .sw[aria-checked='true'] .knob { transform: translateX(20px); }
+    .sw:hover { border-color: var(--muted); }
+    .sw:focus-visible { outline: 2px solid var(--ring, #93C5FD); outline-offset: 3px; }
+    .team { background: var(--sunken); border: 1px solid var(--line); border-radius: 10px; }
+    .team.drop-add { outline: 2px dashed var(--gold); outline-offset: 2px; background: rgba(244, 208, 63, 0.05); }
+    .team > header, .team > footer { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding: 10px 14px; }
+    .team > header { border-bottom: 1px solid var(--line); }
+    .team > footer { border-top: 1px solid var(--line); justify-content: space-between; }
+    .tname { font-weight: 800; }
+    .tcount { font-size: 0.78rem; color: var(--muted); }
+    .tcount.bad { color: var(--warn); font-weight: 700; }
+    .tweak { margin-left: auto; font-size: 0.72rem; font-weight: 800; color: var(--bad); border: 1px solid rgba(255, 122, 107, 0.5); border-radius: 999px; padding: 1px 9px; }
+    .ttot { font-size: 1.15rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .thaz { font-weight: 800; }
+    .zone { display: flex; flex-direction: column; gap: 10px; padding: 12px; min-height: 150px; }
+    .zone-empty { margin: auto; padding: 18px 10px; text-align: center; color: var(--muted); font-size: 0.82rem; border: 1px dashed var(--line-strong); border-radius: 8px; width: 100%; }
+    .team.drop-add .zone::after { content: "Solte aqui para adicionar ao time"; display: block; text-align: center; padding: 10px; border: 1px dashed var(--gold); border-radius: 8px; color: var(--gold); font-size: 0.8rem; font-weight: 700; }
+    .team.drop-add .zone-empty { display: none; }
+    .mon { position: relative; background: var(--panel); border: 1px solid var(--line-strong); border-radius: 10px; padding: 10px; cursor: grab; user-select: none; -webkit-user-select: none; }
+    .mon:hover { border-color: var(--muted); }
+    .mon input, .mon select { user-select: text; -webkit-user-select: text; cursor: text; }
+    .mon select { cursor: pointer; }
+    .mon-top { display: flex; align-items: center; gap: 8px; }
+    .grip { flex-shrink: 0; width: 22px; text-align: center; color: var(--muted); font-size: 1.1rem; line-height: 1; letter-spacing: -2px; touch-action: none; padding: 6px 0; }
+    .tsel { width: 58px; flex-shrink: 0; padding-left: 8px; padding-right: 4px; }
+    .mon-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+    .slot-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 6px; min-height: 26px; }
+    .slot-row .slot { margin: 0 0 0 2px; }
+    .slot-row .tsel { width: 52px; flex-shrink: 0; padding: 2px 2px 2px 8px; font-size: 0.78rem; }
+    .slot { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--gold); margin: 0 0 6px 2px; }
+    .slot.dmg { color: var(--blue); }
+    .slot.extra { color: var(--warn); }
+    .slot.bad::after { content: " · papel diferente da posição"; color: var(--warn); text-transform: none; letter-spacing: 0; font-weight: 700; }
+    .srow { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+    .slab { width: 44px; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--gold); }
+    .srow.test .slab { color: var(--tc); }
+    .srow.test .star:hover, .srow.test .star.on { color: var(--tc); }
+    .mon.testing { border-color: var(--tc); box-shadow: 0 0 0 1px var(--tc); }
+    .eff.test { color: var(--tc); }
+    .eff.test strong { color: var(--tc); }
+    :root { --tc: #4db3ff; }
+    .held-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+    .held-row .fld.test { color: var(--tc); }
+    .held-row .fld.test select.diff { border-color: var(--tc); color: var(--tc); }
+    .teams-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; align-items: start; }
+    .teams-row.with-cand { grid-template-columns: minmax(0, 3fr) minmax(270px, 1fr); }
+    .cand-col { background: var(--sunken); border: 1px dashed var(--warn); border-radius: 10px; min-width: 0; }
+    .cand-col > header { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+    .cand-col .btn.small-x { padding: 3px 9px; font-size: 0.74rem; }
+    .cand-body { display: flex; flex-direction: column; gap: 10px; padding: 12px; }
+    .cand-col .box { margin-top: 0; font-size: 0.82rem; }
+    .cand-col .opt-lines { font-size: 0.8rem; }
+    #toggle-cand[aria-pressed="true"] { border-color: var(--warn); color: var(--warn); }
+    .mon.cand { cursor: default; border-style: dashed; }
+    .opt-lines { margin: 6px 0 0; line-height: 1.6; }
+    .teams-row.with-cand .mon { padding: 8px; }
+    .teams-row.with-cand .mon-top { gap: 4px; }
+    .teams-row.with-cand .grip { width: 14px; letter-spacing: -3px; font-size: 1rem; }
+    .teams-row.with-cand .mon .name { padding-left: 8px; padding-right: 6px; }
+    .teams-row.with-cand .teams-grid { gap: 10px; }
+    .teams-row.with-cand .zone { padding: 8px; }
+    .stars-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+    .stars { display: inline-flex; gap: 2px; }
+    .star { background: transparent; border: 0; padding: 0 1px; font-size: 1.45rem; line-height: 1; color: var(--line-strong); cursor: pointer; }
+    .star:hover { color: var(--gold); }
+    .star.on { color: var(--gold); }
+    .star:focus-visible { outline: 2px solid var(--blue); border-radius: 4px; }
+    .eff { font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
+    .eff strong { color: var(--text); font-size: 0.9rem; }
+    .tbonus { display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-top: 1px solid var(--line); font-size: 0.78rem; color: var(--muted); font-weight: 650; }
+    .tbonus .in { width: 76px; padding: 4px 8px; }
+    .mon.dragging-src { opacity: 0.3; }
+    .mon.drop-swap { outline: 2px solid var(--gold); outline-offset: 1px; box-shadow: 0 0 0 5px rgba(244, 208, 63, 0.18); }
+    .mon.drop-swap::after { content: "trocar"; position: absolute; top: -9px; right: 12px; background: var(--gold); color: #1a1403; font-size: 0.68rem; font-weight: 800; padding: 1px 8px; border-radius: 999px; }
+    .ghost { position: fixed; z-index: 1000; margin: 0; pointer-events: none; transform: rotate(2deg); box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55); border-color: var(--gold); background: #1a2140; cursor: grabbing; }
+    body.is-dragging, body.is-dragging * { user-select: none !important; -webkit-user-select: none !important; cursor: grabbing !important; }
+    .fld { display: flex; flex-direction: column; gap: 3px; font-size: 0.7rem; color: var(--muted); font-weight: 600; min-width: 0; }
+    .mon .name { font-weight: 700; }
+
+    .box { border-radius: 10px; padding: 11px 14px; font-size: 0.86rem; margin-top: 4px; }
+    .box.tip { background: rgba(110, 231, 183, 0.08); border: 1px solid rgba(110, 231, 183, 0.35); }
+    .box.neutral { background: var(--sunken); border: 1px solid var(--line); color: var(--muted); }
+    .box.warn { background: rgba(240, 160, 75, 0.1); border: 1px solid rgba(240, 160, 75, 0.4); color: #f6cc9c; }
+    .box .btn { margin-top: 8px; }
+
+    .sum { display: grid; grid-template-columns: auto 1fr; gap: 6px 22px; align-items: center; margin-bottom: 14px; }
+    .sum .big { font-size: 2.6rem; font-weight: 800; line-height: 1; color: var(--rc); }
+    .sum .k { color: var(--muted); font-size: 0.8rem; margin-bottom: 4px; }
+    .sum .det p { margin: 2px 0; font-size: 0.86rem; }
+    .sum .warnt { color: var(--warn); font-weight: 700; }
+    .chips { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { font-size: 0.8rem; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line-strong); font-variant-numeric: tabular-nums; }
+    .chip.weak { border-color: rgba(255, 122, 107, 0.6); color: #ffb4ab; }
+
+    .table-wrap { overflow-x: auto; }
+    table.hz { width: 100%; min-width: 760px; border-collapse: collapse; table-layout: fixed; font-size: 0.88rem; }
+    .hz th { padding: 9px 4px; border-bottom: 1px solid var(--line-strong); color: var(--muted); font-size: 0.78rem; font-weight: 700; text-align: center; }
+    .hz th[data-c] { color: var(--c); }
+    .hz th .gem { display: inline-block; width: 11px; height: 11px; background: var(--c); transform: rotate(45deg) scale(0.75); border-radius: 2px; margin-right: 7px; vertical-align: -1px; }
+    .hz th .hz-b { font-size: 0.68rem; font-weight: 600; color: var(--muted); }
+    .hz th.sel { background: var(--rct); border-bottom: 2px solid var(--rc); color: var(--text); }
+    .hz td { padding: 0; border-bottom: 1px solid rgba(38, 48, 82, 0.8); text-align: center; position: relative; }
+    .hz td.hn { font-weight: 700; color: var(--muted); }
+    .hz td.hn.hit { color: var(--gold); font-weight: 800; }
+    .hz td.col-sel { background: var(--rct); }
+    .hz tr.best-row td { box-shadow: inset 0 0 0 999px rgba(244, 208, 63, 0.09); }
+    .hz td.best { background: var(--rc); box-shadow: none; }
+    .hz td.best input { color: #10131a; font-weight: 800; }
+    .hz td.best .who { color: #10131a; }
+    .hz td.ok input, .hz td.ok .who { color: var(--ok); }
+    .hz td.part input, .hz td.part .who { color: var(--warn); }
+    .hz td.no input { color: var(--muted); opacity: 0.6; }
+    .who { display: block; font-size: 0.66rem; font-weight: 800; line-height: 1; min-height: 0.7rem; padding-bottom: 3px; letter-spacing: 0.04em; }
+    input.cell {
+      width: 100%; background: transparent; border: 0; border-radius: 0; padding: 7px 2px 1px; text-align: center;
+      font-variant-numeric: tabular-nums; outline: none; color: var(--text);
+    }
+    input.cell:hover { background: rgba(255, 255, 255, 0.05); }
+    input.cell:focus { background: rgba(91, 141, 239, 0.22); color: var(--text) !important; }
+    input.cell.sus { text-decoration: underline dotted var(--warn); text-underline-offset: 3px; }
+    .model-bar { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; margin-bottom: 8px; }
+    .mgroup { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .mgroup.off { opacity: 0.4; pointer-events: none; }
+    .mlabel { font-size: 0.78rem; color: var(--muted); font-weight: 650; }
+    .in.small { width: 84px; }
+    input.cell[readonly] { cursor: default; }
+    #model-note { margin-bottom: 14px; }
+    .prec-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: end; margin-top: 8px; }
+    .berry { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; color: var(--text); background: var(--sunken); border: 1px solid var(--line-strong); border-radius: 8px; padding: 7px 10px; cursor: pointer; white-space: nowrap; }
+    .berry input { width: 16px; height: 16px; accent-color: var(--gold); cursor: pointer; }
+    .berry:has(input:checked) { border-color: var(--gold); color: var(--gold); }
+    .prec-out { font-size: 0.76rem; text-align: right; margin-top: 4px; font-variant-numeric: tabular-nums; }
+    .prec-bar { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; margin-bottom: 12px; }
+    .prec-bar .in.small { width: 74px; }
+    .prec-bar .eq { font-size: 0.78rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+    table.pt { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+    .pt th { text-align: right; color: var(--muted); font-size: 0.72rem; font-weight: 700; padding: 6px 8px; border-bottom: 1px solid var(--line-strong); white-space: nowrap; }
+    .pt th:first-child, .pt td:first-child { text-align: left; }
+    .pt td { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: right; font-variant-numeric: tabular-nums; vertical-align: middle; }
+    .pt td.c { text-align: center; }
+    .pt .in { width: 64px; padding: 4px 6px; text-align: right; }
+    .pt input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--gold); cursor: pointer; }
+    .pt .tot { font-weight: 800; }
+    .st-ok { color: var(--ok); font-weight: 700; }
+    .st-no { color: var(--bad); font-weight: 700; }
+    .prec-sum .sim { color: var(--tc); }
+    .pt tr.cand-row td { color: var(--muted); }
+    .pt tr.cand-row td:first-child { font-style: italic; }
+    .pt .sim { color: var(--tc); }
+    .pt .who-t { color: var(--muted); font-size: 0.72rem; margin-left: 6px; }
+    .prec-sum { margin-top: 12px; font-size: 0.86rem; }
+    .prec-sum p { margin: 3px 0; }
+    .hz td.pp { color: var(--muted); font-size: 0.8rem; }
+    .hz td.pv { font-size: 0.74rem; font-weight: 700; padding: 0 4px; }
+    .hz td.pv.ok { color: var(--ok); }
+    .hz td.pv.no { color: var(--bad); }
+    .hz tr.prec-cut td.hn { text-decoration: line-through; text-decoration-color: var(--bad); }
+    .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 12px; font-size: 0.78rem; color: var(--muted); }
+    .legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+    .foot { margin-top: 10px; }
+
+    @media (max-width: 1250px) {
+      .teams-row.with-cand { grid-template-columns: 1fr; }
+      .cand-body { display: grid; grid-template-columns: minmax(260px, 360px) minmax(0, 1fr); align-items: start; }
+    }
+    @media (max-width: 900px) {
+      .teams-grid, .teams-grid.f3 { grid-template-columns: 1fr; }
+      .cand-body { grid-template-columns: 1fr; }
+      .zone { min-height: 110px; }
+    }
+
+    /* ===== Camada visual (UI/UX Pro Max: Minimalism & Swiss, dark, dashboard denso) ===== */
+    :root {
+      --bg: #020617;
+      --panel: #0E1223;
+      --sunken: #070B18;
+      --raise: #131A2E;
+      --line: #1E293B;
+      --line-strong: #334155;
+      --text: #F8FAFC;
+      --muted: #94A3B8;
+      --ok: #4ADE80;
+      --warn: #FBBF24;
+      --bad: #F87171;
+      --blue: #60A5FA;
+      --tc: #38BDF8;
+      --ring: #93C5FD;
+      --radius: 14px;
+      --font-ui: "Fira Sans", "Segoe UI", system-ui, sans-serif;
+      --font-num: "Fira Code", ui-monospace, "Cascadia Mono", Consolas, monospace;
+      --ease: cubic-bezier(.2, .7, .3, 1);
+    }
+    body { font-family: var(--font-ui); line-height: 1.5; font-size: 16px; -webkit-font-smoothing: antialiased; }
+    .wrap { padding: 28px 0 72px; }
+    header.top { margin-bottom: 24px; }
+    h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; }
+    .sub { max-width: 78ch; font-size: 0.92rem; }
+    h2 { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.01em; }
+    .hint { font-size: 0.82rem; line-height: 1.55; }
+    section.card { padding: 20px 22px 22px; margin-bottom: 20px; border-color: var(--line); }
+    .head { margin-bottom: 14px; }
+
+    /* números: monoespaçada tabular para leitura rápida e alinhada */
+    .in.num, input.cell, .ttot, .pt td:not(:first-child), .hz td, .eff strong, .tbonus .in { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+    .prec-out, .chip, .prec-bar .eq, .opt-lines { font-variant-numeric: tabular-nums; }
+    .ttot { font-size: 1.2rem; font-weight: 700; }
+    .sum .big { font-size: 2.8rem; letter-spacing: -0.03em; }
+
+    /* texto mínimo de 12px */
+    .slot, .slab, .fld, .hz th .hz-b, .tweak, .tcount, .pt th, .pt .who-t, .who, .hz td.pv, .legend,
+    .mon.drop-swap::after, .slot-row .tsel, .cand-col .btn.small-x, .mlabel, .eff, .prec-out { font-size: 0.75rem; }
+    .who { min-height: 0.8rem; letter-spacing: 0.02em; }
+    .slot, .slab { letter-spacing: 0.06em; }
+    .fld { gap: 4px; font-weight: 600; }
+
+    /* controles: alvo mínimo, cursor e transição curta */
+    select { cursor: pointer; }
+    .btn { min-height: 34px; padding: 6px 14px; font-weight: 600; border-color: var(--line-strong); display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn:hover { background: var(--raise); border-color: var(--muted); }
+    .btn.gold { box-shadow: 0 1px 0 rgba(0, 0, 0, .25); }
+    .btn.gold:hover { background: var(--gold); filter: brightness(1.08); }
+    .cand-col .btn.small-x { min-height: 28px; }
+    .seg { border-color: var(--line-strong); background: var(--sunken); }
+    .seg label { min-height: 34px; display: inline-flex; align-items: center; padding: 6px 14px; }
+    .seg label:hover { color: var(--text); }
+    .in { background: var(--sunken); border-color: var(--line-strong); min-height: 36px; }
+    .in:hover { border-color: #475569; }
+    .in:focus { border-color: var(--ring); box-shadow: 0 0 0 3px rgba(147, 197, 253, .25); }
+    .star { min-width: 26px; min-height: 26px; display: inline-flex; align-items: center; justify-content: center; }
+    .stars { gap: 3px; }
+    .berry { min-height: 36px; }
+    .berry:hover { border-color: var(--muted); }
+    .pt input[type=checkbox], .chk input, .berry input { width: 18px; height: 18px; }
+    .chk { min-height: 34px; color: #CBD5E1; }
+
+    .btn, .seg label, .rune, .mon, .in, .star, .berry, .chip, input.cell, .team {
+      transition: background-color .18s var(--ease), border-color .18s var(--ease), color .18s var(--ease), box-shadow .18s var(--ease), opacity .18s var(--ease);
+    }
+
+    /* foco visível em todo controle (teclado) */
+    :where(button, select, summary, input[type=checkbox], input[type=radio], a):focus-visible {
+      outline: 2px solid var(--ring); outline-offset: 2px; border-radius: 6px;
+    }
+    .seg label:has(input:focus-visible) { outline: 2px solid var(--ring); outline-offset: -2px; }
+    .star:focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
+    input.cell:focus { box-shadow: inset 0 0 0 2px var(--ring); }
+
+    /* runas: estado selecionado também por texto, não só cor */
+    .rune { min-height: 64px; padding: 12px 14px; background: var(--sunken); }
+    .rune:hover { background: var(--raise); }
+    .rune.on .rn::after { content: "  ✓ selecionada"; font-size: 0.75rem; font-weight: 600; color: var(--rc); }
+
+    /* como usar (recolhível) */
+    .howto { margin: -4px 0 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--sunken); }
+    .howto > summary { cursor: pointer; list-style: none; padding: 9px 14px; font-size: 0.82rem; font-weight: 600; color: #CBD5E1; display: flex; align-items: center; gap: 8px; }
+    .howto > summary::-webkit-details-marker { display: none; }
+    .howto > summary::before { content: "▸"; color: var(--muted); transition: transform .18s var(--ease); }
+    .howto[open] > summary::before { transform: rotate(90deg); }
+    .howto > summary:hover { color: var(--text); }
+    .howto > .hint { padding: 0 14px 12px; max-width: 110ch; }
+
+    /* times e cards */
+    .team { background: var(--sunken); border-color: var(--line); border-radius: 12px; }
+    .team > header, .team > footer { padding: 11px 14px; }
+    .tname { font-size: 1rem; }
+    .tweak { padding: 2px 10px; }
+    .mon { background: var(--panel); border-color: var(--line-strong); border-radius: 12px; }
+    .mon:hover { border-color: #475569; }
+    .mon-fields, .held-row, .prec-row { gap: 10px; }
+    .tbonus { padding: 9px 14px; }
+    .grip { color: #64748B; }
+    .mon:hover .grip { color: var(--muted); }
+    .cand-col { border-radius: 12px; }
+
+    /* caixas de status */
+    .box { border-radius: 12px; padding: 12px 16px; line-height: 1.55; }
+    .box.tip { background: rgba(74, 222, 128, .07); border-color: rgba(74, 222, 128, .32); }
+    .box.warn { color: #FDE68A; background: rgba(251, 191, 36, .08); border-color: rgba(251, 191, 36, .35); }
+
+    /* resumo do Hazard: time mais fraco também por texto */
+    .chip { padding: 5px 12px; border-color: var(--line-strong); background: var(--sunken); }
+    .chip.weak { border-color: rgba(248, 113, 113, .6); color: #FECACA; }
+    .chip.weak::before { content: "▼ "; color: var(--bad); }
+    .sum .det p { font-size: 0.9rem; line-height: 1.55; }
+
+    /* tabela de Hazard */
+    .hz th { padding: 10px 4px; font-size: 0.78rem; }
+    .hz tbody tr:nth-child(even) td:not(.col-sel):not(.best) { background: rgba(148, 163, 184, .035); }
+    .hz tbody tr:hover td:not(.best) { background-color: rgba(148, 163, 184, .07); }
+    .hz td.no input { opacity: .75; }
+    input.cell { padding: 8px 2px 2px; }
+
+    /* tabela de precisão */
+    .pt th { padding: 8px; }
+    .pt td { padding: 8px; }
+    .pt tbody tr:hover td { background: rgba(148, 163, 184, .05); }
+
+    .legend { gap: 8px 20px; }
+
+    /* ===== Resumo ===== */
+    .rs-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .rs-card { background: var(--sunken); border: 1px solid var(--line); border-radius: 12px; padding: 14px 12px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
+    .rs-card.weak { border-color: rgba(248, 113, 113, .55); }
+    .rs-card .rs-t { font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
+    .rs-card .rs-tag { font-size: 0.75rem; font-weight: 700; color: var(--bad); border: 1px solid rgba(248, 113, 113, .5); border-radius: 999px; padding: 0 8px; }
+    .rs-card .rs-names { font-size: 0.78rem; color: var(--muted); line-height: 1.4; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .rs-card .rs-names b { color: var(--text); font-weight: 600; }
+    .rs-card .rs-dmg { font-family: var(--font-num); font-size: 1.45rem; font-weight: 700; letter-spacing: -0.02em; margin-top: 2px; }
+    .rs-card .rs-hz { font-weight: 700; font-size: 0.9rem; }
+    .rs-card .rs-sub { font-size: 0.75rem; color: var(--muted); }
+    .rs-card.off { border-color: var(--rc); background: color-mix(in srgb, var(--rc) 10%, var(--sunken)); justify-content: center; }
+    .rs-card.off .rs-big { font-size: 2.2rem; font-weight: 800; line-height: 1.05; color: var(--rc); letter-spacing: -0.03em; }
+    .rs-next-h { margin: 18px 0 10px; font-size: 0.82rem; font-weight: 700; color: #CBD5E1; text-align: center; letter-spacing: 0.02em; }
+    .rs-next { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .nx { background: var(--sunken); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+    .nx-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    .nx-h { font-size: 1.15rem; font-weight: 800; }
+    .nx-req { font-size: 0.75rem; color: var(--muted); font-family: var(--font-num); }
+    .nx-line { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 8px; font-size: 0.82rem; line-height: 1.45; align-items: start; }
+    .nx-line > span:first-child { color: var(--muted); font-weight: 600; }
+    .nx-ok { color: var(--ok); font-weight: 700; }
+    .nx-no { color: var(--bad); font-weight: 700; }
+    .nx-alt { color: #CBD5E1; }
+    .nx-alt b { color: var(--warn); font-weight: 700; }
+    .nx-foot { margin-top: auto; padding-top: 6px; border-top: 1px dashed var(--line); font-size: 0.78rem; font-weight: 700; }
+    @media (max-width: 1100px) {
+      .rs-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .rs-next { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .rs-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+      .wrap { width: calc(100% - 24px); padding-top: 18px; }
+      section.card { padding: 16px 14px 18px; }
+      h1 { font-size: 1.3rem; }
+      .sum { grid-template-columns: 1fr; }
+      .sum .big { font-size: 2.2rem; }
+      .tools { width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div class="ball" aria-hidden="true"></div>
+      <div>
+        <h1>Calculadora de Hazard</h1>
+        <p class="sub">Tudo é editável direto na página: nomes, danos, stars, held, precisão, bônus dos times, um Pokémon novo para testar e a própria tabela. Os dados ficam salvos no seu navegador.</p>
+      </div>
+    </header>
+
+    <section class="card resumo" aria-labelledby="resumo-h">
+      <div class="head">
+        <h2 id="resumo-h">Resumo</h2>
+        <p class="hint" id="resumo-hint"></p>
+      </div>
+      <div id="resumo"></div>
+    </section>
+
+    <section class="card">
+      <div class="head">
+        <h2>1. Qual Runa você tem?</h2>
+        <p class="hint">O Hazard em cada Runa é o que todos os times fazem juntos com ela. Clique para escolher.</p>
+      </div>
+      <div id="runes" class="runes" role="group" aria-label="Runa"></div>
+    </section>
+
+    <section class="card">
+      <div class="head">
+        <h2 id="teams-h">2. Seus times</h2>
+        <div class="tools">
+          <div class="fmt-switch" id="fmtBox">
+            <span class="fs-lbl" id="fs-l" data-fmt="2x2x2">2×2×2<small>3 times de 2</small></span>
+            <button type="button" class="sw" id="fmtSwitch" role="switch" aria-checked="false" aria-labelledby="fs-sw-lbl"><span class="knob"></span></button>
+            <span class="sr-only" id="fs-sw-lbl">Formato 3×3 (desligado = 2×2×2)</span>
+            <span class="fs-lbl" id="fs-r" data-fmt="3x3">3×3<small>2 times de 3</small></span>
+          </div>
+          <button type="button" class="btn" id="toggle-cand" aria-pressed="false" aria-controls="cand-col">+ Testar Pokémon novo</button>
+          <label class="chk"><input type="checkbox" id="useTests" />Considerar testes (stars e held)</label>
+          <button type="button" class="btn" id="clear-tests">Limpar testes</button>
+          <div class="seg" role="radiogroup" aria-label="Dano usado no cálculo">
+            <label><input type="radio" name="basis" value="agora" />Usar dano Agora</label>
+            <label><input type="radio" name="basis" value="depois" />Usar dano Depois</label>
+          </div>
+        </div>
+      </div>
+      <details class="howto">
+        <summary>Como usar: arrastar cards, stars, held e posições</summary>
+        <p class="hint">Arraste os cards: solte sobre outro card para trocar de time, ou na área do time para adicionar. No celular, arraste pelo ⋮⋮. O dano digitado deve ser o dano com as stars ATUAIS (linha amarela): ele não é recalculado. A linha azul e o Held teste são testes: suba uma estrela ou um Held e o dano sobe pelo bônus, o card fica azul. A 1ª posição de cada time é o OFFTANK e a 2ª é o DMG: os cards se reorganizam sozinhos pelo papel. DMG/OFFTANK joga na posição que o parceiro deixar livre.</p>
+      </details>
+      <div class="teams-row" id="teams-row">
+        <div id="teams"></div>
+        <aside class="cand-col" id="cand-col" hidden>
+          <header><span class="tname">Pokémon novo</span><button type="button" class="btn small-x" id="close-cand" aria-label="Fechar Pokémon novo">Fechar</button></header>
+          <div class="cand-body">
+            <div id="cand"></div>
+            <div id="cand-out"></div>
+          </div>
+        </aside>
+      </div>
+      <div id="suggest"></div>
+    </section>
+
+    <section class="card">
+      <div class="head">
+        <h2>3. Precisão dos seus pokémon</h2>
+        <p class="hint">Treino e Berry ficam no card de cada pokémon. Cada um precisa ter sozinho a precisão do Hazard. 1 ponto = 0,2%.</p>
+      </div>
+      <div class="prec-bar">
+        <div class="mgroup"><label class="mlabel" for="medalIn">Medalhas (todos)</label>
+          <input class="in num small" id="medalIn" inputmode="decimal" /><span class="mlabel">%</span><span class="eq" id="medalEq"></span></div>
+      </div>
+      <div class="table-wrap"><table class="pt" id="pt"></table></div>
+      <div class="prec-sum" id="precSum"></div>
+    </section>
+
+    <section class="card">
+      <div class="head">
+        <h2>4. Hazard que você consegue</h2>
+        <div class="tools">
+          <button type="button" class="btn" id="reset-table">Restaurar tabela medida</button>
+          <button type="button" class="btn" id="reset-all">Restaurar tudo</button>
+        </div>
+      </div>
+      <div class="model-bar">
+        <div class="mgroup"><span class="mlabel">Modelo</span>
+          <div class="seg" role="radiogroup" aria-label="Modelo de cálculo">
+            <label><input type="radio" name="model" value="formula" />Fórmula</label>
+            <label><input type="radio" name="model" value="table" />Tabela medida</label>
+          </div>
+        </div>
+        <div class="mgroup" id="g-base"><span class="mlabel">Dano necessário sem Hazard</span>
+          <div class="seg" role="radiogroup" aria-label="Base">
+            <label><input type="radio" name="basechip" value="550" />550k</label>
+            <label><input type="radio" name="basechip" value="560" />560k</label>
+          </div>
+          <input class="in num small" id="baseIn" inputmode="decimal" aria-label="Dano necessário sem Hazard, em k" />
+          <span class="mlabel">k</span>
+        </div>
+        <div class="mgroup" id="g-step"><span class="mlabel">Sobe por Hazard</span>
+          <input class="in num small" id="stepIn" inputmode="decimal" aria-label="Percentual que sobe por Hazard" />
+          <span class="mlabel">%</span>
+        </div>
+      </div>
+      <p class="hint" id="model-note"></p>
+      <div id="summary"></div>
+      <div class="table-wrap"><table class="hz" id="hz"></table></div>
+      <div class="legend">
+        <span><i style="background:var(--rc, #f0a04b)"></i>Maior Hazard que todos os times fazem</span>
+        <span><i style="background:rgba(110,231,183,0.35)"></i>Todos os times fazem (✓)</span>
+        <span><i style="background:rgba(240,160,75,0.35)"></i>Só alguns times fazem (letras)</span>
+        <span>Tabela medida: valor sublinhado não cresce em relação ao Hazard anterior, confira.</span>
+        <span>Hazard riscado: algum pokémon não tem a precisão.</span>
+      </div>
+      <p class="hint foot">Precisão em pontos (1 ponto = 0,2%), editável. Cada um dos 6 pokémon precisa ter a precisão do Hazard; o Hazard oficial já considera isso. A tabela medida foi criada por xandin; testes feitos com prey de ataque, podem conter erro.</p>
+    </section>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+      const KEY = "pkmn-hazard-calc:v1";
+      const LETTERS = ["A", "B", "C"];
+      // Formato: 2x2x2 = 3 times de 2 · 3x3 = 2 times de 3. Os pokémon são os mesmos;
+      // cada formato guarda a sua própria divisão (t2 / t3) e m.team é sempre a do formato ativo.
+      function is3() { return state.format === "3x3"; }
+      function NT() { return is3() ? 2 : 3; }
+      function TS() { return is3() ? 3 : 2; }
+      function TEAMS() { return is3() ? [0, 1] : [0, 1, 2]; }
+      function teamKey() { return is3() ? "t3" : "t2"; }
+      const DEFAULT_TABLE = [
+        [560, 549, 537, 526, 515, 505, 0],
+        [578, 566, 555, 545, 535, 522, 0],
+        [596, 584, 573, 562, 552, 539, 0],
+        [614, 600, 590, 579, 568, 556, 0],
+        [632, 619, 608, 596, 585, 573, 0],
+        [630, 636, 623, 610, 598, 586, 5],
+        [663, 649, 638, 625, 614, 603, 10],
+        [676, 662, 650, 638, 624, 615, 15],
+        [689, 675, 662, 650, 636, 625, 20],
+        [702, 688, 675, 662, 650, 638, 25],
+        [715, 700, 685, 671, 650, 645, 30],
+        [730, 716, 702, 689, 676, 664, 35],
+        [740, 725, 712, 699, 685, 673, 40],
+        [755, 740, 726, 712, 699, 686, 45],
+        [765, 750, 726, 722, 708, 695, 50],
+        [780, 765, 750, 736, 722, 704, 55],
+        [815, 795, 779, 763, 748, 733, 60],
+        [845, 825, 807, 791, 775, 760, 65]
+      ];
+      const RUNES = [
+        { id: 0, bonus: "sem bônus", pct: 0, color: "#9aa3b8" },
+        { id: 1, bonus: "+2%", pct: 2, color: "#3cbf8c" },
+        { id: 2, bonus: "+4%", pct: 4, color: "#5b8def" },
+        { id: 3, bonus: "+6%", pct: 6, color: "#a074f0" },
+        { id: 4, bonus: "+8%", pct: 8, color: "#f0a04b" },
+        { id: 5, bonus: "+10%", pct: 10, color: "#ef5b8a" }
+      ];
+      const TIERS = [
+        { id: "legendary", name: "Legendary", pct: 15 },
+        { id: "ultra", name: "Ultra Rare", pct: 10 },
+        { id: "super", name: "Super Rare", pct: 8 },
+        { id: "t1", name: "T1", pct: 6 },
+        { id: "t2", name: "T2", pct: 4 },
+        { id: "t3", name: "T3", pct: 2 }
+      ];
+      const DEFAULT_MONS = [
+        { name: "Shiny Houndoom", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: 0, now: 318159, after: null, train: 20, berry: false },
+        { name: "Shiny Misdreavus", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: 0, now: 307870, after: null, train: 20, berry: false },
+        { name: "Shiny Tauros", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: 1, now: 294639, after: null, train: 20, berry: false },
+        { name: "Shiny Dusknoir", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: 1, now: 344778, after: null, train: 20, berry: false },
+        { name: "Shiny Hydreigon", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: 2, now: 324169, after: null, train: 20, berry: false },
+        { name: "Shiny Smeargle Ghost", role: "", tier: "t1", stars: 0, test: null, held: 0, heldTest: null, team: 2, now: 290236, after: null, train: 20, berry: false }
+      ];
+      const HELDS = [0, 8, 12, 16, 19, 22, 25, 28];
+      function tierOf(id) { return TIERS.find(function (t) { return t.id === id; }) || TIERS[2]; }
+      const ROLE_RANK = { OFFTANK: 0, FLEX: 1, "": 1, DMG: 2 };
+      const ROLE_LABEL = { OFFTANK: "OFFTANK", DMG: "DMG", FLEX: "DMG/OFFTANK", "": "sem papel" };
+      function normRole(r) { return r === "OFFTANK" || r === "FLEX" ? r : (r === "DMG" || r === "DPS") ? "DMG" : ""; }
+
+      const clone = function (o) { return JSON.parse(JSON.stringify(o)); };
+      function precNum(v, def) { v = Number(v); return Number.isFinite(v) && v >= 0 ? v : def; }
+      function freshCand() {
+        return { id: "cand", name: "", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: -1, now: 0, after: null, train: 20, berry: false };
+      }
+      function normCand(c) {
+        c = c && typeof c === "object" ? c : {};
+        const num = function (v, max) { return Number.isInteger(v) && v >= 0 && v <= max ? v : null; };
+        return {
+          id: "cand",
+          name: String(c.name || ""),
+          role: normRole(c.role),
+          tier: TIERS.some(function (t) { return t.id === c.tier; }) ? c.tier : "super",
+          stars: num(c.stars, 5) == null ? 0 : c.stars,
+          test: num(c.test, 5),
+          held: num(c.held, 7) == null ? 0 : c.held,
+          heldTest: num(c.heldTest, 7),
+          team: -1,
+          now: Number.isFinite(Number(c.now)) && Number(c.now) > 0 ? Number(c.now) : 0,
+          after: (c.after == null || c.after === "" || !Number.isFinite(Number(c.after))) ? null : Number(c.after),
+          train: precNum(c.train, 20),
+          berry: c.berry === true
+        };
+      }
+      function freshMons() {
+        return clone(DEFAULT_MONS).map(function (m, i) { m.id = "m" + (i + 1); m.t2 = m.team; m.t3 = i < 3 ? 0 : 1; return m; });
+      }
+      const state = { rune: 5, basis: "agora", format: "2x2x2", teamPct: [0, 0, 0], useTests: true, showCand: false, medal: 2.5, model: "formula", base: 560, step: 3, mons: freshMons(), cand: freshCand(), table: clone(DEFAULT_TABLE) };
+
+      const el = {
+        runes: document.getElementById("runes"),
+        teams: document.getElementById("teams"),
+        suggest: document.getElementById("suggest"),
+        cand: document.getElementById("cand"),
+        candOut: document.getElementById("cand-out"),
+        summary: document.getElementById("summary"),
+        table: document.getElementById("hz"),
+        pt: document.getElementById("pt"),
+        precSum: document.getElementById("precSum")
+      };
+
+      function load() {
+        try {
+          const raw = localStorage.getItem(KEY);
+          if (!raw) return;
+          const d = JSON.parse(raw);
+          if (Number.isInteger(d.rune) && d.rune >= 0 && d.rune <= 5) state.rune = d.rune;
+          if (d.basis === "agora" || d.basis === "depois") state.basis = d.basis;
+          if (typeof d.useTests === "boolean") state.useTests = d.useTests;
+          if (d.format === "3x3" || d.format === "2x2x2") state.format = d.format;
+          if (typeof d.showCand === "boolean") state.showCand = d.showCand;
+          state.medal = precNum(d.medal, state.medal);
+          if (Array.isArray(d.teamPct) && d.teamPct.length === 3) {
+            state.teamPct = d.teamPct.map(function (v) { v = Number(v); return Number.isFinite(v) && v >= 0 && v <= 1000 ? v : 0; });
+          }
+          if (Array.isArray(d.mons) && d.mons.length === 6) {
+            state.mons = d.mons.map(function (m, i) {
+              const after = (m.after == null || m.after === "" || !Number.isFinite(Number(m.after))) ? null : Number(m.after);
+              return {
+                id: "m" + (i + 1),
+                name: String(m.name || ""),
+                role: normRole(m.role),
+                tier: TIERS.some(function (t) { return t.id === m.tier; }) ? m.tier : (DEFAULT_MONS[i] ? DEFAULT_MONS[i].tier : "super"),
+                stars: Number.isInteger(m.stars) && m.stars >= 0 && m.stars <= 5 ? m.stars : 0,
+                test: Number.isInteger(m.test) && m.test >= 0 && m.test <= 5 ? m.test : null,
+                held: Number.isInteger(m.held) && m.held >= 0 && m.held <= 7 ? m.held : 0,
+                heldTest: Number.isInteger(m.heldTest) && m.heldTest >= 0 && m.heldTest <= 7 ? m.heldTest : null,
+                t2: [0, 1, 2].indexOf(m.t2) >= 0 ? m.t2 : ([0, 1, 2].indexOf(m.team) >= 0 && d.format !== "3x3" ? m.team : Math.floor(i / 2)),
+                t3: [0, 1].indexOf(m.t3) >= 0 ? m.t3 : (i < 3 ? 0 : 1),
+                now: Number.isFinite(Number(m.now)) ? Number(m.now) : 0,
+                after: after,
+                train: precNum(m.train, 20),
+                berry: m.berry === true
+              };
+            });
+          }
+          state.mons.forEach(function (m) { m.team = m[teamKey()]; });
+          if (d.cand) state.cand = normCand(d.cand);
+          if (Array.isArray(d.table) && d.table.length === 18 && d.table.every(function (r) {
+            return Array.isArray(r) && r.length === 7 && r.every(function (v) { return Number.isFinite(v); });
+          })) state.table = d.table;
+          if (state.table[0][1] === 540) state.table[0][1] = 549; // valor lido errado: o cursor cobria o último dígito
+          if (d.model === "formula" || d.model === "table") state.model = d.model;
+          if (Number.isFinite(d.base) && d.base > 0) state.base = d.base;
+          if (Number.isFinite(d.step) && d.step >= 0) state.step = d.step;
+        } catch (e) { /* storage indisponível: segue com o padrão */ }
+      }
+
+      function save() {
+        state.mons.forEach(function (m) { if (m.team >= 0) m[teamKey()] = m.team; });
+        try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* sem storage */ }
+      }
+
+      function esc(v) {
+        return String(v).replace(/[&<>"']/g, function (c) {
+          return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c];
+        });
+      }
+      function parseNum(txt) {
+        let s = String(txt).trim().replace(/\s/g, "");
+        if (!s) return NaN;
+        if (/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(s)) s = s.replace(/\./g, "").replace(",", ".");
+        else s = s.replace(",", ".");
+        if (!/^\d+(\.\d+)?$/.test(s)) return NaN;
+        return Number(s);
+      }
+      function fmt(n) { return Number(n).toLocaleString("pt-BR", { maximumFractionDigits: 2 }); }
+      function kfmt(n) { return (Math.round(n / 100) / 10).toLocaleString("pt-BR", { maximumFractionDigits: 1 }) + "k"; }
+      function rgba(hex, a) {
+        const n = parseInt(hex.slice(1), 16);
+        return "rgba(" + ((n >> 16) & 255) + "," + ((n >> 8) & 255) + "," + (n & 255) + "," + a + ")";
+      }
+
+      function eff(m) {
+        return (state.basis === "depois" && m.after != null && m.after > 0) ? m.after : m.now;
+      }
+      function findMon(id) {
+        return id === "cand" ? state.cand : state.mons.find(function (m) { return m.id === id; });
+      }
+      function tStars(m) { return m.test == null ? m.stars : m.test; }
+      function tHeld(m) { return m.heldTest == null ? m.held : m.heldTest; }
+      function testActive(m) { return state.useTests && (tStars(m) !== m.stars || tHeld(m) !== m.held); }
+      function bonus(m, stars, held) { return 1 + stars * tierOf(m.tier).pct / 100 + HELDS[held] / 100; }
+      function monDmg(m) {
+        const d = eff(m);
+        if (!testActive(m)) return Math.round(d);
+        return Math.round(d * bonus(m, tStars(m), tHeld(m)) / bonus(m, m.stars, m.held));
+      }
+      function teamBase(team) {
+        return state.mons.reduce(function (s, m) { return s + (m.team === team ? monDmg(m) : 0); }, 0);
+      }
+      function totals() {
+        return TEAMS().map(function (t) { return Math.round(teamBase(t) * (1 + state.teamPct[t] / 100)); });
+      }
+      function need(i, r) {
+        if (state.model === "table") return state.table[i][r] * 1000;
+        return state.base * 1000 * (1 + (state.step / 100) * i) * (1 - RUNES[r].pct / 100);
+      }
+      function reqK(i, r) { return Math.ceil(need(i, r) / 1000 - 1e-9); }
+      function maxHz(r, total) {
+        let best = -1;
+        for (let i = 0; i < state.table.length; i++) if (need(i, r) <= total) best = i;
+        return best;
+      }
+      const BERRY = 25;
+      const PT_PCT = 0.2;
+      function precOf(m) {
+        return m.train + (m.berry ? BERRY : 0) + state.medal / PT_PCT;
+      }
+      function precMin(list) {
+        return list.length ? Math.min.apply(null, list.map(precOf)) : Infinity;
+      }
+      function precCap(list) {
+        const p = precMin(list) + 1e-9;
+        let best = -1;
+        for (let i = 0; i < state.table.length; i++) if (state.table[i][6] <= p) best = i;
+        return best;
+      }
+      function dmgHz(r, t) {
+        return Math.min.apply(null, t.map(function (x) { return maxHz(r, x); }));
+      }
+      // Hazard oficial: limitado pelo dano do time mais fraco E pela precisão do pokémon com menos precisão
+      function official(r, t, list) {
+        return Math.min(dmgHz(r, t), precCap(list || state.mons));
+      }
+      function flat(groups) { return groups.reduce(function (a, g) { return a.concat(g); }, []); }
+      function namesOf(team) {
+        return sortPair(state.mons.filter(function (m) { return m.team === team; }))
+          .map(function (m) { return esc(m.name || "sem nome"); }).join(" + ");
+      }
+
+      const PERMS = [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]];
+
+      function pairOk(a, b) {
+        if (!a.role || !b.role || a.role === "FLEX" || b.role === "FLEX") return true;
+        return a.role !== b.role;
+      }
+      function sortPair(g) {
+        return g.slice().sort(function (a, b) { return ROLE_RANK[a.role] - ROLE_RANK[b.role]; });
+      }
+      // 2x2x2: 1 OFFTANK + 1 DMG por time · 3x3: pelo menos 1 OFFTANK por time (pode ter mais)
+      function teamOk(g) {
+        if (is3()) return g.some(function (m) { return m.role !== "DMG"; });
+        return g.length !== 2 || pairOk(g[0], g[1]);
+      }
+      function teamProblem(g) {
+        if (is3()) return "sem OFFTANK";
+        return g[0].role === "OFFTANK" ? "2 OFFTANK, falta DMG" : "2 DMG, falta OFFTANK";
+      }
+      function arrangementIssues() {
+        const out = [];
+        TEAMS().forEach(function (t) {
+          const g = state.mons.filter(function (m) { return m.team === t; });
+          if (g.length !== TS()) out.push("Time " + LETTERS[t] + " está com " + g.length + " pokémon" + (g.length === 1 ? "" : "s"));
+          else if (!teamOk(g)) out.push("Time " + LETTERS[t] + " " + teamProblem(g));
+        });
+        return out;
+      }
+
+      const PAIRINGS = (function () {
+        const out = [];
+        (function rec(rem, acc) {
+          if (!rem.length) { out.push(acc); return; }
+          const first = rem[0];
+          for (let j = 1; j < rem.length; j++) {
+            rec(rem.filter(function (_, k) { return k !== 0 && k !== j; }), acc.concat([[first, rem[j]]]));
+          }
+        })([0, 1, 2, 3, 4, 5], []);
+        return out;
+      })();
+      const TRIPLES = (function () {
+        const out = [];
+        for (let a = 1; a < 6; a++) for (let b = a + 1; b < 6; b++) {
+          const g1 = [0, a, b];
+          out.push([g1, [0, 1, 2, 3, 4, 5].filter(function (x) { return g1.indexOf(x) < 0; })]);
+        }
+        return out;
+      })();
+      const PERMS2 = [[0, 1], [1, 0]];
+      function groupings() { return is3() ? TRIPLES : PAIRINGS; }
+      function teamPerms() { return is3() ? PERMS2 : PERMS; }
+
+      function bestSplit() {
+        let best = null;
+        groupings().forEach(function (p) {
+          if (!p.every(function (g) { return teamOk(g.map(function (i) { return state.mons[i]; })); })) return;
+          const raw = p.map(function (g) { return g.reduce(function (a, i) { return a + monDmg(state.mons[i]); }, 0); });
+          teamPerms().forEach(function (perm) {
+            const tt = perm.map(function (pk, k) { return Math.round(raw[pk] * (1 + state.teamPct[k] / 100)); });
+            const min = Math.min.apply(null, tt);
+            if (!best || min > best.min) best = { pairs: perm.map(function (pk) { return p[pk]; }), totals: tt, min: min };
+          });
+        });
+        return best;
+      }
+
+      function sortedMembers(t) {
+        return state.mons.map(function (m, i) { return { m: m, i: i }; })
+          .filter(function (x) { return x.m.team === t; })
+          .sort(function (a, b) { return (ROLE_RANK[a.m.role] - ROLE_RANK[b.m.role]) || (a.i - b.i); })
+          .map(function (x) { return x.m; });
+      }
+
+      function cardHtml(m, idx, isCand) {
+        const roleOpts = function (cur) {
+          return [["", "Papel"], ["OFFTANK", "OFFTANK"], ["DMG", "DMG"], ["FLEX", "DMG/OFFTANK"]].map(function (o) {
+            return "<option value=\"" + o[0] + "\"" + (cur === o[0] ? " selected" : "") + ">" + o[1] + "</option>";
+          }).join("");
+        };
+        const tierOpts = function (cur) {
+          return TIERS.map(function (t) {
+            return "<option value=\"" + t.id + "\"" + (cur === t.id ? " selected" : "") + " title=\"+" + t.pct + "% por star\">" + t.name + "</option>";
+          }).join("");
+        };
+        const teamOpts = function (cur) {
+          return LETTERS.slice(0, NT()).map(function (l, i) {
+            return "<option value=\"" + i + "\"" + (cur === i ? " selected" : "") + ">" + l + "</option>";
+          }).join("");
+        };
+        const slotInfo = function (i, role) {
+          const fx = role === "FLEX" ? " · flex" : "";
+          const fx2 = fx;
+          if (i === 0) return { text: "1ª posição · OFFTANK" + fx, cls: "slot" + (role === "DMG" ? " bad" : "") };
+          if (is3() && i < 3) {
+            const rl = role === "OFFTANK" ? "OFFTANK" : role === "FLEX" ? "flex" : "DMG";
+            return { text: (i + 1) + "ª posição · " + rl, cls: "slot" + (role === "OFFTANK" ? "" : " dmg") };
+          }
+          if (i === 1) return { text: "2ª posição · DMG" + fx2, cls: "slot dmg" + (role === "OFFTANK" ? " bad" : "") };
+          return { text: "Extra · fora do " + (is3() ? "3×3" : "2×2×2"), cls: "slot extra" };
+        };
+        const sl = isCand ? { text: "Candidato · ainda fora dos times", cls: "slot extra" } : slotInfo(idx, m.role);
+        const row = function (kind, level, label) {
+          let h = "";
+          for (let n = 1; n <= 5; n++) {
+            h += "<button type=\"button\" class=\"star" + (n <= level ? " on" : "") + "\" data-star=\"" + n + "\" data-kind=\"" + kind + "\" aria-label=\"" + label + ": " + n + " star" + (n > 1 ? "s" : "") + "\" aria-pressed=\"" + (n <= level) + "\">" + (n <= level ? "★" : "☆") + "</button>";
+          }
+          return "<div class=\"srow " + kind + "\"><span class=\"slab\">" + label + "</span><span class=\"stars\" role=\"group\" aria-label=\"Stars " + label + "\">" + h + "</span></div>";
+        };
+        const heldOpts = function (cur) {
+          return HELDS.map(function (v, i) {
+            return "<option value=\"" + i + "\"" + (cur === i ? " selected" : "") + ">" + (i === 0 ? "Sem Held" : "ATK " + i + " (+" + v + "%)") + "</option>";
+          }).join("");
+        };
+        const stars = row("cur", m.stars, "Atual") + row("test", tStars(m), "Teste") +
+          "<div class=\"held-row\">" +
+            "<label class=\"fld\">Held atual<select class=\"in\" data-f=\"held\">" + heldOpts(m.held) + "</select></label>" +
+            "<label class=\"fld test\">Held teste<select class=\"in" + (tHeld(m) !== m.held ? " diff" : "") + "\" data-f=\"heldTest\">" + heldOpts(tHeld(m)) + "</select></label>" +
+          "</div>" +
+          "<div class=\"prec-row\">" +
+            "<label class=\"fld\">Precisão treino (pts)<input class=\"in num\" data-f=\"train\" inputmode=\"decimal\" value=\"" + fmt(m.train) + "\" /></label>" +
+            "<label class=\"berry\"><input type=\"checkbox\" data-f=\"berry\"" + (m.berry ? " checked" : "") + " />Berry +" + BERRY + "</label>" +
+          "</div>" +
+          "<div class=\"prec-out\" data-prec></div>";
+        const top = isCand
+          ? "<div class=\"mon-top\"><input class=\"in name\" data-f=\"name\" aria-label=\"Nome do pokémon novo\" value=\"" + esc(m.name) + "\" placeholder=\"Nome do Pokémon novo\" /></div>"
+          : "<div class=\"mon-top\">" +
+              "<span class=\"grip\" title=\"Arraste para mover\" aria-hidden=\"true\">⋮⋮</span>" +
+              "<input class=\"in name\" data-f=\"name\" aria-label=\"Nome do pokémon\" value=\"" + esc(m.name) + "\" placeholder=\"Nome\" />" +
+            "</div>";
+        const tsel = isCand ? "" : "<select class=\"in tsel\" data-f=\"team\" aria-label=\"Mover para o time\" title=\"Mover para o time\">" + teamOpts(m.team) + "</select>";
+        return "<div class=\"mon" + (isCand ? " cand" : "") + (testActive(m) ? " testing" : "") + "\" data-id=\"" + m.id + "\">" +
+          "<div class=\"slot-row\"><div class=\"" + sl.cls + "\">" + sl.text + "</div>" + tsel + "</div>" + top +
+          "<div class=\"mon-fields\">" +
+            "<label class=\"fld\">Papel<select class=\"in\" data-f=\"role\">" + roleOpts(m.role) + "</select></label>" +
+            "<label class=\"fld\">Raridade<select class=\"in\" data-f=\"tier\">" + tierOpts(m.tier) + "</select></label>" +
+            "<label class=\"fld\">Dano (stars atuais)<input class=\"in num\" data-f=\"now\" inputmode=\"decimal\" placeholder=\"" + (isCand ? "ex.: 330.000" : "") + "\" value=\"" + (isCand && !m.now ? "" : fmt(m.now)) + "\" /></label>" +
+            "<label class=\"fld\">Dano depois<input class=\"in num\" data-f=\"after\" inputmode=\"decimal\" placeholder=\"igual\" value=\"" + (m.after == null ? "" : fmt(m.after)) + "\" /></label>" +
+          "</div>" +
+          "<div class=\"stars-box\">" + stars + "<div class=\"eff\" data-eff=\"" + m.id + "\" style=\"margin-top:6px\"></div></div>" +
+          "</div>";
+      }
+
+      function buildCand() {
+        el.cand.innerHTML = cardHtml(state.cand, 0, true);
+      }
+
+      function buildRoster() {
+        const card = function (m, idx) { return cardHtml(m, idx, false); };
+        el.teams.innerHTML = "<div class=\"teams-grid" + (is3() ? " f3" : "") + "\">" + TEAMS().map(function (t) {
+          const members = sortedMembers(t);
+          const body = members.length
+            ? members.map(card).join("")
+            : "<div class=\"zone-empty\">Arraste um pokémon para cá</div>";
+          return "<article class=\"team\" data-team=\"" + t + "\">" +
+            "<header><span class=\"tname\">Time " + LETTERS[t] + "</span><span class=\"tcount\" data-count=\"" + t + "\"></span><span class=\"tweak\" data-weak=\"" + t + "\" hidden>mais fraco</span></header>" +
+            "<div class=\"zone\">" + body + "</div>" +
+            "<div class=\"tbonus\"><label for=\"tp" + t + "\">Bônus do time</label><input class=\"in num\" id=\"tp" + t + "\" data-tpct=\"" + t + "\" inputmode=\"decimal\" value=\"" + fmt(state.teamPct[t]) + "\" aria-label=\"Percentual extra de dano do Time " + LETTERS[t] + "\" /><span>%</span></div>" +
+            "<footer><span class=\"hint\" data-tlabel=\"" + t + "\">Total do time</span><span class=\"ttot\" data-total=\"" + t + "\"></span><span class=\"thaz\" data-thaz=\"" + t + "\"></span></footer>" +
+            "</article>";
+        }).join("") + "</div>";
+        buildCand();
+        buildPrec();
+      }
+
+      function buildTable() {
+        const head = "<thead><tr><th>Hazard</th>" + RUNES.map(function (r) {
+          return "<th data-c=\"" + r.id + "\" style=\"--c:" + r.color + "\"><span class=\"gem\"></span>Runa " + r.id +
+            "<div class=\"hz-b\">" + r.bonus + "</div></th>";
+        }).join("") + "<th>Precisão<div class=\"hz-b\">pontos</div></th><th>Precisão<div class=\"hz-b\">%</div></th><th>Sua precisão<div class=\"hz-b\">pontos (menor dos 6)</div></th></tr></thead>";
+        const body = state.table.map(function (row, i) {
+          return "<tr data-i=\"" + i + "\"><td class=\"hn\">" + i + "</td>" + row.map(function (v, c) {
+            const label = c < 6 ? "Hazard " + i + ", Runa " + c : "Hazard " + i + ", precisão";
+            return "<td data-c=\"" + c + "\"><input class=\"cell\" data-i=\"" + i + "\" data-c=\"" + c +
+              "\" inputmode=\"numeric\" aria-label=\"" + label + "\" value=\"" + (c < 6 ? v + "k" : v) + "\" /><span class=\"who\"></span></td>";
+          }).join("") + "<td class=\"pp\" data-pp=\"" + i + "\"></td><td class=\"pv\" data-pv=\"" + i + "\"></td></tr>";
+        }).join("");
+        el.table.innerHTML = head + "<tbody>" + body + "</tbody>";
+      }
+
+      function paintRunes(t) {
+        el.runes.innerHTML = RUNES.map(function (r) {
+          const h = official(r.id, t);
+          const on = r.id === state.rune;
+          return "<button type=\"button\" class=\"rune" + (on ? " on" : "") + "\" data-rune=\"" + r.id + "\" style=\"--rc:" + r.color + "\" aria-pressed=\"" + on + "\">" +
+            "<span class=\"gem\"></span><span class=\"rn\">Runa " + r.id + "</span><span class=\"rb\">" + r.bonus + "</span>" +
+            "<span class=\"rh\">" + (h < 0 ? "abaixo do Hazard 0" : "Hazard " + h) + "</span></button>";
+        }).join("");
+      }
+
+      function paintTeams(t) {
+        const weak = Math.min.apply(null, t);
+        const weakIdx = t.indexOf(weak);
+        const color = RUNES[state.rune].color;
+        TEAMS().forEach(function (i) {
+          const members = state.mons.filter(function (m) { return m.team === i; });
+          const tot = el.teams.querySelector("[data-total=\"" + i + "\"]");
+          const haz = el.teams.querySelector("[data-thaz=\"" + i + "\"]");
+          const cnt = el.teams.querySelector("[data-count=\"" + i + "\"]");
+          const wk = el.teams.querySelector("[data-weak=\"" + i + "\"]");
+          const lab = el.teams.querySelector("[data-tlabel=\"" + i + "\"]");
+          const hd = maxHz(state.rune, t[i]);
+          const h = members.length ? Math.min(hd, precCap(members)) : hd;
+          tot.textContent = fmt(t[i]);
+          haz.textContent = (h < 0 ? "abaixo do Hazard 0" : "Hazard " + h) + (h < hd ? " (precisão)" : "");
+          haz.style.color = color;
+          wk.hidden = !(i === weakIdx && members.length > 0);
+          lab.textContent = state.teamPct[i] > 0 ? "Total (pokémons " + fmt(teamBase(i)) + " + " + fmt(state.teamPct[i]) + "% do time)" : "Total do time";
+          let msg = members.length + " de " + TS() + " pokémons";
+          let bad = members.length !== TS();
+          if (members.length === TS() && !teamOk(members)) {
+            msg += " · " + teamProblem(members);
+            bad = true;
+          }
+          cnt.textContent = msg;
+          cnt.className = "tcount" + (bad ? " bad" : "");
+        });
+        state.mons.forEach(function (m) {
+          const n = el.teams.querySelector("[data-eff=\"" + m.id + "\"]");
+          if (!n) return;
+          const base = Math.round(eff(m));
+          if (testActive(m)) {
+            const dl = monDmg(m) - base;
+            n.className = "eff test";
+            const parts = [];
+            if (tStars(m) !== m.stars) parts.push(m.stars + "★ → " + tStars(m) + "★");
+            if (tHeld(m) !== m.held) parts.push("ATK " + m.held + " → ATK " + tHeld(m));
+            n.innerHTML = "teste " + parts.join(" · ") + " · <strong>" + fmt(monDmg(m)) + "</strong> (" + (dl >= 0 ? "+" : "") + fmt(dl) + ")";
+          } else {
+            n.className = "eff";
+            n.innerHTML = "dano usado <strong>" + fmt(base) + "</strong>";
+          }
+        });
+      }
+
+      function paintSummary(t, off) {
+        const r = RUNES[state.rune];
+        const weak = Math.min.apply(null, t);
+        const wi = t.indexOf(weak);
+        const L = [];
+        let big;
+        const dOff = dmgHz(r.id, t);
+        const pMin = precMin(state.mons);
+        const pLow = state.mons.filter(function (m) { return precOf(m) === pMin; }).map(function (m) { return esc(m.name || "sem nome"); });
+        if (off >= 0 && off < dOff) {
+          big = "Hazard " + off;
+          L.push("<p class=\"warnt\">Limitado pela <strong>precisão</strong>: pelo dano você faria " + hzTxt(dOff) + ", mas " + pLow.join(", ") + " tem " + fmt(pMin) + " pts (" + fmt(pMin * PT_PCT) + "%).</p>");
+          const nx = state.table[off + 1] ? state.table[off + 1][6] : null;
+          if (nx != null) L.push("<p>Hazard " + (off + 1) + " exige " + fmt(nx) + " pts (" + fmt(nx * PT_PCT) + "%) em cada pokémon: faltam " + fmt(nx - pMin) + " pts.</p>");
+        } else if (off < 0) {
+          big = "Abaixo do Hazard 0";
+          L.push("<p>O time mais fraco (Time " + LETTERS[wi] + ", " + fmt(weak) + ") não chega a " + reqK(0, r.id) + "k.</p>");
+        } else {
+          const slack = weak - need(off, r.id);
+          big = "Hazard " + off;
+          L.push("<p>Limitado pelo <strong>Time " + LETTERS[wi] + "</strong> (" + namesOf(wi) + ") com " + fmt(weak) + ". Exige " + reqK(off, r.id) + "k, folga de " + kfmt(slack) +
+            (slack < 2000 ? " <span class=\"warnt\">(dentro da margem de erro)</span>" : "") + ".</p>");
+          const pr = state.table[off][6];
+          L.push("<p>Precisão necessária: <strong>" + fmt(pr) + " pts (" + fmt(pr * PT_PCT) + "%)</strong> · a sua menor é " + fmt(pMin) + " pts (" + fmt(pMin * PT_PCT) + "%) <span class=\"" + (pMin >= pr ? "st-ok" : "warnt") + "\">" + (pMin >= pr ? "✓" : "✗") + "</span></p>");
+          if (off + 1 < state.table.length) {
+            L.push("<p>Próximo: Hazard " + (off + 1) + " exige " + reqK(off + 1, r.id) + "k, faltam " + kfmt(need(off + 1, r.id) - weak) + " no Time " + LETTERS[wi] + ".</p>");
+          } else {
+            L.push("<p>Já é o Hazard máximo da tabela.</p>");
+          }
+        }
+        const chips = t.map(function (v, i) {
+          const h = maxHz(state.rune, v);
+          return "<span class=\"chip" + (i === wi ? " weak" : "") + "\">Time " + LETTERS[i] + " · " + fmt(v) + " · " + (h < 0 ? "abaixo do H0" : "Hazard " + h) + "</span>";
+        }).join("");
+        const issues = arrangementIssues();
+        if (issues.length) L.unshift("<p class=\"warnt\">Atenção: sua divisão atual não vale no jogo (" + esc(issues.join("; ")) + "). Esse Hazard é só uma estimativa.</p>");
+        el.summary.innerHTML = "<div class=\"sum\" style=\"--rc:" + r.color + "\"><div><div class=\"k\">Runa " + r.id + " (" + r.bonus + ")</div><div class=\"big\">" + big + "</div></div>" +
+          "<div class=\"det\">" + L.join("") + "</div><div class=\"chips\">" + chips + "</div></div>";
+      }
+
+      function paintTable(t, off) {
+        const r = state.rune;
+        const color = RUNES[r].color;
+        el.table.style.setProperty("--rc", color);
+        document.documentElement.style.setProperty("--rc", color);
+        el.table.style.setProperty("--rct", rgba(color, 0.13));
+        el.table.querySelectorAll("th[data-c]").forEach(function (th) {
+          th.classList.toggle("sel", Number(th.getAttribute("data-c")) === r);
+        });
+        el.table.querySelectorAll("tbody tr").forEach(function (tr) {
+          const i = Number(tr.getAttribute("data-i"));
+          tr.classList.toggle("best-row", i === off);
+          tr.querySelectorAll("td[data-c]").forEach(function (td) {
+            const c = Number(td.getAttribute("data-c"));
+            const inp = td.querySelector("input");
+            const who = td.querySelector(".who");
+            let cls = "";
+            let tag = "";
+            if (c === r) {
+              const reach = TEAMS().filter(function (x) { return t[x] >= need(i, r); });
+              cls = "col-sel " + (i === off ? "best" : reach.length === NT() ? "ok" : reach.length ? "part" : "no");
+              tag = i === off ? "✓ máx" : reach.length === NT() ? "✓" : reach.map(function (x) { return LETTERS[x]; }).join(" ");
+            }
+            td.className = cls;
+            who.textContent = tag;
+            if (c < 6) {
+              const formula = state.model === "formula";
+              inp.readOnly = formula;
+              if (document.activeElement !== inp) inp.value = (formula ? reqK(i, c) : state.table[i][c]) + "k";
+              let sus = false;
+              let tip = "";
+              if (formula) {
+                const meas = state.table[i][c];
+                const diff = Math.round(meas - need(i, c) / 1000);
+                tip = "Tabela medida: " + meas + "k (" + (diff > 0 ? "+" : "") + diff + "k em relação à fórmula)";
+              } else {
+                sus = i > 0 && state.table[i][c] <= state.table[i - 1][c];
+                if (sus) tip = "Valor suspeito: não é maior que o Hazard anterior";
+              }
+              inp.classList.toggle("sus", sus);
+              if (tip) inp.title = tip; else inp.removeAttribute("title");
+            }
+          });
+          const hn = tr.querySelector("td.hn");
+          hn.className = "hn" + (i === off ? " hit" : "");
+          const req = state.table[i][6];
+          const short = state.mons.filter(function (m) { return precOf(m) + 1e-9 < req; });
+          tr.querySelector("[data-pp]").textContent = fmt(req * PT_PCT) + "%";
+          const pv = tr.querySelector("[data-pv]");
+          pv.className = "pv " + (short.length ? "no" : "ok");
+          const pm = precMin(state.mons);
+          pv.textContent = fmt(pm) + (short.length ? " ✗ falta " + fmt(req - pm) : " ✓");
+          pv.title = short.length ? "Sem precisão: " + short.map(function (m) { return m.name; }).join(", ") : "Todos os 6 têm a precisão";
+          tr.classList.toggle("prec-cut", short.length > 0);
+        });
+      }
+
+      function paintSuggest(t) {
+        const best = bestSplit();
+        const curMin = Math.min.apply(null, t);
+        const issues = arrangementIssues();
+        let html;
+        if (!best) {
+          html = "<div class=\"box warn\">Não existe divisão com 1 OFFTANK e 1 DMG por time com esses papéis. Confira os papéis (use DMG/OFFTANK para quem joga nas duas posições).</div>";
+        } else if (issues.length) {
+          const hNew = official(state.rune, best.totals);
+          const lines = best.pairs.map(function (pr, k) {
+            const grp = sortPair(pr.map(function (i) { return state.mons[i]; }));
+            return "Time " + LETTERS[k] + ": " + grp.map(function (m) { return esc(m.name || "sem nome"); }).join(" + ") + " (" + fmt(best.totals[k]) + ")";
+          }).join("<br>");
+          html = "<div class=\"box warn\"><strong>Sua divisão atual não vale no jogo:</strong> " + esc(issues.join("; ")) + ". A melhor divisão válida deixa o time mais fraco em " + fmt(best.min) +
+            " (Hazard " + (hNew < 0 ? "abaixo do 0" : hNew) + " com a Runa " + state.rune + ").<br>" + lines +
+            "<br><button type=\"button\" class=\"btn gold\" id=\"apply-split\">Aplicar essa divisão</button></div>";
+        } else if (best.min > curMin) {
+          const hNow = official(state.rune, t);
+          const hNew = official(state.rune, best.totals);
+          const lines = best.pairs.map(function (pr, k) {
+            const grp = sortPair(pr.map(function (i) { return state.mons[i]; }));
+            return "Time " + LETTERS[k] + ": " + grp.map(function (m) { return esc(m.name || "sem nome"); }).join(" + ") + " (" + fmt(best.totals[k]) + ")";
+          }).join("<br>");
+          html = "<div class=\"box tip\"><strong>Dá para melhorar só reorganizando os times:</strong> o time mais fraco sobe de " + fmt(curMin) + " para " + fmt(best.min) +
+            " (Hazard " + (hNow < 0 ? "abaixo do 0" : hNow) + " → " + (hNew < 0 ? "abaixo do 0" : hNew) + " com a Runa " + state.rune + ").<br>" + lines +
+            "<br><button type=\"button\" class=\"btn gold\" id=\"apply-split\">Aplicar essa divisão</button></div>";
+        } else {
+          html = "<div class=\"box neutral\">Sua divisão já é a melhor possível para o time mais fraco.</div>";
+        }
+        el.suggest.innerHTML = html;
+        el.suggest._best = best;
+      }
+
+      function groupTotals(groups) {
+        return groups.map(function (g, k) {
+          return Math.round(g.reduce(function (a, m) { return a + monDmg(m); }, 0) * (1 + state.teamPct[k] / 100));
+        });
+      }
+
+      function bestArrangement(pool) {
+        let best = null;
+        groupings().forEach(function (p) {
+          const raw = p.map(function (g) { return g.map(function (i) { return pool[i]; }); });
+          if (!raw.every(teamOk)) return;
+          teamPerms().forEach(function (perm) {
+            const groups = perm.map(function (pk) { return raw[pk]; });
+            const tt = groupTotals(groups);
+            const min = Math.min.apply(null, tt);
+            const sum = tt.reduce(function (a, b) { return a + b; }, 0);
+            if (!best || min > best.min || (min === best.min && sum > best.sum)) best = { groups: groups, totals: tt, min: min, sum: sum };
+          });
+        });
+        return best;
+      }
+
+      function candRows() {
+        const c = state.cand;
+        return state.mons.map(function (old, r) {
+          const pool = state.mons.map(function (m, i) { return i === r ? c : m; });
+          const groups = TEAMS().map(function (t) {
+            return pool.filter(function (m, i) { return (i === r ? old.team : m.team) === t; });
+          });
+          const roleOk = groups.every(function (g) { return g.length !== TS() || teamOk(g); });
+          const dTot = groupTotals(groups);
+          const direct = roleOk ? { groups: groups, totals: dTot, min: Math.min.apply(null, dTot), sum: dTot.reduce(function (a, b) { return a + b; }, 0) } : null;
+          return { r: r, old: old, direct: direct, best: bestArrangement(pool) };
+        });
+      }
+
+      function hzTxt(h) { return h < 0 ? "abaixo do Hazard 0" : "Hazard " + h; }
+      function sgn(n) { return (n > 0 ? "+" : n < 0 ? "−" : "") + fmt(Math.abs(n)); }
+
+      function groupLines(groups, totals) {
+        return groups.map(function (g, k) {
+          const names = g.slice().sort(function (a, b) { return ROLE_RANK[a.role] - ROLE_RANK[b.role]; }).map(function (m) {
+            const n = esc(m.name || "sem nome");
+            return m === state.cand ? "<strong>" + n + "</strong>" : n;
+          }).join(" + ");
+          return "Time " + LETTERS[k] + ": " + names + " (" + fmt(totals[k]) + ")";
+        }).join("<br>");
+      }
+
+      function syncCandCol() {
+        const col = document.getElementById("cand-col");
+        const btn = document.getElementById("toggle-cand");
+        col.hidden = !state.showCand;
+        document.getElementById("teams-row").classList.toggle("with-cand", state.showCand);
+        btn.setAttribute("aria-pressed", String(state.showCand));
+        btn.textContent = state.showCand ? "− Ocultar Pokémon novo" : "+ Testar Pokémon novo";
+      }
+
+      function paintCand() {
+        syncCandCol();
+        if (!state.showCand) { el.candOut.innerHTML = ""; el.candOut._rows = null; return; }
+        const c = state.cand;
+        const cardEl = el.cand.querySelector(".mon");
+        if (cardEl) cardEl.classList.toggle("testing", testActive(c));
+        const n = el.cand.querySelector("[data-eff=\"cand\"]");
+        if (n) {
+          const base = Math.round(eff(c));
+          if (testActive(c)) {
+            const dl = monDmg(c) - base;
+            const parts = [];
+            if (tStars(c) !== c.stars) parts.push(c.stars + "★ → " + tStars(c) + "★");
+            if (tHeld(c) !== c.held) parts.push("ATK " + c.held + " → ATK " + tHeld(c));
+            n.className = "eff test";
+            n.innerHTML = "teste " + parts.join(" · ") + " · <strong>" + fmt(monDmg(c)) + "</strong> (" + (dl >= 0 ? "+" : "") + fmt(dl) + ")";
+          } else {
+            n.className = "eff";
+            n.innerHTML = base > 0 ? "dano usado <strong>" + fmt(base) + "</strong>" : "";
+          }
+        }
+        const out = el.candOut;
+        if (!(monDmg(c) > 0)) {
+          out.innerHTML = "<div class=\"box neutral\">Digite o dano do Pokémon novo, com as stars e o Held que ele tem agora, para ver onde ele entra e quem ele substitui.</div>";
+          out._rows = null;
+          return;
+        }
+        const cur = totals();
+        const nowMin = Math.min.apply(null, cur);
+        const nowH = official(state.rune, cur);
+        const nowValid = arrangementIssues().length === 0;
+        const ref = bestSplit();
+        // referência: o melhor que você já consegue SEM o Pokémon novo (só reorganizando)
+        const curMin = ref ? (nowValid ? Math.max(ref.min, nowMin) : ref.min) : nowMin;
+        const curH = ref && (!nowValid || ref.min > nowMin) ? official(state.rune, ref.totals) : nowH;
+        const reorgGain = curMin > nowMin || !nowValid;
+        const rows = candRows();
+        out._rows = rows;
+        // ordem: Hazard efetivo (dano + precisão) > dano do time mais fraco > troca direta > dano total
+        rows.forEach(function (row) {
+          ["direct", "best"].forEach(function (mode) {
+            if (row[mode]) row[mode].hz = official(state.rune, row[mode].totals, flat(row[mode].groups));
+          });
+        });
+        const beats = function (o, ref) { return o.hz > ref.hz || (o.hz === ref.hz && o.min > ref.min); };
+        const refKey = { hz: curH, min: curMin };
+        let top = null;
+        rows.forEach(function (row) {
+          ["direct", "best"].forEach(function (mode) {
+            const o = row[mode];
+            if (!o) return;
+            const tie = top && o.hz === top.o.hz && o.min === top.o.min;
+            const better = !top || beats(o, top.o) ||
+              (tie && mode === "direct" && top.mode !== "direct") ||
+              (tie && mode === top.mode && o.sum > top.o.sum);
+            if (better) top = { row: row, mode: mode, o: o };
+          });
+        });
+        const topWins = top && beats(top.o, refKey);
+        let head;
+        if (!top) {
+          head = "<div class=\"box warn\">Não há divisão válida com esses papéis. Confira o papel do Pokémon novo e dos seus 6.</div>";
+        } else {
+          const newH = official(state.rune, top.o.totals, flat(top.o.groups));
+          const k = top.o.groups.findIndex(function (g) { return g.indexOf(c) >= 0; });
+          const mate = top.o.groups[k].filter(function (m) { return m !== c; })[0];
+          let pos;
+          if (is3()) pos = c.role === "OFFTANK" ? "como OFFTANK" : c.role === "DMG" ? "como DMG" : top.o.groups[k].some(function (m) { return m !== c && m.role !== "DMG"; }) ? "como DMG" : "como OFFTANK";
+          else if (c.role === "OFFTANK") pos = "1ª posição (OFFTANK)";
+          else if (c.role === "DMG") pos = "2ª posição (DMG)";
+          else if (mate && mate.role === "OFFTANK") pos = "2ª posição (joga como DMG)";
+          else if (mate && mate.role === "DMG") pos = "1ª posição (joga como OFFTANK)";
+          else pos = "qualquer posição";
+          const cname = esc(c.name || "o Pokémon novo");
+          if (topWins) {
+            const moves = top.mode === "best" ? " Isso reorganiza os times, veja abaixo." : "";
+            head = "<div class=\"box tip\"><strong>Recomendação:</strong> coloque <strong>" + cname + "</strong> no <strong>Time " + LETTERS[k] + "</strong>, " + pos +
+              ", no lugar de <strong>" + esc(top.row.old.name || "sem nome") + "</strong>." + moves +
+              "<br>O time mais fraco sobe de " + fmt(curMin) + " para " + fmt(top.o.min) + " (" + hzTxt(curH) + " → " + hzTxt(newH) + " com a Runa " + state.rune + ")." +
+              (reorgGain ? "<br><span class=\"hint\">Comparado com o melhor que você já faz só reorganizando os times atuais" + (nowValid ? " (hoje está em " + fmt(nowMin) + ", " + hzTxt(nowH) + ")" : "") + ".</span>" : "") +
+              "<div class=\"opt-lines\">" + groupLines(top.o.groups, top.o.totals) + "</div>" +
+              "<button type=\"button\" class=\"btn gold\" data-apply=\"" + top.row.r + ":" + top.mode + "\">Aplicar essa troca</button></div>";
+          } else {
+            head = "<div class=\"box neutral\"><strong>Não vale trocar:</strong> nenhuma troca melhora o time mais fraco além do que você já faz " + (reorgGain ? "só reorganizando os times atuais" : "hoje") + " (" + fmt(curMin) + ", " + hzTxt(curH) + "). A melhor troca possível seria tirar " +
+              esc(top.row.old.name || "sem nome") + " e deixaria o mais fraco em " + fmt(top.o.min) + " (" + hzTxt(newH) + ")." +
+              (precCap([c]) < dmgHz(state.rune, top.o.totals) ? " O que segura é a precisão dele: " + fmt(precOf(c)) + " pts (" + fmt(precOf(c) * PT_PCT) + "%), que só dá até " + hzTxt(precCap([c])) + ". Ajuste treino/Berry dele na seção 3." : "") +
+              "</div>";
+          }
+        }
+        out.innerHTML = head +
+          "<p class=\"hint\">Aplicar leva quem sai para este card, então dá para desfazer.</p>";
+      }
+
+      function applyOption(r, mode) {
+        const rows = el.candOut._rows;
+        const row = rows && rows[r];
+        const sel = row && row[mode];
+        if (!sel) return;
+        const cc = state.cand;
+        const old = state.mons[r];
+        const newMon = Object.assign({}, cc, { id: old.id, team: old.team, t2: old.t2, t3: old.t3 });
+        const bench = Object.assign({}, old, { id: "cand", team: -1 });
+        if (mode === "best") {
+          sel.groups.forEach(function (g, k) {
+            g.forEach(function (m) { (m === cc ? newMon : m).team = k; });
+          });
+        }
+        state.mons[r] = newMon;
+        state.cand = bench;
+        save();
+        buildRoster();
+        paint();
+      }
+
+      function precRows() {
+        const rows = [];
+        TEAMS().forEach(function (t) {
+          sortedMembers(t).forEach(function (m) { rows.push({ m: m, team: LETTERS[t] }); });
+        });
+        if (state.showCand && (state.cand.name || state.cand.now > 0)) rows.push({ m: state.cand, team: "novo" });
+        return rows;
+      }
+
+      function buildPrec() {
+        el.pt.innerHTML = "<thead><tr><th>Pokémon</th><th>Treino</th><th>Berry</th><th>Medalhas</th><th>Total</th><th>%</th><th>Dá até</th></tr></thead><tbody>" +
+          precRows().map(function (x) {
+            const m = x.m;
+            return "<tr data-id=\"" + m.id + "\"" + (m.id === "cand" ? " class=\"cand-row\"" : "") + ">" +
+              "<td><span data-pn></span><span class=\"who-t\">" + x.team + "</span></td>" +
+              "<td data-ptr></td><td data-pbe></td><td data-pmed></td>" +
+              "<td class=\"tot\" data-ptot></td><td data-ppct></td><td data-pst></td></tr>";
+          }).join("") + "</tbody>";
+      }
+
+      function paintPrec() {
+        const hasCand = state.showCand && !!(state.cand.name || state.cand.now > 0);
+        if ((el.pt.querySelector("tr[data-id=\"cand\"]") != null) !== hasCand) buildPrec();
+        const medalPts = state.medal / PT_PCT;
+        document.getElementById("medalEq").textContent = "= " + fmt(medalPts) + " pts";
+        const dH = dmgHz(state.rune, totals());
+        el.pt.querySelectorAll("tbody tr").forEach(function (tr) {
+          const m = findMon(tr.getAttribute("data-id"));
+          if (!m) return;
+          const p = precOf(m);
+          const capM = precCap([m]);
+          tr.querySelector("[data-pn]").textContent = m.name || "sem nome";
+          tr.querySelector("[data-ptr]").textContent = fmt(m.train);
+          tr.querySelector("[data-pbe]").textContent = m.berry ? "+" + BERRY : "—";
+          tr.querySelector("[data-pmed]").textContent = fmt(medalPts);
+          tr.querySelector("[data-ptot]").textContent = fmt(p);
+          tr.querySelector("[data-ppct]").textContent = fmt(p * PT_PCT) + "%";
+          const st = tr.querySelector("[data-pst]");
+          st.className = capM < dH ? "st-no" : "st-ok";
+          st.textContent = hzTxt(capM);
+        });
+        const six = state.mons;
+        const pMin = precMin(six);
+        const low = six.filter(function (m) { return precOf(m) === pMin; }).map(function (m) { return esc(m.name || "sem nome"); });
+        const cap = precCap(six);
+        const L = [];
+        L.push("<p>Menor precisão: <strong>" + fmt(pMin) + " pts (" + fmt(pMin * PT_PCT) + "%)</strong> · " + low.join(", ") + ". Pela precisão os 6 fazem até <strong>" + hzTxt(cap) + "</strong>" +
+          (cap < dH ? " <span class=\"st-no\">— é a precisão que está segurando (pelo dano daria " + hzTxt(dH) + ")</span>" : "") + ".</p>");
+        const nx = state.table[cap + 1];
+        if (nx) {
+          const req = nx[6];
+          const short = six.filter(function (m) { return precOf(m) + 1e-9 < req; });
+          L.push("<p>Hazard " + (cap + 1) + " exige <strong>" + fmt(req) + " pts (" + fmt(req * PT_PCT) + "%)</strong> em cada um: faltam " +
+            short.map(function (m) { return esc(m.name || "sem nome") + " " + fmt(req - precOf(m)); }).join(", ") + ".</p>");
+          const viaBerry = short.filter(function (m) { return !m.berry && precOf(m) + BERRY + 1e-9 >= req; });
+          if (viaBerry.length) L.push("<p>Só com a Berry chegam: " + viaBerry.map(function (m) { return esc(m.name || "sem nome"); }).join(", ") + ".</p>");
+        }
+        el.precSum.innerHTML = L.join("");
+        state.mons.concat([state.cand]).forEach(function (m) {
+          const n = document.querySelector(".mon[data-id=\"" + m.id + "\"] [data-prec]");
+          if (!n) return;
+          const p = precOf(m);
+          const capM = precCap([m]);
+          n.className = "prec-out " + (capM < dH ? "st-no" : "st-ok");
+          n.textContent = "= " + fmt(p) + " pts (" + fmt(p * PT_PCT) + "%) · dá até " + hzTxt(capM);
+          n.title = "Treino " + fmt(m.train) + " + Berry " + (m.berry ? BERRY : 0) + " + medalhas " + fmt(state.medal / PT_PCT) + " pts. Vermelho: a precisão dele segura o Hazard que o dano permite.";
+        });
+      }
+
+      function paintResumo(t, off) {
+        const r = RUNES[state.rune];
+        const box = document.getElementById("resumo");
+        const dH = dmgHz(state.rune, t);
+        const pCap = precCap(state.mons);
+        const weak = Math.min.apply(null, t);
+        const wi = t.indexOf(weak);
+        document.getElementById("resumo-hint").textContent = (is3() ? "3×3" : "2×2×2") + " · Runa " + r.id + " (" + r.bonus + ") · medalhas " + fmt(state.medal) + "% · dano " + (state.basis === "depois" ? "Depois" : "Agora") + (state.useTests ? " · com testes" : "");
+
+        const teamCards = TEAMS().map(function (i) {
+          const mem = sortedMembers(i);
+          const h = mem.length ? Math.min(maxHz(state.rune, t[i]), precCap(mem)) : -1;
+          const names = mem.map(function (m, k) {
+            const n = esc((m.name || "sem nome").replace(/^Shiny\s+/i, ""));
+            return k === 0 ? "<b>" + n + "</b>" : n;
+          }).join(" · ") || "vazio";
+          const isWeak = i === wi && mem.length > 0;
+          return "<div class=\"rs-card" + (isWeak ? " weak" : "") + "\">" +
+            "<div class=\"rs-t\">Time " + LETTERS[i] + (isWeak ? "<span class=\"rs-tag\">mais fraco</span>" : "") + "</div>" +
+            "<div class=\"rs-names\" title=\"" + esc(mem.map(function (m) { return m.name; }).join(" + ")) + "\">" + names + "</div>" +
+            "<div class=\"rs-dmg\">" + fmt(t[i]) + "</div>" +
+            "<div class=\"rs-hz\" style=\"color:" + r.color + "\">" + hzTxt(h) + "</div>" +
+            "</div>";
+        }).join("");
+
+        let lim;
+        if (off < 0) lim = "nenhum Hazard ainda";
+        else if (pCap < dH) lim = "segurado pela precisão";
+        else lim = "segurado pelo dano do Time " + LETTERS[wi];
+        const offCard = "<div class=\"rs-card off\" style=\"--rc:" + r.color + "\">" +
+          "<div class=\"rs-sub\">Hazard oficial</div>" +
+          "<div class=\"rs-big\">" + (off < 0 ? "—" : off) + "</div>" +
+          "<div class=\"rs-sub\">" + lim + "</div></div>";
+
+        const maxI = state.table.length - 1;
+        const from = Math.max(0, off + 1);
+        const list = [];
+        for (let i = from; i <= Math.min(maxI, from + 2); i++) list.push(i);
+        let next;
+        if (!list.length) {
+          next = "<p class=\"hint\" style=\"text-align:center\">Você já faz o Hazard máximo da tabela.</p>";
+        } else {
+          next = "<div class=\"rs-next-h\">Próximos Hazards: o que falta</div><div class=\"rs-next\">" + list.map(function (i) {
+            const reqD = need(i, state.rune);
+            const reqP = state.table[i][6];
+            const shortT = TEAMS().filter(function (k) { return t[k] < reqD; });
+            const dmgLine = shortT.length
+              ? "<span class=\"nx-no\">" + shortT.map(function (k) {
+                  const f = reqD - t[k];
+                  return "Time " + LETTERS[k] + " falta " + kfmt(f) + " (+" + fmt(Math.ceil(f / t[k] * 1000) / 10) + "%)";
+                }).join("<br>") + "</span>"
+              : "<span class=\"nx-ok\">✓ os " + NT() + " times têm</span>";
+            const shortM = state.mons.filter(function (m) { return precOf(m) + 1e-9 < reqP; });
+            let precLine;
+            if (!shortM.length) {
+              precLine = "<span class=\"nx-ok\">✓ os 6 têm " + fmt(reqP) + " pts</span>";
+            } else {
+              const defs = shortM.map(function (m) { return reqP - precOf(m); });
+              const maxDef = Math.max.apply(null, defs);
+              const same = defs.every(function (d) { return Math.abs(d - defs[0]) < 1e-9; });
+              const ptsTxt = same && shortM.length === 6
+                ? fmt(defs[0]) + " pts em cada um dos 6"
+                : shortM.map(function (m, k) { return esc((m.name || "?").replace(/^Shiny\s+/i, "")) + " " + fmt(defs[k]); }).join(", ") + " pts";
+              const medalAdd = maxDef * PT_PCT;
+              const berryOk = shortM.every(function (m) { return !m.berry && precOf(m) + BERRY + 1e-9 >= reqP; });
+              precLine = "<span><span class=\"nx-no\">falta " + ptsTxt + "</span>" +
+                "<br><span class=\"nx-alt\">ou <b>+" + fmt(medalAdd) + "% em medalha</b> (" + fmt(state.medal) + "% → " + fmt(state.medal + medalAdd) + "%)</span>" +
+                (berryOk ? "<br><span class=\"nx-alt\">ou <b>Berry</b> em quem falta</span>" : "") + "</span>";
+            }
+            const okD = !shortT.length, okP = !shortM.length;
+            const foot = okD && okP ? "<span class=\"nx-ok\">✓ dá para fazer</span>"
+              : "<span class=\"nx-no\">✗ falta " + (!okD && !okP ? "dano e precisão" : !okD ? "dano" : "precisão") + "</span>";
+            return "<div class=\"nx\">" +
+              "<div class=\"nx-top\"><span class=\"nx-h\" style=\"color:" + r.color + "\">Hazard " + i + "</span><span class=\"nx-req\">" + reqK(i, state.rune) + "k · " + fmt(reqP) + " pts (" + fmt(reqP * PT_PCT) + "%)</span></div>" +
+              "<div class=\"nx-line\"><span>Dano</span>" + dmgLine + "</div>" +
+              "<div class=\"nx-line\"><span>Precisão</span>" + precLine + "</div>" +
+              "<div class=\"nx-foot\">" + foot + "</div></div>";
+          }).join("") + "</div>";
+        }
+        box.innerHTML = "<div class=\"rs-row\"" + (is3() ? " style=\"grid-template-columns:repeat(3,minmax(0,1fr))\"" : "") + ">" + teamCards + offCard + "</div>" + next;
+      }
+
+      function paint() {
+        const t = totals();
+        const off = official(state.rune, t);
+        paintRunes(t);
+        paintTeams(t);
+        paintSummary(t, off);
+        paintModel();
+        paintTable(t, off);
+        paintSuggest(t);
+        paintCand();
+        paintPrec();
+        paintResumo(t, off);
+      }
+
+      function paintModel() {
+        const f = state.model === "formula";
+        document.getElementById("g-base").classList.toggle("off", !f);
+        document.getElementById("g-step").classList.toggle("off", !f);
+        document.getElementById("model-note").textContent = f
+          ? "Dano necessário = base × (1 + " + fmt(state.step) + "% × Hazard) × (1 − bônus da Runa). Passe o mouse num valor para ver o que a tabela medida diz."
+          : "Tabela medida por xandin (base 560k, com a Precisão influenciando os Hazards altos). Aqui as células são editáveis; a base e a % por Hazard não se aplicam.";
+      }
+
+      function setFormat(f) {
+        if (f === state.format) return;
+        save();
+        state.format = f;
+        state.mons.forEach(function (m) { m.team = m[teamKey()]; });
+        save();
+        syncFormat();
+        buildRoster();
+        paint();
+      }
+      document.getElementById("fmtSwitch").addEventListener("click", function () { setFormat(is3() ? "2x2x2" : "3x3"); });
+      document.querySelectorAll("#fmtBox [data-fmt]").forEach(function (l) {
+        l.addEventListener("click", function () { setFormat(l.getAttribute("data-fmt")); });
+      });
+      function syncFormat() {
+        const sw = document.getElementById("fmtSwitch");
+        sw.setAttribute("aria-checked", String(is3()));
+        document.getElementById("fs-l").classList.toggle("on", !is3());
+        document.getElementById("fs-r").classList.toggle("on", is3());
+      }
+
+      function syncControls() {
+        syncFormat();
+        document.getElementById("useTests").checked = state.useTests;
+        document.querySelectorAll("input[name='basis']").forEach(function (i) { i.checked = i.value === state.basis; });
+        document.querySelectorAll("input[name='model']").forEach(function (i) { i.checked = i.value === state.model; });
+        document.querySelectorAll("input[name='basechip']").forEach(function (i) { i.checked = Number(i.value) === state.base; });
+        document.getElementById("baseIn").value = fmt(state.base);
+        document.getElementById("stepIn").value = fmt(state.step);
+        document.getElementById("medalIn").value = fmt(state.medal);
+      }
+
+      el.runes.addEventListener("click", function (ev) {
+        const b = ev.target.closest("[data-rune]");
+        if (!b) return;
+        state.rune = Number(b.getAttribute("data-rune"));
+        save();
+        paint();
+      });
+
+      function onCards(type, fn) {
+        el.teams.addEventListener(type, fn);
+        el.cand.addEventListener(type, fn);
+      }
+
+      onCards("input", function (ev) {
+        const tp = ev.target.getAttribute("data-tpct");
+        if (tp !== null) {
+          const v = parseNum(ev.target.value.replace(/%$/, ""));
+          if (!Number.isFinite(v) || v > 1000) { ev.target.classList.add("invalid"); return; }
+          ev.target.classList.remove("invalid");
+          state.teamPct[Number(tp)] = v;
+          save();
+          paint();
+          return;
+        }
+        const f = ev.target.getAttribute("data-f");
+        if (f !== "name" && f !== "now" && f !== "after" && f !== "train") return;
+        const m = findMon(ev.target.closest(".mon").getAttribute("data-id"));
+        if (!m) return;
+        if (f === "name") {
+          m.name = ev.target.value;
+        } else {
+          const raw = ev.target.value.trim();
+          if (f === "after" && raw === "") {
+            m.after = null;
+            ev.target.classList.remove("invalid");
+          } else {
+            const v = parseNum(raw);
+            if (!Number.isFinite(v)) { ev.target.classList.add("invalid"); return; }
+            ev.target.classList.remove("invalid");
+            m[f] = v;
+          }
+        }
+        save();
+        paint();
+      });
+
+      onCards("focusout", function (ev) {
+        const tp = ev.target.getAttribute("data-tpct");
+        if (tp !== null) {
+          ev.target.classList.remove("invalid");
+          ev.target.value = fmt(state.teamPct[Number(tp)]);
+          return;
+        }
+        const f = ev.target.getAttribute("data-f");
+        if (f !== "now" && f !== "after" && f !== "train") return;
+        const m = findMon(ev.target.closest(".mon").getAttribute("data-id"));
+        if (!m) return;
+        ev.target.classList.remove("invalid");
+        ev.target.value = ((f === "after" && m.after == null) || (m.id === "cand" && f === "now" && !m.now)) ? "" : fmt(m[f]);
+      });
+
+      onCards("focusin", function (ev) {
+        const f = ev.target.getAttribute("data-f");
+        if (f === "now" || f === "after" || f === "train" || ev.target.getAttribute("data-tpct") !== null) ev.target.select();
+      });
+
+      onCards("change", function (ev) {
+        const f = ev.target.getAttribute("data-f");
+        const cardEl = ev.target.closest(".mon");
+        if (!cardEl) return;
+        const m = findMon(cardEl.getAttribute("data-id"));
+        if (!m) return;
+        if (f === "team") {
+          m.team = Number(ev.target.value);
+          save();
+          buildRoster();
+          paint();
+        } else if (f === "held" || f === "heldTest") {
+          const v = Number(ev.target.value);
+          if (f === "held") { m.held = v; if (m.heldTest === v) m.heldTest = null; }
+          else m.heldTest = v === m.held ? null : v;
+          save();
+          buildRoster();
+          paint();
+        } else if (f === "berry") {
+          m.berry = ev.target.checked;
+          save();
+          paint();
+        } else if (f === "role" || f === "tier") {
+          m[f] = ev.target.value;
+          save();
+          buildRoster();
+          paint();
+        }
+      });
+
+      onCards("click", function (ev) {
+        const b = ev.target.closest("[data-star]");
+        if (!b) return;
+        const cardEl = b.closest(".mon");
+        const m = cardEl && monById(cardEl.getAttribute("data-id"));
+        if (!m) return;
+        const n = Number(b.getAttribute("data-star"));
+        if (b.getAttribute("data-kind") === "test") {
+          const shown = m.test == null ? m.stars : m.test;
+          const nv = shown === n ? n - 1 : n;
+          m.test = nv === m.stars ? null : nv;
+        } else {
+          m.stars = m.stars === n ? n - 1 : n;
+          if (m.test === m.stars) m.test = null;
+        }
+        save();
+        buildRoster();
+        paint();
+      });
+
+      el.candOut.addEventListener("click", function (ev) {
+        const b = ev.target.closest("[data-apply]");
+        if (!b) return;
+        const p = b.getAttribute("data-apply").split(":");
+        applyOption(Number(p[0]), p[1]);
+      });
+
+      el.suggest.addEventListener("click", function (ev) {
+        if (!ev.target.closest("#apply-split")) return;
+        const best = el.suggest._best;
+        if (!best) return;
+        best.pairs.forEach(function (pr, k) {
+          pr.forEach(function (i) { state.mons[i].team = k; });
+        });
+        save();
+        buildRoster();
+        paint();
+      });
+
+      document.querySelectorAll("input[name='basis']").forEach(function (i) {
+        i.addEventListener("change", function () {
+          state.basis = i.value;
+          save();
+          paint();
+        });
+      });
+
+      el.table.addEventListener("input", function (ev) {
+        const inp = ev.target.closest("input.cell");
+        if (!inp || inp.readOnly) return;
+        const digits = inp.value.replace(/\D/g, "");
+        if (digits === "") return;
+        state.table[Number(inp.getAttribute("data-i"))][Number(inp.getAttribute("data-c"))] = Number(digits);
+        save();
+        paint();
+      });
+      el.table.addEventListener("focusin", function (ev) {
+        const inp = ev.target.closest("input.cell");
+        if (inp) inp.select();
+      });
+      el.table.addEventListener("focusout", function (ev) {
+        const inp = ev.target.closest("input.cell");
+        if (!inp) return;
+        const c = Number(inp.getAttribute("data-c"));
+        const i = Number(inp.getAttribute("data-i"));
+        if (c < 6) inp.value = (state.model === "formula" ? reqK(i, c) : state.table[i][c]) + "k";
+        else inp.value = String(state.table[i][c]);
+      });
+
+      document.getElementById("reset-table").addEventListener("click", function () {
+        if (!confirm("Voltar a tabela para os valores originais?")) return;
+        state.table = clone(DEFAULT_TABLE);
+        save();
+        buildTable();
+        paint();
+      });
+      document.getElementById("reset-all").addEventListener("click", function () {
+        if (!confirm("Restaurar nomes, danos, times e tabela para o padrão?")) return;
+        state.mons = freshMons();
+        state.cand = freshCand();
+        state.table = clone(DEFAULT_TABLE);
+        state.rune = 5;
+        state.basis = "agora";
+        state.teamPct = [0, 0, 0];
+        state.format = "2x2x2";
+        state.useTests = true;
+        state.medal = 2.5;
+        state.model = "formula";
+        state.base = 560;
+        state.step = 3;
+        save();
+        syncControls();
+        buildRoster();
+        buildTable();
+        paint();
+      });
+
+      function bindNum(id, apply, show, opt) {
+        const inp = document.getElementById(id);
+        inp.addEventListener("input", function () {
+          const raw = inp.value.replace(/%|pts/gi, "").trim();
+          if (opt && raw === "") { inp.classList.remove("invalid"); apply(null); save(); buildPrec(); paint(); return; }
+          const v = parseNum(raw);
+          if (!Number.isFinite(v)) { inp.classList.add("invalid"); return; }
+          inp.classList.remove("invalid");
+          apply(v);
+          save();
+          if (opt) buildPrec();
+          paint();
+        });
+        inp.addEventListener("blur", function () { inp.classList.remove("invalid"); inp.value = show(); });
+        inp.addEventListener("focus", function () { inp.select(); });
+      }
+      bindNum("medalIn", function (v) { state.medal = v; }, function () { return fmt(state.medal); });
+
+      function setShowCand(v) {
+        state.showCand = v;
+        save();
+        buildPrec();
+        paint();
+      }
+      document.getElementById("toggle-cand").addEventListener("click", function () { setShowCand(!state.showCand); });
+      document.getElementById("close-cand").addEventListener("click", function () { setShowCand(false); });
+
+      document.getElementById("useTests").addEventListener("change", function (ev) {
+        state.useTests = ev.target.checked;
+        save();
+        buildRoster();
+        paint();
+      });
+      document.getElementById("clear-tests").addEventListener("click", function () {
+        state.mons.concat([state.cand]).forEach(function (m) { m.test = null; m.heldTest = null; });
+        save();
+        buildRoster();
+        paint();
+      });
+
+      document.querySelectorAll("input[name='model']").forEach(function (i) {
+        i.addEventListener("change", function () {
+          state.model = i.value;
+          save();
+          paint();
+        });
+      });
+      document.querySelectorAll("input[name='basechip']").forEach(function (i) {
+        i.addEventListener("change", function () {
+          state.base = Number(i.value);
+          document.getElementById("baseIn").value = fmt(state.base);
+          save();
+          paint();
+        });
+      });
+      document.getElementById("baseIn").addEventListener("input", function (ev) {
+        const v = parseNum(ev.target.value.replace(/k$/i, ""));
+        if (!Number.isFinite(v) || v <= 0) { ev.target.classList.add("invalid"); return; }
+        ev.target.classList.remove("invalid");
+        state.base = v;
+        document.querySelectorAll("input[name='basechip']").forEach(function (i) { i.checked = Number(i.value) === v; });
+        save();
+        paint();
+      });
+      document.getElementById("stepIn").addEventListener("input", function (ev) {
+        const v = parseNum(ev.target.value);
+        if (!Number.isFinite(v)) { ev.target.classList.add("invalid"); return; }
+        ev.target.classList.remove("invalid");
+        state.step = v;
+        save();
+        paint();
+      });
+      ["baseIn", "stepIn"].forEach(function (id) {
+        document.getElementById(id).addEventListener("blur", function (ev) {
+          ev.target.classList.remove("invalid");
+          ev.target.value = fmt(id === "baseIn" ? state.base : state.step);
+        });
+      });
+
+      // ----- arrastar e soltar (mouse, caneta e toque)
+      let drag = null;
+      const INTERACTIVE = "input, select, button, textarea";
+
+      function monById(id) { return findMon(id); }
+
+      function dropTargetAt(x, y) {
+        const hit = document.elementFromPoint(x, y);
+        if (!hit || !el.teams.contains(hit)) return null;
+        const src = monById(drag.id);
+        const card = hit.closest(".mon");
+        if (card && card.getAttribute("data-id") !== drag.id) {
+          const other = monById(card.getAttribute("data-id"));
+          if (other && other.team !== src.team) return { type: "swap", id: other.id, node: card };
+          return null;
+        }
+        const team = hit.closest(".team");
+        if (team) {
+          const t = Number(team.getAttribute("data-team"));
+          if (t !== src.team) return { type: "add", team: t, node: team };
+        }
+        return null;
+      }
+
+      function clearMarks() {
+        el.teams.querySelectorAll(".drop-swap, .drop-add").forEach(function (n) { n.classList.remove("drop-swap", "drop-add"); });
+      }
+
+      function endDrag() {
+        window.removeEventListener("pointermove", onDragMove);
+        window.removeEventListener("pointerup", onDragUp);
+        window.removeEventListener("pointercancel", onDragCancel);
+        window.removeEventListener("keydown", onDragKey);
+        if (drag) {
+          if (drag.ghost) drag.ghost.remove();
+          if (drag.card) drag.card.classList.remove("dragging-src");
+          if (drag.raf) cancelAnimationFrame(drag.raf);
+        }
+        clearMarks();
+        document.body.classList.remove("is-dragging");
+        drag = null;
+      }
+
+      function startDrag(ev) {
+        const rect = drag.card.getBoundingClientRect();
+        const ghost = drag.card.cloneNode(true);
+        const from = drag.card.querySelectorAll("input, select");
+        ghost.querySelectorAll("input, select").forEach(function (n, i) { n.value = from[i].value; });
+        ghost.classList.add("ghost");
+        ghost.classList.remove("dragging-src");
+        ghost.style.width = rect.width + "px";
+        ghost.style.left = rect.left + "px";
+        ghost.style.top = rect.top + "px";
+        document.body.appendChild(ghost);
+        drag.ghost = ghost;
+        drag.offX = ev.clientX - rect.left;
+        drag.offY = ev.clientY - rect.top;
+        drag.active = true;
+        drag.card.classList.add("dragging-src");
+        document.body.classList.add("is-dragging");
+        if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+        drag.raf = requestAnimationFrame(dragTick);
+      }
+
+      function dragTick() {
+        if (!drag || !drag.active) return;
+        const y = drag.y;
+        if (y < 70) window.scrollBy(0, -Math.ceil((70 - y) / 5));
+        else if (y > window.innerHeight - 70) window.scrollBy(0, Math.ceil((y - (window.innerHeight - 70)) / 5));
+        updateDropMark();
+        drag.raf = requestAnimationFrame(dragTick);
+      }
+
+      function updateDropMark() {
+        const t = dropTargetAt(drag.x, drag.y);
+        clearMarks();
+        drag.target = t;
+        if (!t) return;
+        t.node.classList.add(t.type === "swap" ? "drop-swap" : "drop-add");
+      }
+
+      function onDragMove(ev) {
+        if (!drag || ev.pointerId !== drag.pointerId) return;
+        drag.x = ev.clientX;
+        drag.y = ev.clientY;
+        if (!drag.active) {
+          if (Math.hypot(ev.clientX - drag.startX, ev.clientY - drag.startY) < 6) return;
+          startDrag(ev);
+        }
+        drag.ghost.style.left = (ev.clientX - drag.offX) + "px";
+        drag.ghost.style.top = (ev.clientY - drag.offY) + "px";
+        updateDropMark();
+      }
+
+      function onDragUp(ev) {
+        if (!drag || ev.pointerId !== drag.pointerId) return;
+        const wasActive = drag.active;
+        if (wasActive) updateDropMark();
+        const t = drag.target;
+        const id = drag.id;
+        endDrag();
+        if (!wasActive || !t) return;
+        const m = monById(id);
+        if (!m) return;
+        if (t.type === "swap") {
+          const o = monById(t.id);
+          const a = m.team;
+          m.team = o.team;
+          o.team = a;
+        } else {
+          m.team = t.team;
+        }
+        save();
+        buildRoster();
+        paint();
+      }
+
+      function onDragCancel(ev) {
+        if (drag && ev.pointerId === drag.pointerId) endDrag();
+      }
+
+      function onDragKey(ev) {
+        if (ev.key === "Escape") endDrag();
+      }
+
+      el.teams.addEventListener("pointerdown", function (ev) {
+        if (drag) return;
+        if (ev.pointerType === "mouse" && ev.button !== 0) return;
+        const card = ev.target.closest(".mon");
+        if (!card || ev.target.closest(INTERACTIVE)) return;
+        if (ev.pointerType === "touch" && !ev.target.closest(".grip")) return;
+        drag = {
+          id: card.getAttribute("data-id"), card: card, pointerId: ev.pointerId,
+          startX: ev.clientX, startY: ev.clientY, x: ev.clientX, y: ev.clientY, active: false, target: null
+        };
+        window.addEventListener("pointermove", onDragMove);
+        window.addEventListener("pointerup", onDragUp);
+        window.addEventListener("pointercancel", onDragCancel);
+        window.addEventListener("keydown", onDragKey);
+      });
+
+      window.HazardCalc = { setFormat: setFormat, teamOk: teamOk, bestSplit: bestSplit, precOf: precOf, precCap: precCap, official: official, candRows: candRows, state: state, monDmg: monDmg, maxHz: maxHz, official: official, totals: totals, bestSplit: bestSplit, parseNum: parseNum };
+
+      load();
+      syncControls();
+      buildRoster();
+      buildTable();
+      paint();
+    })();
+  </script>
+</body>
+</html>
