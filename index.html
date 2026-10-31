@@ -213,7 +213,6 @@
     }
     input.cell:hover { background: rgba(255, 255, 255, 0.05); }
     input.cell:focus { background: rgba(91, 141, 239, 0.22); color: var(--text) !important; }
-    input.cell.sus { text-decoration: underline dotted var(--warn); text-underline-offset: 3px; }
     .model-bar { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; margin-bottom: 8px; }
     .mgroup { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
     .mgroup.off { opacity: 0.4; pointer-events: none; }
@@ -505,6 +504,12 @@
     .credit strong { font-weight: 700; }
     .site-foot { text-align: center; color: var(--muted); font-size: 0.8rem; padding: 8px 0 0; }
     .site-foot strong { color: var(--text); font-weight: 600; }
+    header.top { align-items: flex-start; }
+    header.top .ball { margin-top: 2px; }
+    .data-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 8px 0 6px; }
+    .data-tools .hint { min-height: 1em; }
+    .data-tools .hint.ok { color: var(--ok); }
+    .data-tools .hint.err { color: var(--bad); }
   </style>
 </head>
 <body>
@@ -514,7 +519,13 @@
       <div>
         <h1>Calculadora de Hazard</h1>
         <p class="credit">Criado por <strong>Morthus</strong> · Titan 3 Server</p>
-        <p class="sub">Tudo é editável direto na página: nomes, danos, stars, held, precisão, bônus dos times, um Pokémon novo para testar e a própria tabela. Os dados ficam salvos no seu navegador.</p>
+        <div class="data-tools">
+          <button type="button" class="btn" id="export-btn">Exportar dados</button>
+          <button type="button" class="btn" id="import-btn">Importar dados</button>
+          <input type="file" id="import-file" accept="application/json,.json" hidden />
+          <span class="hint" id="io-msg" role="status" aria-live="polite"></span>
+        </div>
+        <p class="sub">Tudo é editável direto na página: nomes, danos, stars, held, precisão, bônus dos times, um Pokémon novo para testar e a própria tabela. Os dados ficam salvos no seu navegador; use Exportar/Importar para levar para outro aparelho.</p>
       </div>
     </header>
 
@@ -587,17 +598,10 @@
       <div class="head">
         <h2>4. Hazard que você consegue</h2>
         <div class="tools">
-          <button type="button" class="btn" id="reset-table">Restaurar tabela medida</button>
           <button type="button" class="btn" id="reset-all">Restaurar tudo</button>
         </div>
       </div>
       <div class="model-bar">
-        <div class="mgroup"><span class="mlabel">Modelo</span>
-          <div class="seg" role="radiogroup" aria-label="Modelo de cálculo">
-            <label><input type="radio" name="model" value="formula" />Fórmula</label>
-            <label><input type="radio" name="model" value="table" />Tabela medida</label>
-          </div>
-        </div>
         <div class="mgroup" id="g-base"><span class="mlabel">Dano necessário sem Hazard</span>
           <div class="seg" role="radiogroup" aria-label="Base">
             <label><input type="radio" name="basechip" value="550" />550k</label>
@@ -618,10 +622,9 @@
         <span><i style="background:var(--rc, #f0a04b)"></i>Maior Hazard que todos os times fazem</span>
         <span><i style="background:rgba(110,231,183,0.35)"></i>Todos os times fazem (✓)</span>
         <span><i style="background:rgba(240,160,75,0.35)"></i>Só alguns times fazem (letras)</span>
-        <span>Tabela medida: valor sublinhado não cresce em relação ao Hazard anterior, confira.</span>
         <span>Hazard riscado: algum pokémon não tem a precisão.</span>
       </div>
-      <p class="hint foot">Precisão em pontos (1 ponto = 0,2%), editável. Cada um dos 6 pokémon precisa ter a precisão do Hazard; o Hazard oficial já considera isso. A tabela medida foi criada por xandin; testes feitos com prey de ataque, podem conter erro.</p>
+      <p class="hint foot">Precisão em pontos (1 ponto = 0,2%), editável. Cada um dos 6 pokémon precisa ter a precisão do Hazard; o Hazard oficial já considera isso.</p>
     </section>
     <footer class="site-foot">Calculadora de Hazard · criado por <strong>Morthus</strong> · Titan 3 Server</footer>
   </div>
@@ -715,7 +718,7 @@
       function freshMons() {
         return clone(DEFAULT_MONS).map(function (m, i) { m.id = "m" + (i + 1); m.t2 = m.team; m.t3 = i < 3 ? 0 : 1; return m; });
       }
-      const state = { rune: 5, basis: "agora", format: "2x2x2", teamPct: [0, 0, 0], useTests: true, showCand: false, medal: 2.5, model: "formula", base: 560, step: 3, mons: freshMons(), cand: freshCand(), table: clone(DEFAULT_TABLE) };
+      const state = { rune: 5, basis: "agora", format: "2x2x2", teamPct: [0, 0, 0], useTests: true, showCand: false, medal: 2.5, base: 560, step: 3, mons: freshMons(), cand: freshCand(), table: clone(DEFAULT_TABLE) };
 
       const el = {
         runes: document.getElementById("runes"),
@@ -732,8 +735,12 @@
       function load() {
         try {
           const raw = localStorage.getItem(KEY);
-          if (!raw) return;
-          const d = JSON.parse(raw);
+          if (raw) applyData(JSON.parse(raw));
+        } catch (e) { /* storage indisponível: segue com o padrão */ }
+      }
+
+      function applyData(d) {
+        {
           if (Number.isInteger(d.rune) && d.rune >= 0 && d.rune <= 5) state.rune = d.rune;
           if (d.basis === "agora" || d.basis === "depois") state.basis = d.basis;
           if (typeof d.useTests === "boolean") state.useTests = d.useTests;
@@ -770,10 +777,9 @@
             return Array.isArray(r) && r.length === 7 && r.every(function (v) { return Number.isFinite(v); });
           })) state.table = d.table;
           if (state.table[0][1] === 540) state.table[0][1] = 549; // valor lido errado: o cursor cobria o último dígito
-          if (d.model === "formula" || d.model === "table") state.model = d.model;
           if (Number.isFinite(d.base) && d.base > 0) state.base = d.base;
           if (Number.isFinite(d.step) && d.step >= 0) state.step = d.step;
-        } catch (e) { /* storage indisponível: segue com o padrão */ }
+        }
       }
 
       function save() {
@@ -823,7 +829,6 @@
         return TEAMS().map(function (t) { return Math.round(teamBase(t) * (1 + state.teamPct[t] / 100)); });
       }
       function need(i, r) {
-        if (state.model === "table") return state.table[i][r] * 1000;
         return state.base * 1000 * (1 + (state.step / 100) * i) * (1 - RUNES[r].pct / 100);
       }
       function reqK(i, r) { return Math.ceil(need(i, r) / 1000 - 1e-9); }
@@ -1158,21 +1163,8 @@
             td.className = cls;
             who.textContent = tag;
             if (c < 6) {
-              const formula = state.model === "formula";
-              inp.readOnly = formula;
-              if (document.activeElement !== inp) inp.value = (formula ? reqK(i, c) : state.table[i][c]) + "k";
-              let sus = false;
-              let tip = "";
-              if (formula) {
-                const meas = state.table[i][c];
-                const diff = Math.round(meas - need(i, c) / 1000);
-                tip = "Tabela medida: " + meas + "k (" + (diff > 0 ? "+" : "") + diff + "k em relação à fórmula)";
-              } else {
-                sus = i > 0 && state.table[i][c] <= state.table[i - 1][c];
-                if (sus) tip = "Valor suspeito: não é maior que o Hazard anterior";
-              }
-              inp.classList.toggle("sus", sus);
-              if (tip) inp.title = tip; else inp.removeAttribute("title");
+              inp.readOnly = true;
+              if (document.activeElement !== inp) inp.value = reqK(i, c) + "k";
             }
           });
           const hn = tr.querySelector("td.hn");
@@ -1560,12 +1552,7 @@
       }
 
       function paintModel() {
-        const f = state.model === "formula";
-        document.getElementById("g-base").classList.toggle("off", !f);
-        document.getElementById("g-step").classList.toggle("off", !f);
-        document.getElementById("model-note").textContent = f
-          ? "Dano necessário = base × (1 + " + fmt(state.step) + "% × Hazard) × (1 − bônus da Runa). Passe o mouse num valor para ver o que a tabela medida diz."
-          : "Tabela medida por xandin (base 560k, com a Precisão influenciando os Hazards altos). Aqui as células são editáveis; a base e a % por Hazard não se aplicam.";
+        document.getElementById("model-note").textContent = "Dano necessário = base × (1 + " + fmt(state.step) + "% × Hazard) × (1 − bônus da Runa).";
       }
 
       function setFormat(f) {
@@ -1593,7 +1580,6 @@
         syncFormat();
         document.getElementById("useTests").checked = state.useTests;
         document.querySelectorAll("input[name='basis']").forEach(function (i) { i.checked = i.value === state.basis; });
-        document.querySelectorAll("input[name='model']").forEach(function (i) { i.checked = i.value === state.model; });
         document.querySelectorAll("input[name='basechip']").forEach(function (i) { i.checked = Number(i.value) === state.base; });
         document.getElementById("baseIn").value = fmt(state.base);
         document.getElementById("stepIn").value = fmt(state.step);
@@ -1761,19 +1747,11 @@
         if (!inp) return;
         const c = Number(inp.getAttribute("data-c"));
         const i = Number(inp.getAttribute("data-i"));
-        if (c < 6) inp.value = (state.model === "formula" ? reqK(i, c) : state.table[i][c]) + "k";
+        if (c < 6) inp.value = reqK(i, c) + "k";
         else inp.value = String(state.table[i][c]);
       });
 
-      document.getElementById("reset-table").addEventListener("click", function () {
-        if (!confirm("Voltar a tabela para os valores originais?")) return;
-        state.table = clone(DEFAULT_TABLE);
-        save();
-        buildTable();
-        paint();
-      });
-      document.getElementById("reset-all").addEventListener("click", function () {
-        if (!confirm("Restaurar nomes, danos, times e tabela para o padrão?")) return;
+      function resetState() {
         state.mons = freshMons();
         state.cand = freshCand();
         state.table = clone(DEFAULT_TABLE);
@@ -1783,14 +1761,66 @@
         state.format = "2x2x2";
         state.useTests = true;
         state.medal = 2.5;
-        state.model = "formula";
         state.base = 560;
         state.step = 3;
+      }
+      function rebuildAll() {
         save();
         syncControls();
         buildRoster();
         buildTable();
         paint();
+      }
+      document.getElementById("reset-all").addEventListener("click", function () {
+        if (!confirm("Restaurar nomes, danos, times e tabela para o padrão?")) return;
+        resetState();
+        rebuildAll();
+      });
+
+      // ----- exportar / importar dados (arquivo .json)
+      function ioMsg(text, kind) {
+        const n = document.getElementById("io-msg");
+        n.textContent = text;
+        n.className = "hint " + (kind || "");
+      }
+      document.getElementById("export-btn").addEventListener("click", function () {
+        save();
+        const payload = { app: "hazard-calc", version: 1, exportedAt: new Date().toISOString(), data: JSON.parse(JSON.stringify(state)) };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "hazard-calc-" + new Date().toISOString().slice(0, 10) + ".json";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+        ioMsg("Arquivo exportado.", "ok");
+      });
+      const importFile = document.getElementById("import-file");
+      document.getElementById("import-btn").addEventListener("click", function () { importFile.click(); });
+      importFile.addEventListener("change", function () {
+        const f = importFile.files && importFile.files[0];
+        importFile.value = "";
+        if (!f) return;
+        const rd = new FileReader();
+        rd.onload = function () {
+          let d;
+          try {
+            const j = JSON.parse(String(rd.result || ""));
+            d = j && j.data ? j.data : j;
+            if (!d || !Array.isArray(d.mons) || d.mons.length !== 6) throw new Error("formato");
+          } catch (e) {
+            ioMsg("Arquivo inválido: não é uma exportação desta calculadora.", "err");
+            return;
+          }
+          if (!confirm("Importar substitui todos os dados atuais (pokémon, times, precisão e configurações). Continuar?")) return;
+          resetState();
+          applyData(d);
+          rebuildAll();
+          ioMsg("Dados importados.", "ok");
+        };
+        rd.onerror = function () { ioMsg("Não foi possível ler o arquivo.", "err"); };
+        rd.readAsText(f);
       });
 
       function bindNum(id, apply, show, opt) {
@@ -1833,13 +1863,6 @@
         paint();
       });
 
-      document.querySelectorAll("input[name='model']").forEach(function (i) {
-        i.addEventListener("change", function () {
-          state.model = i.value;
-          save();
-          paint();
-        });
-      });
       document.querySelectorAll("input[name='basechip']").forEach(function (i) {
         i.addEventListener("change", function () {
           state.base = Number(i.value);
