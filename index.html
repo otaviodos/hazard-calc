@@ -437,6 +437,70 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
     }
+
+    /* ===== Celular (≤ 640px) ===== */
+    @media (max-width: 640px) {
+      header.top { align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+      .ball { width: 32px; height: 32px; margin-top: 4px; }
+      .ball::after { width: 10px; height: 10px; }
+      .sub { font-size: 0.8rem; }
+      .head { margin-bottom: 10px; }
+
+      /* sem zoom automático no iPhone ao tocar num campo */
+      .in, select, input.cell, .tbonus .in { font-size: 16px; }
+      .slot-row .tsel { font-size: 16px; width: 60px; padding: 2px 2px 2px 10px; }
+
+      /* Resumo: Hazard oficial em cima, times lado a lado */
+      .rs-row { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 8px; }
+      .rs-row:has(> .rs-card.off:nth-child(3)) { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+      .rs-card { padding: 10px 6px; gap: 2px; }
+      .rs-card.off { grid-column: 1 / -1; order: -1; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 4px 12px; padding: 10px 12px; }
+      .rs-card.off .rs-big { font-size: 1.9rem; }
+      .rs-card .rs-t { font-size: 0.85rem; flex-wrap: wrap; justify-content: center; gap: 4px; }
+      .rs-card .rs-tag { font-size: 0.75rem; padding: 0 6px; }
+      .rs-card .rs-names { white-space: normal; font-size: 0.75rem; line-height: 1.3; }
+      .rs-card .rs-dmg { font-size: 1.02rem; }
+      .rs-card .rs-hz { font-size: 0.8rem; }
+      .rs-next-h { margin: 14px 0 8px; }
+      .rs-next { gap: 8px; }
+      .nx { padding: 12px; }
+      .nx-line { grid-template-columns: 64px minmax(0, 1fr); }
+
+      /* Runas: 2 por linha, compactas */
+      .runes { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .rune { min-height: 56px; padding: 10px; column-gap: 8px; }
+      .rune.on .rn::after { content: " ✓"; }
+
+      /* Barra de ferramentas da seção 2 em grade */
+      section.card > .head > .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+      .tools > .fmt-switch, .tools > .seg, .tools > .chk { grid-column: 1 / -1; }
+      .fmt-switch { justify-content: center; }
+      .tools > .seg { display: grid; grid-template-columns: 1fr 1fr; }
+      .tools > .seg label { justify-content: center; }
+      .tools > .btn { width: 100%; }
+
+      /* Cards de pokémon: arrastar pelo ⋮⋮ com alvo maior */
+      .zone { padding: 8px; gap: 8px; }
+      .mon { padding: 10px; }
+      .grip { width: 34px !important; min-height: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem !important; letter-spacing: -3px; color: var(--muted); border-radius: 8px; background: var(--sunken); }
+      .stars { gap: 2px; }
+      .star { min-width: 30px; min-height: 30px; font-size: 1.55rem; }
+
+      /* Tabela de precisão: só o que muda por pokémon (treino/Berry já estão no card, medalha é igual para todos) */
+      .pt th:nth-child(2), .pt td:nth-child(2), .pt th:nth-child(3), .pt td:nth-child(3), .pt th:nth-child(4), .pt td:nth-child(4) { display: none; }
+      .pt th, .pt td { padding: 8px 6px; }
+
+      /* Barra do modelo: um grupo por linha */
+      .model-bar { gap: 10px; }
+      .mgroup { width: 100%; }
+      .head .tools .btn { flex: 1; }
+
+      /* Tabela de Hazard: só a coluna da sua Runa + precisão */
+      table.hz { min-width: 0; }
+      .hz th[data-c]:not(.sel), .hz td[data-c]:not(.col-sel):not([data-c="6"]) { display: none; }
+      .hz th, .hz td { font-size: 0.9rem; }
+      .legend { flex-direction: column; gap: 6px; }
+    }
   </style>
 </head>
 <body>
