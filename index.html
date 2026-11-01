@@ -510,6 +510,43 @@
     .data-tools .hint { min-height: 1em; }
     .data-tools .hint.ok { color: var(--ok); }
     .data-tools .hint.err { color: var(--bad); }
+    /* ===== Navegação entre páginas ===== */
+    .page-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 0 18px; padding: 6px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; }
+    .page-nav a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 52px; padding: 8px 10px; border-radius: 10px; color: var(--muted); text-decoration: none; font-weight: 700; font-size: 0.95rem; border: 1px solid transparent; transition: background-color .18s, color .18s, border-color .18s; }
+    .page-nav a small { font-size: 0.75rem; font-weight: 500; }
+    .page-nav a:hover { color: var(--text); background: var(--sunken); }
+    .page-nav a.on { color: var(--text); background: var(--sunken); border-color: var(--gold); box-shadow: inset 0 -3px 0 var(--gold); }
+    .page-nav a.on small { color: var(--gold); }
+    .page-nav a:focus-visible { outline: 2px solid var(--ring, #93C5FD); outline-offset: 2px; }
+    .page-note { margin: -6px 0 18px; padding: 12px 16px; border-radius: 12px; border: 1px solid var(--gold); background: color-mix(in srgb, var(--gold) 10%, var(--panel)); font-size: 0.88rem; line-height: 1.55; }
+
+    /* ===== Página Efetividade: paleta violeta ===== */
+    body.page-efet {
+      --bg: #0C0717; --panel: #170F2A; --sunken: #0E0920; --raise: #1F1538;
+      --line: #2B1F47; --line-strong: #46376E; --gold: #C4A1FF; --muted: #A79BC4;
+      background: radial-gradient(1200px 500px at 50% -200px, rgba(167, 139, 250, .16), transparent 70%), var(--bg);
+    }
+    body.page-efet h1::after { content: " · Efetividade"; color: var(--gold); }
+    body.page-efet .btn.gold { color: #1A0B33; }
+
+    .mult-box { margin-top: 10px; padding: 10px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--sunken); }
+    .mult-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 0.75rem; font-weight: 700; color: var(--gold); margin-bottom: 8px; }
+    .mult-in { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); font-weight: 700; }
+    .mult-in .in { width: 70px; min-height: 32px; padding: 4px 8px; }
+    .mult-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .mchip { min-height: 30px; padding: 4px 9px; border-radius: 999px; border: 1px solid var(--line-strong); background: transparent; color: var(--muted); font-size: 0.8rem; font-weight: 700; cursor: pointer; font-family: var(--font-num, monospace); }
+    .mchip:hover { color: var(--text); border-color: var(--muted); }
+    .mchip.low.on { background: rgba(248, 113, 113, .16); border-color: #F87171; color: #FECACA; }
+    .mchip.neutral.on { background: rgba(148, 163, 184, .18); border-color: #CBD5E1; color: #F1F5F9; }
+    .mchip.high.on { background: rgba(74, 222, 128, .16); border-color: #4ADE80; color: #BBF7D0; }
+    .mchip.on::before { content: "✓ "; }
+    .eff-mult { margin-top: 2px; color: var(--gold); }
+    .eff-mult strong { color: var(--gold); font-size: 0.95rem; }
+    @media (max-width: 640px) {
+      .page-nav a { min-height: 48px; font-size: 0.88rem; }
+      .mchip { min-height: 34px; padding: 4px 10px; font-size: 0.85rem; }
+      .mult-in .in { font-size: 16px; }
+    }
   </style>
 </head>
 <body>
@@ -528,6 +565,14 @@
         <p class="sub">Tudo é editável direto na página: nomes, danos, stars, held, precisão, bônus dos times, um Pokémon novo para testar e a própria tabela. Os dados ficam salvos no seu navegador; use Exportar/Importar para levar para outro aparelho.</p>
       </div>
     </header>
+
+    <nav class="page-nav" aria-label="Páginas">
+      <a href="#" data-page="neutro">Dano neutro<small>Dummy neutro</small></a>
+      <a href="#efetividade" data-page="efet">Com efetividade<small>multiplicador por pokémon</small></a>
+    </nav>
+    <div class="page-note" id="page-note" hidden>
+      <strong>Página de Efetividade.</strong> Digite o dano medido no <b>Dummy neutro</b> e marque em cada card quanto aquele pokémon bate no alvo (×0,25 até ×2). Os pokémon, danos, stars, held e precisão são os mesmos da página "Dano neutro"; o multiplicador só vale aqui.
+    </div>
 
     <section class="card resumo" aria-labelledby="resumo-h">
       <div class="head">
@@ -678,12 +723,12 @@
         { id: "t3", name: "T3", pct: 2 }
       ];
       const DEFAULT_MONS = [
-        { name: "Shiny Houndoom", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: 0, now: 318159, after: null, train: 20, berry: false },
-        { name: "Shiny Misdreavus", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: 0, now: 307870, after: null, train: 20, berry: false },
-        { name: "Shiny Tauros", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: 1, now: 294639, after: null, train: 20, berry: false },
-        { name: "Shiny Dusknoir", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: 1, now: 344778, after: null, train: 20, berry: false },
-        { name: "Shiny Hydreigon", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: 2, now: 324169, after: null, train: 20, berry: false },
-        { name: "Shiny Smeargle Ghost", role: "", tier: "t1", stars: 0, test: null, held: 0, heldTest: null, team: 2, now: 290236, after: null, train: 20, berry: false }
+        { name: "Shiny Houndoom", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: 0, now: 318159, after: null, train: 20, berry: false, mult: 1 },
+        { name: "Shiny Misdreavus", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: 0, now: 307870, after: null, train: 20, berry: false, mult: 1 },
+        { name: "Shiny Tauros", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: 1, now: 294639, after: null, train: 20, berry: false, mult: 1 },
+        { name: "Shiny Dusknoir", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: 1, now: 344778, after: null, train: 20, berry: false, mult: 1 },
+        { name: "Shiny Hydreigon", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: 2, now: 324169, after: null, train: 20, berry: false, mult: 1 },
+        { name: "Shiny Smeargle Ghost", role: "", tier: "t1", stars: 0, test: null, held: 0, heldTest: null, team: 2, now: 290236, after: null, train: 20, berry: false, mult: 1 }
       ];
       const HELDS = [0, 8, 12, 16, 19, 22, 25, 28];
       function tierOf(id) { return TIERS.find(function (t) { return t.id === id; }) || TIERS[2]; }
@@ -692,9 +737,12 @@
       function normRole(r) { return r === "OFFTANK" || r === "FLEX" ? r : (r === "DMG" || r === "DPS") ? "DMG" : ""; }
 
       const clone = function (o) { return JSON.parse(JSON.stringify(o)); };
+      const MULTS = [0.25, 0.5, 1, 1.25, 1.5, 1.75, 2];
+      function multNum(v) { v = Number(v); return Number.isFinite(v) && v > 0 && v <= 10 ? v : 1; }
+      function isEff() { return location.hash === "#efetividade"; }
       function precNum(v, def) { v = Number(v); return Number.isFinite(v) && v >= 0 ? v : def; }
       function freshCand() {
-        return { id: "cand", name: "", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: -1, now: 0, after: null, train: 20, berry: false };
+        return { id: "cand", name: "", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: -1, now: 0, after: null, train: 20, berry: false, mult: 1 };
       }
       function normCand(c) {
         c = c && typeof c === "object" ? c : {};
@@ -712,7 +760,8 @@
           now: Number.isFinite(Number(c.now)) && Number(c.now) > 0 ? Number(c.now) : 0,
           after: (c.after == null || c.after === "" || !Number.isFinite(Number(c.after))) ? null : Number(c.after),
           train: precNum(c.train, 20),
-          berry: c.berry === true
+          berry: c.berry === true,
+          mult: multNum(c.mult)
         };
       }
       function freshMons() {
@@ -767,7 +816,8 @@
                 now: Number.isFinite(Number(m.now)) ? Number(m.now) : 0,
                 after: after,
                 train: precNum(m.train, 20),
-                berry: m.berry === true
+                berry: m.berry === true,
+                mult: multNum(m.mult)
               };
             });
           }
@@ -817,10 +867,37 @@
       function tHeld(m) { return m.heldTest == null ? m.held : m.heldTest; }
       function testActive(m) { return state.useTests && (tStars(m) !== m.stars || tHeld(m) !== m.held); }
       function bonus(m, stars, held) { return 1 + stars * tierOf(m.tier).pct / 100 + HELDS[held] / 100; }
-      function monDmg(m) {
+      // dano no Dummy Neutro (com testes de star/held, se houver)
+      function neutralDmg(m) {
         const d = eff(m);
         if (!testActive(m)) return Math.round(d);
         return Math.round(d * bonus(m, tStars(m), tHeld(m)) / bonus(m, m.stars, m.held));
+      }
+      // página Efetividade: aplica o multiplicador do pokémon
+      function monDmg(m) {
+        const n = neutralDmg(m);
+        return isEff() ? Math.round(n * multNum(m.mult)) : n;
+      }
+      function multTxt(v) { return "×" + Number(v).toLocaleString("pt-BR", { maximumFractionDigits: 2 }); }
+      function effHtml(m) {
+        const base = Math.round(eff(m));
+        if (!(base > 0)) return { cls: "eff", html: "" };
+        const nd = neutralDmg(m);
+        let html, cls = "eff";
+        if (testActive(m)) {
+          const dl = nd - base;
+          const parts = [];
+          if (tStars(m) !== m.stars) parts.push(m.stars + "★ → " + tStars(m) + "★");
+          if (tHeld(m) !== m.held) parts.push("ATK " + m.held + " → ATK " + tHeld(m));
+          cls = "eff test";
+          html = "teste " + parts.join(" · ") + " · <strong>" + fmt(nd) + "</strong> (" + (dl >= 0 ? "+" : "") + fmt(dl) + ")";
+        } else {
+          html = (isEff() ? "neutro " : "dano usado ") + "<strong>" + fmt(base) + "</strong>";
+        }
+        if (isEff()) {
+          html += "<div class=\"eff-mult\">" + fmt(nd) + " " + multTxt(multNum(m.mult)) + " = <strong>" + fmt(monDmg(m)) + "</strong></div>";
+        }
+        return { cls: cls, html: html };
       }
       function teamBase(team) {
         return state.mons.reduce(function (s, m) { return s + (m.team === team ? monDmg(m) : 0); }, 0);
@@ -981,6 +1058,12 @@
             "<label class=\"fld\">Held atual<select class=\"in\" data-f=\"held\">" + heldOpts(m.held) + "</select></label>" +
             "<label class=\"fld test\">Held teste<select class=\"in" + (tHeld(m) !== m.held ? " diff" : "") + "\" data-f=\"heldTest\">" + heldOpts(tHeld(m)) + "</select></label>" +
           "</div>" +
+          (isEff() ? "<div class=\"mult-box\"><div class=\"mult-head\"><span>Efetividade (multiplicador)</span>" +
+            "<label class=\"mult-in\">×<input class=\"in num\" data-f=\"mult\" inputmode=\"decimal\" value=\"" + fmt(multNum(m.mult)) + "\" aria-label=\"Multiplicador de efetividade\" /></label></div>" +
+            "<div class=\"mult-chips\" role=\"group\" aria-label=\"Multiplicador de efetividade\">" + MULTS.map(function (v) {
+              const on = multNum(m.mult) === v;
+              return "<button type=\"button\" class=\"mchip" + (on ? " on" : "") + (v === 1 ? " neutral" : v < 1 ? " low" : " high") + "\" data-mult=\"" + v + "\" aria-pressed=\"" + on + "\">" + multTxt(v) + (v === 1 ? " neutro" : "") + "</button>";
+            }).join("") + "</div></div>" : "") +
           "<div class=\"prec-row\">" +
             "<label class=\"fld\">Precisão treino (pts)<input class=\"in num\" data-f=\"train\" inputmode=\"decimal\" value=\"" + fmt(m.train) + "\" /></label>" +
             "<label class=\"berry\"><input type=\"checkbox\" data-f=\"berry\"" + (m.berry ? " checked" : "") + " />Berry +" + BERRY + "</label>" +
@@ -1082,18 +1165,9 @@
         state.mons.forEach(function (m) {
           const n = el.teams.querySelector("[data-eff=\"" + m.id + "\"]");
           if (!n) return;
-          const base = Math.round(eff(m));
-          if (testActive(m)) {
-            const dl = monDmg(m) - base;
-            n.className = "eff test";
-            const parts = [];
-            if (tStars(m) !== m.stars) parts.push(m.stars + "★ → " + tStars(m) + "★");
-            if (tHeld(m) !== m.held) parts.push("ATK " + m.held + " → ATK " + tHeld(m));
-            n.innerHTML = "teste " + parts.join(" · ") + " · <strong>" + fmt(monDmg(m)) + "</strong> (" + (dl >= 0 ? "+" : "") + fmt(dl) + ")";
-          } else {
-            n.className = "eff";
-            n.innerHTML = "dano usado <strong>" + fmt(base) + "</strong>";
-          }
+          const e = effHtml(m);
+          n.className = e.cls;
+          n.innerHTML = e.html;
         });
       }
 
@@ -1280,18 +1354,9 @@
         if (cardEl) cardEl.classList.toggle("testing", testActive(c));
         const n = el.cand.querySelector("[data-eff=\"cand\"]");
         if (n) {
-          const base = Math.round(eff(c));
-          if (testActive(c)) {
-            const dl = monDmg(c) - base;
-            const parts = [];
-            if (tStars(c) !== c.stars) parts.push(c.stars + "★ → " + tStars(c) + "★");
-            if (tHeld(c) !== c.held) parts.push("ATK " + c.held + " → ATK " + tHeld(c));
-            n.className = "eff test";
-            n.innerHTML = "teste " + parts.join(" · ") + " · <strong>" + fmt(monDmg(c)) + "</strong> (" + (dl >= 0 ? "+" : "") + fmt(dl) + ")";
-          } else {
-            n.className = "eff";
-            n.innerHTML = base > 0 ? "dano usado <strong>" + fmt(base) + "</strong>" : "";
-          }
+          const e = effHtml(c);
+          n.className = e.cls;
+          n.innerHTML = e.html;
         }
         const out = el.candOut;
         if (!(monDmg(c) > 0)) {
@@ -1462,7 +1527,7 @@
         const pCap = precCap(state.mons);
         const weak = Math.min.apply(null, t);
         const wi = t.indexOf(weak);
-        document.getElementById("resumo-hint").textContent = (is3() ? "3×3" : "2×2×2") + " · Runa " + r.id + " (" + r.bonus + ") · medalhas " + fmt(state.medal) + "% · dano " + (state.basis === "depois" ? "Depois" : "Agora") + (state.useTests ? " · com testes" : "");
+        document.getElementById("resumo-hint").textContent = (isEff() ? "Efetividade · " : "Dummy neutro · ") + (is3() ? "3×3" : "2×2×2") + " · Runa " + r.id + " (" + r.bonus + ") · medalhas " + fmt(state.medal) + "% · dano " + (state.basis === "depois" ? "Depois" : "Agora") + (state.useTests ? " · com testes" : "");
 
         const teamCards = TEAMS().map(function (i) {
           const mem = sortedMembers(i);
@@ -1682,6 +1747,40 @@
         }
       });
 
+      onCards("click", function (ev) {
+        const mc = ev.target.closest("[data-mult]");
+        if (mc) {
+          const cm = mc.closest(".mon");
+          const mm = cm && monById(cm.getAttribute("data-id"));
+          if (!mm) return;
+          mm.mult = Number(mc.getAttribute("data-mult"));
+          save();
+          buildRoster();
+          paint();
+        }
+      });
+      onCards("input", function (ev) {
+        if (ev.target.getAttribute("data-f") !== "mult") return;
+        const mm = monById(ev.target.closest(".mon").getAttribute("data-id"));
+        if (!mm) return;
+        const v = parseNum(ev.target.value.replace(/^×|x/i, ""));
+        if (!Number.isFinite(v) || v <= 0 || v > 10) { ev.target.classList.add("invalid"); return; }
+        ev.target.classList.remove("invalid");
+        mm.mult = v;
+        ev.target.closest(".mon").querySelectorAll("[data-mult]").forEach(function (b) {
+          const on = Number(b.getAttribute("data-mult")) === v;
+          b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on));
+        });
+        save();
+        paint();
+      });
+      onCards("focusout", function (ev) {
+        if (ev.target.getAttribute("data-f") !== "mult") return;
+        const mm = monById(ev.target.closest(".mon").getAttribute("data-id"));
+        if (!mm) return;
+        ev.target.classList.remove("invalid");
+        ev.target.value = fmt(multNum(mm.mult));
+      });
       onCards("click", function (ev) {
         const b = ev.target.closest("[data-star]");
         if (!b) return;
@@ -2036,9 +2135,28 @@
         window.addEventListener("keydown", onDragKey);
       });
 
-      window.HazardCalc = { setFormat: setFormat, teamOk: teamOk, bestSplit: bestSplit, precOf: precOf, precCap: precCap, official: official, candRows: candRows, state: state, monDmg: monDmg, maxHz: maxHz, official: official, totals: totals, bestSplit: bestSplit, parseNum: parseNum };
+      window.HazardCalc = { neutralDmg: neutralDmg, isEff: isEff, setFormat: setFormat, teamOk: teamOk, bestSplit: bestSplit, precOf: precOf, precCap: precCap, official: official, candRows: candRows, state: state, monDmg: monDmg, maxHz: maxHz, official: official, totals: totals, bestSplit: bestSplit, parseNum: parseNum };
+
+      function applyPage() {
+        const e = isEff();
+        document.body.classList.toggle("page-efet", e);
+        document.querySelectorAll(".page-nav a").forEach(function (a) {
+          const on = (a.getAttribute("data-page") === "efet") === e;
+          a.classList.toggle("on", on);
+          if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+        });
+        document.getElementById("page-note").hidden = !e;
+        document.title = e ? "Calculadora de Hazard · Efetividade" : "Calculadora de Hazard";
+      }
+      window.addEventListener("hashchange", function () {
+        applyPage();
+        buildRoster();
+        paint();
+        window.scrollTo(0, 0);
+      });
 
       load();
+      applyPage();
       syncControls();
       buildRoster();
       buildTable();
