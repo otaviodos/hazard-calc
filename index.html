@@ -548,6 +548,39 @@
       .mult-in .in { font-size: 16px; }
     }
     /* ===== Formato 1.5× ===== */
+    body.fmt-15 section.card > .head .tools > .seg { display: none; }
+    body.fmt-15:not(.det-on) .mon-det, body.fmt-15:not(.det-on) .tools .chk:has(#useTests), body.fmt-15:not(.det-on) #clear-tests { display: none; }
+    .mon.m15 .mon-det { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line-strong); }
+    .rot-steps { margin: 0 0 8px; padding-left: 20px; font-size: 0.88rem; line-height: 1.6; }
+    .rot-steps code, .rot-rules code { font-family: var(--font-num, monospace); }
+    .rot-rules { margin: 0 0 12px; }
+    .rot-rules > summary { cursor: pointer; font-size: 0.82rem; font-weight: 600; color: #CBD5E1; }
+    .rot-rules > .hint { margin-top: 6px; max-width: 110ch; }
+    .sk-list { display: flex; flex-direction: column; gap: 6px; }
+    .sk-list { gap: 4px; }
+    .sk-list .sk { padding: 3px 6px; border-color: transparent; background: transparent; }
+    .sk-list .sk.t-cc { border-color: var(--warn); background: rgba(251, 191, 36, .05); }
+    .sk-list .sk.t-buff { border-color: #A78BFA; background: rgba(167, 139, 250, .06); padding-bottom: 6px; }
+    .sk-hid { display: none !important; }
+    .sk-row { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 8px; align-items: center; }
+    .sk-row .sk-in { min-height: 36px; }
+    .sk-tg { display: inline-flex; gap: 4px; }
+    .sk-tb { min-height: 32px; padding: 2px 8px; border-radius: 8px; border: 1px dashed var(--line-strong); background: transparent; color: var(--muted); font-size: 0.75rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
+    .sk-tb:hover { color: var(--text); border-color: var(--muted); }
+    .sk-tb.cc.on { border-style: solid; border-color: var(--warn); color: var(--warn); background: rgba(251, 191, 36, .1); }
+    .sk-tb.buff.on { border-style: solid; border-color: #A78BFA; color: #C4B5FD; background: rgba(167, 139, 250, .12); }
+    .sk-tb:focus-visible { outline: 2px solid var(--ring, #93C5FD); outline-offset: 2px; }
+    .sk-list .sk.t-buff .sk-b { margin-top: 6px; padding-left: 38px; }
+    .sk-more { margin-top: 6px; min-height: 32px; padding: 2px 10px; border-radius: 8px; border: 1px dashed var(--line-strong); background: transparent; color: var(--muted); font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+    .sk-more:hover { color: var(--text); }
+    .sk-more:focus-visible { outline: 2px solid var(--ring, #93C5FD); outline-offset: 2px; }
+    .sk-tip { margin: 6px 0 0; font-size: 0.75rem; color: var(--muted); }
+    .rl-empty { margin-top: 6px; padding: 6px 8px; border: 1px dashed var(--line); border-radius: 10px; font-size: 0.75rem; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+    .rl-empty .rl-key { background: var(--line-strong); color: var(--muted); }
+    .rot-sticky { position: sticky; bottom: 8px; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 12px; padding: 10px 14px; border: 1px solid var(--gold); border-radius: 12px; background: color-mix(in srgb, var(--gold) 10%, var(--panel)); box-shadow: 0 8px 24px rgba(0, 0, 0, .45); font-size: 0.88rem; }
+    .rot-sticky[hidden] { display: none; }
+    html.has-sticky { scroll-padding-bottom: 140px; }
+    .m15-test { margin: 0 0 8px; padding: 6px 8px; border: 1px solid rgba(96, 165, 250, .5); border-radius: 8px; font-size: 0.75rem; color: #BFDBFE; }
     .fmt-seg { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 4px; min-height: 44px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--sunken); min-width: 330px; }
     .fmt-seg button { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; padding: 4px 10px; border: 0; background: transparent; border-radius: 999px; color: var(--muted); font-weight: 700; font-size: 0.86rem; cursor: pointer; transition: color .18s; }
     .fmt-seg button small { font-size: 0.75rem; font-weight: 500; }
@@ -589,13 +622,16 @@
     .rot-all { margin-top: 12px; padding: 12px; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--sunken); }
     .rot-all-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
     .rot-all pre { margin: 0; font-family: var(--font-num, monospace); font-size: 0.82rem; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
-    .sk-b .in { width: 46px; min-height: 28px; padding: 2px 5px; }
     .rk.bf { border-color: #A78BFA; color: #C4B5FD; }
     .rk.tgt small { color: var(--ok); font-weight: 700; }
     .rk-arrow { margin: 0 3px 0 0; color: #C4B5FD; }
     @media (max-width: 1100px) { .teams-grid.f15 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
     @media (max-width: 900px) { .teams-grid.f15 { grid-template-columns: 1fr; } }
     @media (max-width: 640px) {
+      .fmt-seg button small { display: none; }
+      .sk-row { grid-template-columns: 28px minmax(0, 1fr) auto; gap: 6px; }
+      .sk-tb { padding: 2px 6px; }
+      .sk-list .sk.t-buff .sk-b { padding-left: 0; }
       .fmt-seg { min-width: 0; width: 100%; }
       .fmt-seg button { font-size: 0.82rem; padding: 4px 4px; }
       .sk-t { font-size: 16px; }
@@ -639,7 +675,8 @@
       .page-nav a { font-size: 0.8rem; padding: 6px 4px; text-align: center; }
       .page-nav a small { font-size: 0.75rem; }
       .rot-top { grid-template-columns: 1fr; }
-      .rot-cards { grid-template-columns: 1fr; }
+      .rot-cards { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 84%; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; padding-bottom: 6px; }
+      .rot-cards .rc { scroll-snap-align: start; }
       .skill-grid { grid-template-columns: 1fr; }
       .sk-in, .rot-bar .in { font-size: 16px; }
     }
@@ -716,9 +753,18 @@
           <div class="mgroup"><label class="mlabel" for="rotP">Máx. pokémon por rotação</label>
             <input class="in num small" id="rotP" inputmode="numeric" /></div>
           <div class="mgroup"><label class="mlabel" for="rotPct">Meta por rotação</label>
-            <input class="in num small" id="rotPct" inputmode="numeric" /><span class="mlabel">% do dano do Hazard</span></div>
+            <input class="in num small" id="rotPct" inputmode="numeric" aria-describedby="rotPctHelp" /><span class="mlabel">% do dano do Hazard</span>
+            <span class="hint" id="rotPctHelp">quanto cada rotação precisa matar</span></div>
+          <label class="chk"><input type="checkbox" id="rotDet" />Mostrar papel, raridade, stars e held nos cards</label>
         </div>
-        <p class="hint rot-how">Em cada card, anote o dano de cada skill (M1 a M9) e o tipo: <b>Normal</b>, <b>Stun/Silence</b> (no máximo 1 por rotação) ou <b>Buff</b> (aumenta a próxima skill do mesmo pokémon; informe o % depois de testar). A página distribui as skills nas rotações (cada pokémon em no máximo 2 rotações seguidas) e decide onde vale usar o buff.</p>
+        <ol class="rot-steps">
+          <li><b>Anote</b> o dano de cada skill nos cards abaixo. Enter vai para a próxima; dá para colar vários números de uma vez.</li>
+          <li>Marque <b>⚡ Stun</b> e <b>▲ Buff</b>. No buff, anote quanto a skill deu com ele.</li>
+          <li><b>Copie</b> o <code>!autocombo</code> de cada pokémon nas rotações.</li>
+        </ol>
+        <details class="rot-rules"><summary>Regras usadas no cálculo</summary>
+          <p class="hint">No máximo 1 stun/silence por rotação · no máximo 2 pokémon por rotação (ajustável) · cada pokémon em no máximo 2 rotações seguidas · o buff aumenta a próxima skill do mesmo pokémon: a página escolhe a mais forte e coloca o buff em penúltimo e a buffada em último no comando.</p>
+        </details>
         <div id="rot-out"></div>
       </div>
       <div class="teams-row" id="teams-row">
@@ -732,6 +778,10 @@
         </aside>
       </div>
       <div id="suggest"></div>
+      <div class="rot-sticky" id="rot-sticky" hidden aria-live="polite">
+        <span class="rs-txt" id="rot-sticky-txt"></span>
+        <button type="button" class="btn" id="rot-sticky-go">Ver rotações ↑</button>
+      </div>
     </section>
 
     <section class="card">
@@ -892,7 +942,7 @@
       function freshMons() {
         return clone(DEFAULT_MONS).map(function (m, i) { m.id = "m" + (i + 1); m.t2 = m.team; m.t3 = i < 3 ? 0 : 1; return m; });
       }
-      const state = { rune: 5, basis: "agora", format: "2x2x2", teamPct: [0, 0, 0], useTests: true, showCand: false, rot: { n: 5, maxP: 2, pct: 100 }, medal: 2.5, base: 560, step: 3, mons: freshMons(), cand: freshCand(), table: clone(DEFAULT_TABLE) };
+      const state = { rune: 5, basis: "agora", format: "2x2x2", teamPct: [0, 0, 0], useTests: true, showCand: false, rot: { n: 5, maxP: 2, pct: 100, det: false }, medal: 2.5, base: 560, step: 3, mons: freshMons(), cand: freshCand(), table: clone(DEFAULT_TABLE) };
 
       const el = {
         runes: document.getElementById("runes"),
@@ -960,7 +1010,8 @@
             state.rot = {
               n: Number.isInteger(rn) && rn >= 1 && rn <= 6 ? rn : 5,
               maxP: Number.isInteger(rp) && rp >= 1 && rp <= 6 ? rp : 2,
-              pct: Number.isInteger(Number(d.rot.pct)) && Number(d.rot.pct) >= 10 && Number(d.rot.pct) <= 200 ? Number(d.rot.pct) : 100
+              pct: Number.isInteger(Number(d.rot.pct)) && Number(d.rot.pct) >= 10 && Number(d.rot.pct) <= 200 ? Number(d.rot.pct) : 100,
+              det: d.rot.det === true
             };
           }
         }
@@ -1202,7 +1253,8 @@
             return "<option value=\"" + i + "\"" + (cur === i ? " selected" : "") + ">" + (i === 0 ? "Sem Held" : "ATK " + i + " (+" + v + "%)") + "</option>";
           }).join("");
         };
-        const stars = row("cur", m.stars, "Atual") + row("test", tStars(m), "Teste") +
+        const starsRows = row("cur", m.stars, "Atual") + row("test", tStars(m), "Teste");
+        const stars = starsRows +
           "<div class=\"held-row\">" +
             "<label class=\"fld\">Held atual<select class=\"in\" data-f=\"held\">" + heldOpts(m.held) + "</select></label>" +
             "<label class=\"fld test\">Held teste<select class=\"in" + (tHeld(m) !== m.held ? " diff" : "") + "\" data-f=\"heldTest\">" + heldOpts(tHeld(m)) + "</select></label>" +
@@ -1226,6 +1278,38 @@
               "<input class=\"in name\" data-f=\"name\" aria-label=\"Nome do pokémon\" value=\"" + esc(m.name) + "\" placeholder=\"Nome\" />" +
             "</div>";
         const tsel = isCand ? "" : "<select class=\"in tsel\" data-f=\"team\" aria-label=\"Mover para o time\" title=\"Mover para o time\">" + teamOpts(m.team) + "</select>";
+        if (is15() && !isCand) {
+          // 1.5×: nome, skills e precisão na frente; o resto fica em "detalhes" (opcional)
+          const heldRow = "<div class=\"held-row\">" +
+            "<label class=\"fld\">Held atual<select class=\"in\" data-f=\"held\">" + heldOpts(m.held) + "</select></label>" +
+            "<label class=\"fld test\">Held teste<select class=\"in" + (tHeld(m) !== m.held ? " diff" : "") + "\" data-f=\"heldTest\">" + heldOpts(tHeld(m)) + "</select></label>" +
+            "</div>";
+          const multBox = isEff() ? "<div class=\"mult-box\"><div class=\"mult-head\"><span>Efetividade (multiplicador)</span>" +
+            "<label class=\"mult-in\">×<input class=\"in num\" data-f=\"mult\" inputmode=\"decimal\" value=\"" + fmt(multNum(m.mult)) + "\" aria-label=\"Multiplicador de efetividade\" /></label></div>" +
+            "<div class=\"mult-chips\" role=\"group\" aria-label=\"Multiplicador de efetividade\">" + MULTS.map(function (v) {
+              const on = multNum(m.mult) === v;
+              return "<button type=\"button\" class=\"mchip" + (on ? " on" : "") + (v === 1 ? " neutral" : v < 1 ? " low" : " high") + "\" data-mult=\"" + v + "\" aria-pressed=\"" + on + "\">" + multTxt(v) + (v === 1 ? " neutro" : "") + "</button>";
+            }).join("") + "</div></div>" : "";
+          return "<div class=\"mon m15" + (testActive(m) ? " testing" : "") + "\" data-id=\"" + m.id + "\">" +
+            "<div class=\"slot-row\"><div class=\"" + sl.cls + "\">" + sl.text + "</div></div>" + top +
+            (testActive(m) ? "<p class=\"m15-test\">Teste de star/held ativo: o dano das skills está ajustado por ele (marque “Mostrar papel, raridade, stars e held” para ver).</p>" : "") +
+            skillsHtml(m) + multBox +
+            "<div class=\"prec-row\">" +
+              "<label class=\"fld\">Precisão treino (pts)<input class=\"in num\" data-f=\"train\" inputmode=\"decimal\" value=\"" + fmt(m.train) + "\" /></label>" +
+              "<label class=\"berry\"><input type=\"checkbox\" data-f=\"berry\"" + (m.berry ? " checked" : "") + " />Berry +" + BERRY + "</label>" +
+            "</div>" +
+            "<div class=\"prec-out\" data-prec></div>" +
+            "<div class=\"mon-det\">" +
+              "<div class=\"mon-fields\">" +
+                "<label class=\"fld\">Papel<select class=\"in\" data-f=\"role\">" + roleOpts(m.role) + "</select></label>" +
+                "<label class=\"fld\">Raridade<select class=\"in\" data-f=\"tier\">" + tierOpts(m.tier) + "</select></label>" +
+                "<label class=\"fld\">Dano (stars atuais)<input class=\"in num\" data-f=\"now\" inputmode=\"decimal\" value=\"" + fmt(m.now) + "\" /></label>" +
+                "<label class=\"fld\">Dano depois<input class=\"in num\" data-f=\"after\" inputmode=\"decimal\" placeholder=\"igual\" value=\"" + (m.after == null ? "" : fmt(m.after)) + "\" /></label>" +
+              "</div>" +
+              "<div class=\"stars-box\">" + starsRows + heldRow + "<div class=\"eff\" data-eff=\"" + m.id + "\" style=\"margin-top:6px\"></div></div>" +
+            "</div>" +
+            "</div>";
+        }
         return "<div class=\"mon" + (isCand ? " cand" : "") + (testActive(m) ? " testing" : "") + "\" data-id=\"" + m.id + "\">" +
           "<div class=\"slot-row\"><div class=\"" + sl.cls + "\">" + sl.text + "</div>" + tsel + "</div>" + top +
           "<div class=\"mon-fields\">" +
@@ -1271,21 +1355,56 @@
           "<span class=\"sk-bp\" data-skbp=\"" + m.id + ":" + k + "\">" + (pct > 0 ? "≈ +" + fmt(Math.round(pct * 10) / 10) + "%" : "teste para descobrir") + "</span></div>";
       }
 
+      // quantas skills mostrar: as preenchidas + a próxima vazia
+      const SKREV = {}; // skills abertas à mão (+ M…/Enter), só nesta sessão
+      function skillVis(m) {
+        let last = -1;
+        m.skills.forEach(function (x, k) { if (x.d > 0 || x.t !== "n" || x.bd > 0) last = k; });
+        return Math.min(9, Math.max(last + 2, SKREV[m.id] || 0));
+      }
       function skillsHtml(m) {
+        const vis = skillVis(m);
         const tiles = m.skills.map(function (sk, k) {
           const tp = sk.t;
-          return "<div class=\"sk t-" + tp + "\">" +
-            "<div class=\"sk-top\"><span class=\"sk-l\">M" + (k + 1) + "</span>" +
-            "<select class=\"sk-t\" data-skt=\"" + m.id + ":" + k + "\" aria-label=\"Tipo da skill M" + (k + 1) + "\">" +
-              [["n", "Normal"], ["cc", "Stun"], ["buff", "Buff"]].map(function (o) {
-                return "<option value=\"" + o[0] + "\"" + (tp === o[0] ? " selected" : "") + ">" + o[1] + "</option>";
-              }).join("") + "</select></div>" +
-            "<input class=\"in num sk-in\" data-sk=\"" + m.id + ":" + k + "\" inputmode=\"decimal\" placeholder=\"dano\" aria-label=\"Dano da skill M" + (k + 1) + "\" value=\"" + (sk.d ? fmt(sk.d) : "") + "\" />" +
+          const id = "sk-" + m.id + "-" + k;
+          const tb = function (kind, label, aria) {
+            const on = tp === kind;
+            return "<button type=\"button\" class=\"sk-tb " + kind + (on ? " on" : "") + "\" data-sktb=\"" + m.id + ":" + k + ":" + kind + "\" aria-pressed=\"" + on + "\" aria-label=\"M" + (k + 1) + ": " + aria + "\">" + label + "</button>";
+          };
+          return "<div class=\"sk t-" + tp + (k >= vis ? " sk-hid" : "") + "\" data-ski=\"" + k + "\">" +
+            "<div class=\"sk-row\"><label class=\"sk-l\" for=\"" + id + "\">M" + (k + 1) + "</label>" +
+            "<input class=\"in num sk-in\" id=\"" + id + "\" data-sk=\"" + m.id + ":" + k + "\" inputmode=\"decimal\" enterkeyhint=\"next\" placeholder=\"dano\" value=\"" + (sk.d ? fmt(sk.d) : "") + "\" />" +
+            "<span class=\"sk-tg\">" + tb("cc", "⚡ Stun", "stun ou silence") + tb("buff", "▲ Buff", "buff") + "</span></div>" +
             (tp === "buff" ? buffTestHtml(m, k) : "") +
             "</div>";
         }).join("");
-        return "<div class=\"skills-box\"><div class=\"skills-head\"><span>Skills (dano de cada uma)</span><span class=\"skc-sum\" data-sksum=\"" + m.id + "\"></span></div>" +
-          "<div class=\"sk-grid\">" + tiles + "</div></div>";
+        return "<div class=\"skills-box\"><div class=\"skills-head\"><span>Skills</span><span class=\"skc-sum\" data-sksum=\"" + m.id + "\"></span></div>" +
+          "<div class=\"sk-list\">" + tiles + "</div>" +
+          "<button type=\"button\" class=\"sk-more\" data-skmore=\"" + m.id + "\"" + (vis >= 9 ? " hidden" : "") + ">+ M" + (vis + 1) + "</button>" +
+          "</div>";
+      }
+      function syncSkillVis(m) {
+        const card = el.teams.querySelector(".mon[data-id=\"" + m.id + "\"]");
+        if (!card) return;
+        const vis = skillVis(m);
+        card.querySelectorAll(".sk[data-ski]").forEach(function (t) {
+          const k = Number(t.getAttribute("data-ski"));
+          const inp = t.querySelector("input[data-sk]");
+          t.classList.toggle("sk-hid", k >= vis && !(inp && inp.value.trim()) && document.activeElement !== inp);
+        });
+        const more = card.querySelector("[data-skmore]");
+        if (more) {
+          const shown = card.querySelectorAll(".sk[data-ski]:not(.sk-hid)").length;
+          more.hidden = shown >= 9;
+          more.textContent = "+ M" + (shown + 1);
+        }
+      }
+      function revealSkill(m, k) {
+        SKREV[m.id] = Math.max(SKREV[m.id] || 0, k + 1);
+        syncSkillVis(m);
+        const f = el.teams.querySelector("[data-sk=\"" + m.id + ":" + k + "\"]");
+        if (f) f.focus();
+        return f;
       }
 
       function buildRoster() {
@@ -1824,7 +1943,7 @@
       function skillFactor(m) {
         let f = isEff() ? multNum(m.mult) : 1;
         const base = eff(m);
-        if (testActive(m) && base > 0) f *= neutralDmg(m) / base;
+        if (testActive(m)) f *= base > 0 ? neutralDmg(m) / base : bonus(m, tStars(m), tHeld(m)) / bonus(m, m.stars, m.held);
         return f;
       }
       function rotSkills() {
@@ -1905,17 +2024,16 @@
         let best = null;
         const restarts = 28, iters = anyBuff ? 2000 : 2500;
         for (let rs = 0; rs < restarts; rs++) {
-          const order = S.map(function (_, i) { return i; }).sort(function (i, j) {
-            const vi = (S[i].d + S[i].bp * 1000) * (rs ? 0.85 + 0.3 * R() : 1);
-            const vj = (S[j].d + S[j].bp * 1000) * (rs ? 0.85 + 0.3 * R() : 1);
-            return vj - vi;
-          });
+          // chave sorteada uma vez por skill (sort com comparador aleatório dá ordens diferentes conforme o navegador otimiza o código)
+          const key = S.map(function (x) { return (x.d + x.bp * 1000) * (rs ? 0.85 + 0.3 * R() : 1); });
+          const order = S.map(function (_, i) { return i; }).sort(function (i, j) { return key[j] - key[i] || i - j; });
           const a = new Array(L).fill(-1);
           if (rs % 2 === 1) {
             // início por blocos: cada pokémon inteiro na rotação mais fraca que aceitar
             const ps = [];
             S.forEach(function (x) { if (ps.indexOf(x.p) < 0) ps.push(x.p); });
-            ps.sort(function () { return R() - 0.5; }).forEach(function (pk) {
+            for (let q = ps.length - 1; q > 0; q--) { const z = Math.floor(R() * (q + 1)); const tmp = ps[q]; ps[q] = ps[z]; ps[z] = tmp; }
+            ps.forEach(function (pk) {
               const mine = [];
               for (let j = 0; j < L; j++) if (S[j].p === pk) mine.push(j);
               const trim = function () { let seen = false; mine.forEach(function (j) { if (S[j].cc && a[j] >= 0) { if (seen) a[j] = -1; seen = true; } }); };
@@ -2055,10 +2173,15 @@
           ta.remove();
         });
       }
-      let ROTCACHE = null;
+      let ROTCACHE = null, ROTKEY = "", ROTMEMO = null;
       function rotResult() {
         if (!is15()) return null;
-        if (ROTCACHE === null) ROTCACHE = rotSolve() || false;
+        if (ROTCACHE === null) {
+          // só refaz a divisão quando skills, nº de rotações ou pokémon por rotação mudam
+          const key = JSON.stringify([rotSkills(), state.rot.n, state.rot.maxP]);
+          if (key !== ROTKEY || ROTMEMO === null) { ROTKEY = key; ROTMEMO = rotSolve() || false; }
+          ROTCACHE = ROTMEMO;
+        }
         return ROTCACHE || null;
       }
 
@@ -2076,11 +2199,12 @@
 
       function paintRot() {
         const out = document.getElementById("rot-out");
-        if (!out || !is15()) return;
+        if (!out || !is15()) { const st = document.getElementById("rot-sticky"); if (st) { st.hidden = true; document.documentElement.classList.remove("has-sticky"); } return; }
         paintSkillSums();
         const res = rotResult();
         if (!res) {
-          out.innerHTML = "<div class=\"box neutral\">Anote o dano das skills (M1 a M9) nos cards abaixo para calcular as rotações.</div>";
+          out.innerHTML = "<div class=\"box neutral\">As rotações e os comandos aparecem aqui assim que você anotar o dano das skills nos cards abaixo.</div>";
+          syncSticky();
           return;
         }
         const r = RUNES[state.rune];
@@ -2107,7 +2231,7 @@
         if (noBp.length) L.push("<p class=\"hint\">Buff ainda não testado (o aumento não entra na conta; a ordem já coloca o buff antes da skill mais forte): " + noBp.join(", ") + ".</p>");
         const cards = res.rots.map(function (ro, i) {
           const h = maxHz(state.rune, ro.tot);
-          const lines = ro.seqs.map(function (sq, j) {
+          let lines = ro.seqs.map(function (sq, j) {
             const m = state.mons[sq.p];
             const key = i * state.rot.maxP + j + 1;
             const cmd = comboCmd(sq.seq);
@@ -2122,6 +2246,11 @@
               "<span class=\"rl-toks\">" + toks + "</span>" +
               "<code class=\"rl-cmd\">" + esc(cmd) + "</code></button>";
           }).join("") || "<div class=\"hint\">sem skills</div>";
+          if (ro.seqs.length && state.rot.maxP <= 3) {
+            for (let j = ro.seqs.length; j < state.rot.maxP; j++) {
+              lines += "<div class=\"rl rl-empty\"><span class=\"rl-key\">" + (i * state.rot.maxP + j + 1) + "</span> atalho livre nesta rotação</div>";
+            }
+          }
           const isMin = ro.tot === res.min;
           return "<div class=\"rc" + (isMin ? " weak" : "") + "\">" +
             "<div class=\"rc-h\"><span>Rotação " + (i + 1) + "</span>" + (ro.cc ? "<span class=\"rc-cc\">⚡ stun</span>" : "<span class=\"rc-nocc\">sem stun</span>") + "</div>" +
@@ -2136,9 +2265,13 @@
         const all = [];
         res.rots.forEach(function (ro, i) { ro.seqs.forEach(function (sq, j) { all.push((i * state.rot.maxP + j + 1) + ": " + comboCmd(sq.seq)); }); });
         const allBox = all.length ? "<div class=\"rot-all\"><div class=\"rot-all-h\"><strong>Atalhos</strong><button type=\"button\" class=\"btn\" id=\"copy-all\" data-all=\"" + esc(all.join("\n")) + "\">Copiar todos</button></div><pre>" + esc(all.join("\n")) + "</pre></div>" : "";
+        const stt = document.getElementById("rot-sticky-txt");
+        if (stt) stt.innerHTML = "<b style=\"color:" + r.color + "\">" + hzTxt(off) + "</b> · rotação mais fraca <b>" + kfmt(res.min) + "</b>" +
+          (nx >= 0 && res.min < nxNeed ? " · faltam " + kfmt(nxNeed - res.min) + " p/ Hazard " + nx : "");
         out.innerHTML = "<div class=\"rot-det\">" + L.join("") + "</div>" +
           "<div class=\"rot-cards\">" + cards + "</div>" + unused + allBox +
           "<p class=\"hint\">Toque no pokémon da rotação para copiar o <code>!autocombo</code>. O número é o atalho: 1 e 2 na rotação 1, 3 e 4 na rotação 2... ⚡ stun/silence (máx. 1 por rotação) · ▲ buff: sempre a penúltima, e a skill buffada a última.</p>";
+        syncSticky();
       }
 
       function paint() {
@@ -2207,6 +2340,8 @@
         document.getElementById("rotN").value = String(state.rot.n);
         document.getElementById("rotP").value = String(state.rot.maxP);
         document.getElementById("rotPct").value = String(state.rot.pct);
+        document.getElementById("rotDet").checked = !!state.rot.det;
+        document.body.classList.toggle("det-on", !!state.rot.det);
         document.getElementById("useTests").checked = state.useTests;
         document.querySelectorAll("input[name='basis']").forEach(function (i) { i.checked = i.value === state.basis; });
         document.querySelectorAll("input[name='basechip']").forEach(function (i) { i.checked = Number(i.value) === state.base; });
@@ -2426,7 +2561,7 @@
         state.medal = 2.5;
         state.base = 560;
         state.step = 3;
-        state.rot = { n: 5, maxP: 2, pct: 100 };
+        state.rot = { n: 5, maxP: 2, pct: 100, det: false };
       }
       function rebuildAll() {
         save();
@@ -2722,19 +2857,76 @@
         const m = findMon(pr[0]);
         return m ? { m: m, k: Number(pr[1]) } : null;
       }
+      let paintTimer = null;
+      function paintSoon() { clearTimeout(paintTimer); paintTimer = setTimeout(paint, 120); }
       el.teams.addEventListener("input", function (ev) {
-        const a = skRef("data-sk", ev.target) || skRef("data-skb", ev.target);
+        const a = skRef("data-sk", ev.target);
         if (!a) return;
-        const isB = ev.target.hasAttribute("data-skb");
-        const raw = ev.target.value.trim().replace(/%$/, "");
+        const raw = ev.target.value.trim();
         const sk = a.m.skills[a.k];
-        if (raw === "") { if (isB) sk.bp = null; else sk.d = null; ev.target.classList.remove("invalid"); save(); paint(); return; }
-        const v = parseNum(raw);
-        if (!Number.isFinite(v)) { ev.target.classList.add("invalid"); return; }
-        ev.target.classList.remove("invalid");
-        if (isB) sk.bp = v; else sk.d = v;
+        if (raw === "") { sk.d = null; ev.target.classList.remove("invalid"); }
+        else {
+          const v = parseNum(raw);
+          if (!Number.isFinite(v)) { ev.target.classList.add("invalid"); return; }
+          ev.target.classList.remove("invalid");
+          sk.d = v;
+        }
+        syncSkillVis(a.m);
         save();
+        paintSoon();
+      });
+      el.teams.addEventListener("keydown", function (ev) {
+        if (ev.key !== "Enter" || !ev.target.hasAttribute("data-sk")) return;
+        ev.preventDefault();
+        const a = skRef("data-sk", ev.target);
+        const card = ev.target.closest(".mon");
+        let next = null;
+        const t = a.k < 8 ? card.querySelector(".sk[data-ski=\"" + (a.k + 1) + "\"]") : null;
+        if (t && (ev.target.value.trim() || !t.classList.contains("sk-hid"))) {
+          next = revealSkill(a.m, a.k + 1);
+        }
+        if (!next) {
+          const cards = Array.prototype.slice.call(el.teams.querySelectorAll(".mon"));
+          const nc = cards[cards.indexOf(card) + 1];
+          if (nc) next = nc.querySelector(".sk:not(.sk-hid) input[data-sk]");
+        }
+        if (next) next.focus();
+      });
+      el.teams.addEventListener("paste", function (ev) {
+        const a = skRef("data-sk", ev.target);
+        if (!a) return;
+        const txt = (ev.clipboardData || window.clipboardData).getData("text") || "";
+        const nums = txt.split(/[\s;|\/]+|,\s+/).map(function (x) { return parseNum(x); }).filter(function (v) { return Number.isFinite(v) && v > 0; });
+        if (nums.length < 2) return;
+        ev.preventDefault();
+        nums.forEach(function (v, i) { if (a.k + i < 9) a.m.skills[a.k + i].d = v; });
+        save();
+        buildRoster();
         paint();
+        const last = Math.min(8, a.k + nums.length);
+        const f = el.teams.querySelector("[data-sk=\"" + a.m.id + ":" + last + "\"]");
+        if (f) f.focus();
+      });
+      el.teams.addEventListener("click", function (ev) {
+        const mo = ev.target.closest("[data-skmore]");
+        if (mo) {
+          const m = findMon(mo.getAttribute("data-skmore"));
+          const card = mo.closest(".mon");
+          if (m && card) revealSkill(m, card.querySelectorAll(".sk[data-ski]:not(.sk-hid)").length);
+          return;
+        }
+        const b = ev.target.closest("[data-sktb]");
+        if (!b) return;
+        const pr = b.getAttribute("data-sktb").split(":");
+        const m = findMon(pr[0]);
+        if (!m) return;
+        const sk = m.skills[Number(pr[1])];
+        sk.t = sk.t === pr[2] ? "n" : pr[2];
+        save();
+        buildRoster();
+        paint();
+        const back = el.teams.querySelector("[data-sktb=\"" + b.getAttribute("data-sktb") + "\"]");
+        if (back) back.focus();
       });
       el.teams.addEventListener("focusout", function (ev) {
         const a = skRef("data-sk", ev.target) || skRef("data-skb", ev.target);
@@ -2776,7 +2968,7 @@
         const pct = buffPct(a.m, a.k);
         if (lab) lab.textContent = pct > 0 ? "≈ +" + fmt(Math.round(pct * 10) / 10) + "%" : (sk.bd ? "menor que o normal?" : "teste para descobrir");
         save();
-        paint();
+        paintSoon();
       });
       el.teams.addEventListener("focusout", function (ev) {
         const a = skRef("data-skbd", ev.target);
@@ -2810,6 +3002,28 @@
         inp.addEventListener("focus", function () { inp.select(); });
       }
       bindInt("rotN", 1, 6, function () { return state.rot.n; }, function (v) { state.rot.n = v; });
+      document.getElementById("rotDet").addEventListener("change", function (ev) {
+        state.rot.det = ev.target.checked;
+        document.body.classList.toggle("det-on", state.rot.det);
+        save();
+      });
+      document.getElementById("rot-sticky-go").addEventListener("click", function () {
+        document.getElementById("rot-out").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+      });
+      var rotOutVisible;
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(function (es) {
+          rotOutVisible = es[0].isIntersecting;
+          syncSticky();
+        }, { threshold: 0.05 }).observe(document.getElementById("rot-out"));
+      }
+      function syncSticky() {
+        const st = document.getElementById("rot-sticky");
+        const res = is15() ? rotResult() : null;
+        const show = !!res && rotOutVisible === false;
+        st.hidden = !show;
+        document.documentElement.classList.toggle("has-sticky", show);
+      }
       bindInt("rotPct", 10, 200, function () { return state.rot.pct; }, function (v) { state.rot.pct = v; });
       bindInt("rotP", 1, 6, function () { return state.rot.maxP; }, function (v) { state.rot.maxP = v; });
       window.addEventListener("hashchange", function () {
