@@ -571,8 +571,24 @@
     .sk-t { min-width: 0; max-width: 74%; flex: 1; background: var(--sunken); color: var(--muted); border: 1px solid var(--line); border-radius: 6px; font-size: 0.75rem; padding: 2px 2px; cursor: pointer; }
     .sk.t-cc .sk-t { color: var(--warn); border-color: var(--warn); }
     .sk.t-buff .sk-t { color: #C4B5FD; border-color: #A78BFA; }
-    .sk-b { display: none; align-items: center; gap: 3px; font-size: 0.75rem; color: #C4B5FD; font-weight: 600; }
-    .sk.t-buff .sk-b { display: flex; }
+    .sk.t-buff { grid-column: 1 / -1; }
+    .sk-b { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; font-size: 0.75rem; color: #C4B5FD; font-weight: 600; }
+    .sk-b .in { width: 110px; min-height: 30px; padding: 2px 6px; }
+    .sk-bt { background: var(--sunken); color: #C4B5FD; border: 1px solid #A78BFA; border-radius: 6px; font-size: 0.75rem; padding: 3px 4px; cursor: pointer; }
+    .sk-bp { color: var(--ok); font-weight: 700; }
+    .rl-copy { display: flex; flex-direction: column; align-items: stretch; gap: 4px; width: 100%; text-align: left; margin-top: 6px; padding: 8px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--panel); color: inherit; font: inherit; cursor: pointer; transition: border-color .18s, background-color .18s; }
+    .rl-copy:hover { border-color: var(--gold); }
+    .rl-copy:focus-visible { outline: 2px solid var(--ring, #93C5FD); outline-offset: 2px; }
+    .rl-copy.copied { border-color: var(--ok); background: rgba(74, 222, 128, .08); }
+    .rl-top { display: flex; align-items: center; gap: 8px; }
+    .rl-key { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 6px; background: var(--gold); color: #1A1403; font-weight: 800; font-size: 0.8rem; font-family: var(--font-num, monospace); }
+    .rl-cp { margin-left: auto; font-size: 0.75rem; color: var(--gold); font-weight: 700; }
+    .rl-copy.copied .rl-cp { color: var(--ok); }
+    .rl-toks { line-height: 1.7; }
+    .rl-cmd { display: block; font-family: var(--font-num, monospace); font-size: 0.78rem; color: #E2E8F0; background: var(--sunken); border: 1px dashed var(--line-strong); border-radius: 6px; padding: 4px 6px; overflow-wrap: anywhere; }
+    .rot-all { margin-top: 12px; padding: 12px; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--sunken); }
+    .rot-all-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+    .rot-all pre { margin: 0; font-family: var(--font-num, monospace); font-size: 0.82rem; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
     .sk-b .in { width: 46px; min-height: 28px; padding: 2px 5px; }
     .rk.bf { border-color: #A78BFA; color: #C4B5FD; }
     .rk.tgt small { color: var(--ok); font-weight: 700; }
@@ -583,7 +599,8 @@
       .fmt-seg { min-width: 0; width: 100%; }
       .fmt-seg button { font-size: 0.82rem; padding: 4px 4px; }
       .sk-t { font-size: 16px; }
-      .sk-b .in { font-size: 16px; width: 56px; }
+      .sk-b .in { font-size: 16px; width: 100px; }
+      .sk-bt { font-size: 16px; }
     }
     .rot-bar { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; margin-bottom: 14px; }
     .rot-bar .in.small { width: 70px; }
@@ -592,7 +609,7 @@
     .rot-big { font-size: 2.6rem; font-weight: 800; line-height: 1.05; color: var(--rc); }
     .rot-det p { margin: 3px 0; font-size: 0.88rem; line-height: 1.5; }
     .rot-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
-    .rc { background: var(--sunken); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 4px; }
+    .rc { min-width: 0; background: var(--sunken); border: 1px solid var(--line); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 4px; }
     .rc.weak { border-color: rgba(248, 113, 113, .55); }
     .rc-h { display: flex; justify-content: space-between; align-items: center; gap: 6px; font-weight: 700; font-size: 0.9rem; }
     .rc-cc { font-size: 0.75rem; color: var(--warn); font-weight: 700; }
@@ -622,7 +639,7 @@
       .page-nav a { font-size: 0.8rem; padding: 6px 4px; text-align: center; }
       .page-nav a small { font-size: 0.75rem; }
       .rot-top { grid-template-columns: 1fr; }
-      .rot-cards { grid-template-columns: 1fr 1fr; }
+      .rot-cards { grid-template-columns: 1fr; }
       .skill-grid { grid-template-columns: 1fr; }
       .sk-in, .rot-bar .in { font-size: 16px; }
     }
@@ -701,7 +718,7 @@
           <div class="mgroup"><label class="mlabel" for="rotPct">Meta por rotação</label>
             <input class="in num small" id="rotPct" inputmode="numeric" /><span class="mlabel">% do dano do Hazard</span></div>
         </div>
-        <p class="hint rot-how">Em cada card, anote o dano de cada skill (M1 a M9) e o tipo: <b>Normal</b>, <b>Stun/Silence</b> (no máximo 1 por rotação) ou <b>Buff</b> (aumenta a próxima skill do mesmo pokémon; informe o % depois de testar). A página distribui as skills nas rotações e decide onde vale usar o buff.</p>
+        <p class="hint rot-how">Em cada card, anote o dano de cada skill (M1 a M9) e o tipo: <b>Normal</b>, <b>Stun/Silence</b> (no máximo 1 por rotação) ou <b>Buff</b> (aumenta a próxima skill do mesmo pokémon; informe o % depois de testar). A página distribui as skills nas rotações (cada pokémon em no máximo 2 rotações seguidas) e decide onde vale usar o buff.</p>
         <div id="rot-out"></div>
       </div>
       <div class="teams-row" id="teams-row">
@@ -834,14 +851,16 @@
       function multNum(v) { v = Number(v); return Number.isFinite(v) && v > 0 && v <= 10 ? v : 1; }
       function isEff() { return location.hash === "#efetividade"; }
 
-      function emptySkills() { const a = []; for (let k = 0; k < 9; k++) a.push({ d: null, t: "n", bp: null }); return a; }
+      function emptySkills() { const a = []; for (let k = 0; k < 9; k++) a.push({ d: null, t: "n", bp: null, bt: null, bd: null }); return a; }
       function normSkills(arr) {
         const out = emptySkills();
         if (Array.isArray(arr)) arr.slice(0, 9).forEach(function (x, k) {
           if (!x || typeof x !== "object") return;
           const d = Number(x.d), bp = Number(x.bp);
           const t = x.t === "cc" || x.t === "buff" || x.t === "n" ? x.t : (x.cc === true ? "cc" : "n");
-          out[k] = { d: Number.isFinite(d) && d > 0 ? d : null, t: t, bp: Number.isFinite(bp) && bp > 0 ? bp : null };
+          const bt = Number(x.bt), bd = Number(x.bd);
+          out[k] = { d: Number.isFinite(d) && d > 0 ? d : null, t: t, bp: Number.isFinite(bp) && bp > 0 ? bp : null,
+            bt: x.bt != null && Number.isInteger(bt) && bt >= 0 && bt < 9 ? bt : null, bd: Number.isFinite(bd) && bd > 0 ? bd : null };
         });
         return out;
       }
@@ -1223,6 +1242,35 @@
         el.cand.innerHTML = cardHtml(state.cand, 0, true);
       }
 
+      // skill que recebe o buff no teste: a escolhida, ou a mais forte do pokémon
+      function buffTarget(m, k) {
+        const sk = m.skills[k];
+        if (sk.bt != null && sk.bt !== k && m.skills[sk.bt] && m.skills[sk.bt].t !== "buff") return sk.bt;
+        let best = -1;
+        m.skills.forEach(function (x, j) { if (j !== k && x.t !== "buff" && x.d > 0 && (best < 0 || x.d > m.skills[best].d)) best = j; });
+        return best;
+      }
+      // % do buff descoberto no teste: (dano com buff ÷ dano normal − 1)
+      function buffPct(m, k) {
+        const sk = m.skills[k];
+        const tg = buffTarget(m, k);
+        if (tg >= 0 && sk.bd > 0 && m.skills[tg].d > 0 && sk.bd > m.skills[tg].d) return (sk.bd / m.skills[tg].d - 1) * 100;
+        return sk.bp > 0 ? sk.bp : 0;
+      }
+      function buffTestHtml(m, k) {
+        const sk = m.skills[k];
+        const tg = buffTarget(m, k);
+        const opts = m.skills.map(function (x, j) {
+          if (j === k || x.t === "buff") return "";
+          return "<option value=\"" + j + "\"" + (j === tg ? " selected" : "") + ">M" + (j + 1) + (x.d ? " (" + kfmt(x.d) + ")" : "") + "</option>";
+        }).join("");
+        const pct = buffPct(m, k);
+        return "<div class=\"sk-b\"><span>Teste:</span>" +
+          "<select class=\"sk-bt\" data-skbt=\"" + m.id + ":" + k + "\" aria-label=\"Skill usada logo depois do buff no teste\">" + opts + "</select>" +
+          "<span>com buff deu</span><input class=\"in num\" data-skbd=\"" + m.id + ":" + k + "\" inputmode=\"decimal\" placeholder=\"dano\" aria-label=\"Dano da skill com o buff\" value=\"" + (sk.bd ? fmt(sk.bd) : "") + "\" />" +
+          "<span class=\"sk-bp\" data-skbp=\"" + m.id + ":" + k + "\">" + (pct > 0 ? "≈ +" + fmt(Math.round(pct * 10) / 10) + "%" : "teste para descobrir") + "</span></div>";
+      }
+
       function skillsHtml(m) {
         const tiles = m.skills.map(function (sk, k) {
           const tp = sk.t;
@@ -1233,7 +1281,7 @@
                 return "<option value=\"" + o[0] + "\"" + (tp === o[0] ? " selected" : "") + ">" + o[1] + "</option>";
               }).join("") + "</select></div>" +
             "<input class=\"in num sk-in\" data-sk=\"" + m.id + ":" + k + "\" inputmode=\"decimal\" placeholder=\"dano\" aria-label=\"Dano da skill M" + (k + 1) + "\" value=\"" + (sk.d ? fmt(sk.d) : "") + "\" />" +
-            "<label class=\"sk-b\">+<input class=\"in num\" data-skb=\"" + m.id + ":" + k + "\" inputmode=\"decimal\" placeholder=\"?\" aria-label=\"Aumento do buff na próxima skill, em %\" value=\"" + (sk.bp ? fmt(sk.bp) : "") + "\" />% próx.</label>" +
+            (tp === "buff" ? buffTestHtml(m, k) : "") +
             "</div>";
         }).join("");
         return "<div class=\"skills-box\"><div class=\"skills-head\"><span>Skills (dano de cada uma)</span><span class=\"skc-sum\" data-sksum=\"" + m.id + "\"></span></div>" +
@@ -1786,7 +1834,8 @@
           m.skills.forEach(function (sk, k) {
             const d = sk.d > 0 ? Math.round(sk.d * f) : 0;
             const isBuff = sk.t === "buff";
-            if (d > 0 || (isBuff && sk.bp > 0)) list.push({ p: pi, k: k, d: d, cc: sk.t === "cc", buff: isBuff, bp: isBuff ? (sk.bp || 0) : 0 });
+            const bp = isBuff ? buffPct(m, k) : 0;
+            if (d > 0 || isBuff) list.push({ p: pi, k: k, d: d, cc: sk.t === "cc", buff: isBuff, bp: bp });
           });
         });
         return list;
@@ -1819,7 +1868,7 @@
         const L = S.length;
         const anyBuff = S.some(function (x) { return x.buff; });
         function evaluate(a) {
-          const tot = new Array(N).fill(0), cc = new Array(N).fill(0), pm = new Array(N).fill(0);
+          const tot = new Array(N).fill(0), cc = new Array(N).fill(0), pm = new Array(N).fill(0), rm = [0, 0, 0, 0, 0, 0];
           const groups = anyBuff ? [] : null;
           if (anyBuff) for (let r = 0; r < N; r++) groups.push({});
           for (let i = 0; i < L; i++) {
@@ -1828,9 +1877,12 @@
             const x = S[i];
             if (x.cc) cc[r]++;
             pm[r] |= (1 << x.p);
+            rm[x.p] |= (1 << r);
             if (anyBuff) (groups[r][x.p] = groups[r][x.p] || []).push(x);
             else tot[r] += x.d;
           }
+          // cada pokémon em no máximo 2 rotações (uma parte numa, o resto na seguinte)
+          for (let q = 0; q < 6; q++) { let c = 0, v = rm[q]; while (v) { c += v & 1; v >>= 1; } if (c > 2) return { ok: false }; }
           for (let r = 0; r < N; r++) {
             if (cc[r] > 1) return { ok: false };
             let c = 0, v = pm[r];
@@ -1851,7 +1903,7 @@
         }
         const R = rng(12345);
         let best = null;
-        const restarts = 24, iters = anyBuff ? 1800 : 2500;
+        const restarts = 28, iters = anyBuff ? 2000 : 2500;
         for (let rs = 0; rs < restarts; rs++) {
           const order = S.map(function (_, i) { return i; }).sort(function (i, j) {
             const vi = (S[i].d + S[i].bp * 1000) * (rs ? 0.85 + 0.3 * R() : 1);
@@ -1859,7 +1911,29 @@
             return vj - vi;
           });
           const a = new Array(L).fill(-1);
-          order.forEach(function (i) {
+          if (rs % 2 === 1) {
+            // início por blocos: cada pokémon inteiro na rotação mais fraca que aceitar
+            const ps = [];
+            S.forEach(function (x) { if (ps.indexOf(x.p) < 0) ps.push(x.p); });
+            ps.sort(function () { return R() - 0.5; }).forEach(function (pk) {
+              const mine = [];
+              for (let j = 0; j < L; j++) if (S[j].p === pk) mine.push(j);
+              const trim = function () { let seen = false; mine.forEach(function (j) { if (S[j].cc && a[j] >= 0) { if (seen) a[j] = -1; seen = true; } }); };
+              let pick = -1, low = Infinity;
+              for (let r = 0; r < N; r++) {
+                mine.forEach(function (j) { a[j] = r; });
+                let e = evaluate(a);
+                if (!e.ok) { trim(); e = evaluate(a); }
+                if (e.ok && e.tot[r] < low) { low = e.tot[r]; pick = r; }
+                mine.forEach(function (j) { a[j] = -1; });
+              }
+              if (pick >= 0) {
+                mine.forEach(function (j) { a[j] = pick; });
+                if (!evaluate(a).ok) trim();
+                if (!evaluate(a).ok) mine.forEach(function (j) { a[j] = -1; });
+              }
+            });
+          } else order.forEach(function (i) {
             let pick = -1, low = Infinity;
             for (let r = 0; r < N; r++) {
               a[i] = r;
@@ -1872,7 +1946,17 @@
           for (let it = 0; it < iters; it++) {
             const i = Math.floor(R() * L);
             const old = a[i];
-            if (R() < 0.5) {
+            const mv = R();
+            if (mv < 0.25) {
+              // move em grupo: todas as skills desse pokémon que estão na mesma rotação
+              const t = Math.floor(R() * (N + 1)) - 1;
+              if (t === old) continue;
+              const grp = [];
+              for (let j = 0; j < L; j++) if (S[j].p === S[i].p && a[j] === old) grp.push(j);
+              grp.forEach(function (j) { a[j] = t; });
+              const e = evaluate(a);
+              if (e.ok && !better(cur, e.tot)) cur = e.tot; else grp.forEach(function (j) { a[j] = old; });
+            } else if (mv < 0.6) {
               const t = Math.floor(R() * (N + 1)) - 1;
               if (t === old) continue;
               a[i] = t;
@@ -1900,9 +1984,76 @@
           const g = {};
           ro.items.forEach(function (it) { (g[it.p] = g[it.p] || []).push(it); });
           Object.keys(g).forEach(function (pk) { ro.pairs = ro.pairs.concat(pokeDamage(g[pk]).pairs); });
+          ro.mons = Object.keys(g).map(Number);
+        });
+        // ordem das rotações: rotações que dividem um pokémon ficam vizinhas (você continua o mesmo pokémon)
+        (function () {
+          const idx = rots.map(function (_, i) { return i; });
+          const share = function (a, b) { return rots[a].mons.some(function (x) { return rots[b].mons.indexOf(x) >= 0; }) ? 1 : 0; };
+          let bestP = idx.slice(), bestV = -1;
+          (function perm(arr, l) {
+            if (l === arr.length) {
+              let v = 0;
+              for (let i = 1; i < arr.length; i++) v += share(arr[i - 1], arr[i]);
+              if (v > bestV) { bestV = v; bestP = arr.slice(); }
+              return;
+            }
+            for (let i = l; i < arr.length; i++) {
+              let t = arr[l]; arr[l] = arr[i]; arr[i] = t;
+              perm(arr, l + 1);
+              t = arr[l]; arr[l] = arr[i]; arr[i] = t;
+            }
+          })(idx.slice(), 0);
+          const re = bestP.map(function (i) { return rots[i]; });
+          rots.length = 0;
+          re.forEach(function (x) { rots.push(x); });
+        })();
+        rots.forEach(function (ro, i) {
+          const prev = i > 0 ? rots[i - 1].mons : [], next = i < rots.length - 1 ? rots[i + 1].mons : [];
+          ro.mons.sort(function (a, b) {
+            const ra = (prev.indexOf(a) >= 0 ? 0 : 1) + (next.indexOf(a) >= 0 ? 1 : 0);
+            const rb = (prev.indexOf(b) >= 0 ? 0 : 1) + (next.indexOf(b) >= 0 ? 1 : 0);
+            return ra - rb || a - b;
+          });
+          ro.seqs = ro.mons.map(function (pk) { return { p: pk, seq: comboSeq(ro, pk) }; });
         });
         const total = S.reduce(function (x, y) { return x + y.d; }, 0);
         return { rots: rots, unused: unused, min: Math.min.apply(null, best.tot), total: total, nCC: S.filter(function (x) { return x.cc; }).length };
+      }
+      // Sequência de um pokémon na rotação: skills em ordem (M1, M2...) e, no final, o buff seguido da skill que ele aumenta.
+      // Buff sem % testado vai antes da skill mais forte do pokémon nessa rotação.
+      function comboSeq(ro, pk) {
+        const its = ro.items.filter(function (x) { return x.p === pk; });
+        const pairs = ro.pairs.filter(function (pr) { return pr.buff.p === pk; });
+        const tgOf = new Map();
+        pairs.forEach(function (pr) { tgOf.set(pr.target, pr.buff); });
+        const pairedBuffs = pairs.map(function (pr) { return pr.buff; });
+        const free = its.filter(function (x) { return !x.buff; }).sort(function (a, b) { return b.d - a.d; });
+        its.filter(function (x) { return x.buff && pairedBuffs.indexOf(x) < 0; }).forEach(function (b) {
+          const t = free.find(function (x) { return !tgOf.has(x); });
+          if (t) { tgOf.set(t, b); pairedBuffs.push(b); }
+        });
+        // skills sem buff em ordem (M1, M2...); depois o buff (penúltima) e a skill buffada (última),
+        // para o buff nunca cair na skill errada
+        const seq = [];
+        its.filter(function (x) { return x.buff && pairedBuffs.indexOf(x) < 0; }).forEach(function (b) { seq.push(b); });
+        its.filter(function (x) { return !x.buff && !tgOf.has(x); }).sort(function (a, b) { return a.k - b.k; }).forEach(function (x) { seq.push(x); });
+        its.filter(function (x) { return tgOf.has(x); }).sort(function (a, b) { return a.k - b.k; }).forEach(function (x) {
+          seq.push(tgOf.get(x));
+          seq.push(x);
+        });
+        return seq;
+      }
+      function comboCmd(seq) { return "!autocombo " + seq.map(function (x) { return "m" + (x.k + 1); }).join(", "); }
+      function copyText(txt) {
+        if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(txt);
+        return new Promise(function (res, rej) {
+          const ta = document.createElement("textarea");
+          ta.value = txt; ta.setAttribute("readonly", ""); ta.style.position = "absolute"; ta.style.left = "-9999px";
+          document.body.appendChild(ta); ta.select();
+          try { document.execCommand("copy") ? res() : rej(); } catch (e) { rej(e); }
+          ta.remove();
+        });
       }
       let ROTCACHE = null;
       function rotResult() {
@@ -1952,26 +2103,24 @@
         }
         if (res.nCC > N) L.push("<p class=\"hint\">" + res.nCC + " skills de stun/silence para " + N + " rotações: no máximo " + N + " delas são usadas.</p>");
         const noBp = [];
-        state.mons.forEach(function (m) { m.skills.forEach(function (sk, k) { if (sk.t === "buff" && !(sk.bp > 0)) noBp.push(shortName(m) + " M" + (k + 1)); }); });
-        if (noBp.length) L.push("<p class=\"hint\">Buff sem % informado (conta só o dano dele): " + noBp.join(", ") + ".</p>");
+        state.mons.forEach(function (m) { m.skills.forEach(function (sk, k) { if (sk.t === "buff" && !(buffPct(m, k) > 0)) noBp.push(shortName(m) + " M" + (k + 1)); }); });
+        if (noBp.length) L.push("<p class=\"hint\">Buff ainda não testado (o aumento não entra na conta; a ordem já coloca o buff antes da skill mais forte): " + noBp.join(", ") + ".</p>");
         const cards = res.rots.map(function (ro, i) {
           const h = maxHz(state.rune, ro.tot);
-          const byP = {};
-          ro.items.forEach(function (sk) { (byP[sk.p] = byP[sk.p] || []).push(sk); });
-          const lines = Object.keys(byP).sort(function (a, b) { return a - b; }).map(function (pk) {
-            const m = state.mons[pk];
-            const its = byP[pk];
-            const pairs = ro.pairs.filter(function (pr) { return pr.buff.p == pk; });
-            const used = [];
-            const toks = [];
-            pairs.forEach(function (pr) {
-              used.push(pr.buff, pr.target);
-              toks.push("<span class=\"rk bf\">M" + (pr.buff.k + 1) + " ▲+" + fmt(pr.buff.bp) + "%</span><span class=\"rk-arrow\">→</span><span class=\"rk tgt" + (pr.target.cc ? " cc" : "") + "\">M" + (pr.target.k + 1) + (pr.target.cc ? " ⚡" : "") + " <small>+" + kfmt(pr.extra) + "</small></span>");
-            });
-            its.filter(function (x) { return used.indexOf(x) < 0; }).sort(function (a, b) { return a.k - b.k; }).forEach(function (sk) {
-              toks.push("<span class=\"rk" + (sk.cc ? " cc" : "") + (sk.buff ? " bf" : "") + "\">M" + (sk.k + 1) + (sk.cc ? " ⚡" : "") + (sk.buff ? " ▲" : "") + "</span>");
-            });
-            return "<div class=\"rl\"><b>" + shortName(m) + "</b> " + toks.join("") + "</div>";
+          const lines = ro.seqs.map(function (sq, j) {
+            const m = state.mons[sq.p];
+            const key = i * state.rot.maxP + j + 1;
+            const cmd = comboCmd(sq.seq);
+            const toks = sq.seq.map(function (sk, q) {
+              const pr = ro.pairs.find(function (x) { return x.target === sk; });
+              const nextIsTarget = sk.buff && sq.seq[q + 1] && ro.pairs.some(function (x) { return x.buff === sk && x.target === sq.seq[q + 1]; });
+              return "<span class=\"rk" + (sk.cc ? " cc" : "") + (sk.buff ? " bf" : "") + (pr ? " tgt" : "") + "\">M" + (sk.k + 1) + (sk.cc ? " ⚡" : "") + (sk.buff ? " ▲" : "") +
+                (pr ? " <small>+" + kfmt(pr.extra) + "</small>" : "") + "</span>" + (sk.buff ? "<span class=\"rk-arrow\">→</span>" : "");
+            }).join("");
+            return "<button type=\"button\" class=\"rl rl-copy\" data-cmd=\"" + esc(cmd) + "\" title=\"Copiar comando\">" +
+              "<span class=\"rl-top\"><span class=\"rl-key\" title=\"Atalho\">" + key + "</span><b>" + shortName(m) + "</b><span class=\"rl-cp\">Copiar</span></span>" +
+              "<span class=\"rl-toks\">" + toks + "</span>" +
+              "<code class=\"rl-cmd\">" + esc(cmd) + "</code></button>";
           }).join("") || "<div class=\"hint\">sem skills</div>";
           const isMin = ro.tot === res.min;
           return "<div class=\"rc" + (isMin ? " weak" : "") + "\">" +
@@ -1984,9 +2133,12 @@
         const unused = res.unused.length
           ? "<p class=\"rot-unused\"><strong>Sobram:</strong> " + res.unused.map(function (sk) { return shortName(state.mons[sk.p]) + " M" + (sk.k + 1) + (sk.cc ? " ⚡" : "") + (sk.buff ? " ▲" : "") + (sk.d ? " (" + kfmt(sk.d) + ")" : ""); }).join(", ") + "</p>"
           : "";
+        const all = [];
+        res.rots.forEach(function (ro, i) { ro.seqs.forEach(function (sq, j) { all.push((i * state.rot.maxP + j + 1) + ": " + comboCmd(sq.seq)); }); });
+        const allBox = all.length ? "<div class=\"rot-all\"><div class=\"rot-all-h\"><strong>Atalhos</strong><button type=\"button\" class=\"btn\" id=\"copy-all\" data-all=\"" + esc(all.join("\n")) + "\">Copiar todos</button></div><pre>" + esc(all.join("\n")) + "</pre></div>" : "";
         out.innerHTML = "<div class=\"rot-det\">" + L.join("") + "</div>" +
-          "<div class=\"rot-cards\">" + cards + "</div>" + unused +
-          "<p class=\"hint\">⚡ stun/silence (máx. 1 por rotação) · ▲ buff → skill que recebe o aumento, do mesmo pokémon. Máximo de " + state.rot.maxP + " pokémon por rotação.</p>";
+          "<div class=\"rot-cards\">" + cards + "</div>" + unused + allBox +
+          "<p class=\"hint\">Toque no pokémon da rotação para copiar o <code>!autocombo</code>. O número é o atalho: 1 e 2 na rotação 1, 3 e 4 na rotação 2... ⚡ stun/silence (máx. 1 por rotação) · ▲ buff: sempre a penúltima, e a skill buffada a última.</p>";
       }
 
       function paint() {
@@ -2548,7 +2700,7 @@
         window.addEventListener("keydown", onDragKey);
       });
 
-      window.HazardCalc = { rotSolve: rotSolve, rotResult: rotResult, pokeDamage: pokeDamage, neutralDmg: neutralDmg, isEff: isEff, setFormat: setFormat, teamOk: teamOk, bestSplit: bestSplit, precOf: precOf, precCap: precCap, official: official, candRows: candRows, state: state, monDmg: monDmg, maxHz: maxHz, official: official, totals: totals, bestSplit: bestSplit, parseNum: parseNum };
+      window.HazardCalc = { comboSeq: comboSeq, comboCmd: comboCmd, buffPct: buffPct, rotSolve: rotSolve, rotResult: rotResult, pokeDamage: pokeDamage, neutralDmg: neutralDmg, isEff: isEff, setFormat: setFormat, teamOk: teamOk, bestSplit: bestSplit, precOf: precOf, precCap: precCap, official: official, candRows: candRows, state: state, monDmg: monDmg, maxHz: maxHz, official: official, totals: totals, bestSplit: bestSplit, parseNum: parseNum };
 
       function applyPage() {
         const e = isEff();
@@ -2593,15 +2745,55 @@
         ev.target.value = v ? fmt(v) : "";
       });
       el.teams.addEventListener("focusin", function (ev) {
-        if (ev.target.hasAttribute("data-sk") || ev.target.hasAttribute("data-skb")) ev.target.select();
+        if (ev.target.hasAttribute("data-sk") || ev.target.hasAttribute("data-skbd")) ev.target.select();
       });
       el.teams.addEventListener("change", function (ev) {
+        const b = skRef("data-skbt", ev.target);
+        if (b) { b.m.skills[b.k].bt = Number(ev.target.value); save(); buildRoster(); paint(); return; }
         const a = skRef("data-skt", ev.target);
         if (!a) return;
         a.m.skills[a.k].t = ev.target.value;
-        ev.target.closest(".sk").className = "sk t-" + ev.target.value;
+        save();
+        buildRoster();
+        paint();
+        const back = document.querySelector("[data-skt=\"" + a.m.id + ":" + a.k + "\"]");
+        if (back) back.focus();
+      });
+      el.teams.addEventListener("input", function (ev) {
+        const a = skRef("data-skbd", ev.target);
+        if (!a) return;
+        const sk = a.m.skills[a.k];
+        const raw = ev.target.value.trim();
+        if (raw === "") { sk.bd = null; ev.target.classList.remove("invalid"); }
+        else {
+          const v = parseNum(raw);
+          if (!Number.isFinite(v)) { ev.target.classList.add("invalid"); return; }
+          ev.target.classList.remove("invalid");
+          sk.bd = v;
+        }
+        if (!sk.bt && sk.bt !== 0) sk.bt = buffTarget(a.m, a.k) >= 0 ? buffTarget(a.m, a.k) : null;
+        const lab = document.querySelector("[data-skbp=\"" + a.m.id + ":" + a.k + "\"]");
+        const pct = buffPct(a.m, a.k);
+        if (lab) lab.textContent = pct > 0 ? "≈ +" + fmt(Math.round(pct * 10) / 10) + "%" : (sk.bd ? "menor que o normal?" : "teste para descobrir");
         save();
         paint();
+      });
+      el.teams.addEventListener("focusout", function (ev) {
+        const a = skRef("data-skbd", ev.target);
+        if (!a) return;
+        const sk = a.m.skills[a.k];
+        ev.target.classList.remove("invalid");
+        ev.target.value = sk.bd ? fmt(sk.bd) : "";
+      });
+      document.getElementById("rot-out").addEventListener("click", function (ev) {
+        const b = ev.target.closest("[data-cmd]") || ev.target.closest("#copy-all");
+        if (!b) return;
+        const txt = b.getAttribute("data-cmd") || b.getAttribute("data-all");
+        const lab = b.querySelector(".rl-cp") || b;
+        const old = lab.textContent;
+        copyText(txt).then(function () { lab.textContent = "Copiado ✓"; b.classList.add("copied"); },
+          function () { lab.textContent = "Não copiou: selecione o texto"; });
+        setTimeout(function () { lab.textContent = old; b.classList.remove("copied"); }, 1600);
       });
       function bindInt(id, lo, hi, get, set) {
         const inp = document.getElementById(id);
