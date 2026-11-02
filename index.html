@@ -547,17 +547,44 @@
       .mchip { min-height: 34px; padding: 4px 10px; font-size: 0.85rem; }
       .mult-in .in { font-size: 16px; }
     }
-    /* ===== Aba Rotações 1.5× (paleta verde-água) ===== */
-    .rot-sec { display: none; }
-    body.page-rot .rot-sec { display: block; }
-    body.page-rot section.resumo, body.page-rot section.card:has(#teams), body.page-rot section.card:has(#hz) { display: none; }
-    body.page-rot {
-      --bg: #04110F; --panel: #0A1C19; --sunken: #061512; --raise: #0F2622;
-      --line: #143530; --line-strong: #23524A; --gold: #5EEAD4; --muted: #93B8B1;
-      background: radial-gradient(1200px 500px at 50% -200px, rgba(45, 212, 191, .14), transparent 70%), var(--bg);
+    /* ===== Formato 1.5× ===== */
+    .fmt-seg { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 4px; min-height: 44px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--sunken); min-width: 330px; }
+    .fmt-seg button { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; padding: 4px 10px; border: 0; background: transparent; border-radius: 999px; color: var(--muted); font-weight: 700; font-size: 0.86rem; cursor: pointer; transition: color .18s; }
+    .fmt-seg button small { font-size: 0.75rem; font-weight: 500; }
+    .fmt-seg button:hover { color: var(--text); }
+    .fmt-seg button.on { color: #1A1403; }
+    .fmt-seg button.on small { color: #3A2F05; font-weight: 600; }
+    .fmt-seg button:focus-visible { outline: 2px solid var(--ring, #93C5FD); outline-offset: 2px; }
+    .fmt-knob { position: absolute; z-index: 0; top: 4px; bottom: 4px; left: 4px; width: calc((100% - 8px) / 3); border-radius: 999px; background: var(--gold); transform: translateX(calc(100% * var(--i, 0))); transition: transform .22s cubic-bezier(.2,.7,.3,1); }
+    body.page-efet .fmt-seg button.on, body.page-efet .fmt-seg button.on small { color: #1A0B33; }
+    body.fmt-15 #toggle-cand, body.fmt-15 .grip, body.fmt-15 .slot-row .tsel, body.fmt-15 .howto { display: none !important; }
+    .teams-grid.f15 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    body.fmt-15 .mon { cursor: default; }
+    .rot-panel { margin-bottom: 14px; }
+    .rot-how { margin: 0 0 12px; max-width: 120ch; }
+    .skills-box { margin-top: 10px; padding: 10px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--sunken); }
+    .skills-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 0.75rem; font-weight: 700; color: var(--gold); margin-bottom: 8px; }
+    .skills-head .skc-sum { font-weight: 500; }
+    .sk.t-cc { border-color: var(--warn); }
+    .sk.t-buff { border-color: #A78BFA; }
+    .sk-top { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+    .sk-t { min-width: 0; max-width: 74%; flex: 1; background: var(--sunken); color: var(--muted); border: 1px solid var(--line); border-radius: 6px; font-size: 0.75rem; padding: 2px 2px; cursor: pointer; }
+    .sk.t-cc .sk-t { color: var(--warn); border-color: var(--warn); }
+    .sk.t-buff .sk-t { color: #C4B5FD; border-color: #A78BFA; }
+    .sk-b { display: none; align-items: center; gap: 3px; font-size: 0.75rem; color: #C4B5FD; font-weight: 600; }
+    .sk.t-buff .sk-b { display: flex; }
+    .sk-b .in { width: 46px; min-height: 28px; padding: 2px 5px; }
+    .rk.bf { border-color: #A78BFA; color: #C4B5FD; }
+    .rk.tgt small { color: var(--ok); font-weight: 700; }
+    .rk-arrow { margin: 0 3px 0 0; color: #C4B5FD; }
+    @media (max-width: 1100px) { .teams-grid.f15 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 900px) { .teams-grid.f15 { grid-template-columns: 1fr; } }
+    @media (max-width: 640px) {
+      .fmt-seg { min-width: 0; width: 100%; }
+      .fmt-seg button { font-size: 0.82rem; padding: 4px 4px; }
+      .sk-t { font-size: 16px; }
+      .sk-b .in { font-size: 16px; width: 56px; }
     }
-    body.page-rot h1::after { content: " · Rotações 1.5×"; color: var(--gold); }
-    body.page-rot .btn.gold { color: #042F2A; }
     .rot-bar { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; margin-bottom: 14px; }
     .rot-bar .in.small { width: 70px; }
     .rot-top { display: grid; grid-template-columns: auto 1fr; gap: 10px 22px; align-items: center; margin-bottom: 14px; }
@@ -592,7 +619,6 @@
     .sk-cc[aria-pressed="true"] { border-style: solid; border-color: var(--warn); color: var(--warn); background: rgba(251, 191, 36, .1); }
     .sk-cc:focus-visible { outline: 2px solid var(--ring, #93C5FD); outline-offset: 2px; }
     @media (max-width: 640px) {
-      .page-nav { grid-template-columns: 1fr 1fr 1fr; }
       .page-nav a { font-size: 0.8rem; padding: 6px 4px; text-align: center; }
       .page-nav a small { font-size: 0.75rem; }
       .rot-top { grid-template-columns: 1fr; }
@@ -600,7 +626,6 @@
       .skill-grid { grid-template-columns: 1fr; }
       .sk-in, .rot-bar .in { font-size: 16px; }
     }
-    .page-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   </style>
 </head>
 <body>
@@ -621,12 +646,11 @@
     </header>
 
     <nav class="page-nav" aria-label="Páginas">
-      <a href="#" data-page="neutro">Dano neutro<small>Dummy neutro</small></a>
+      <a href="#" data-page="neutro">Dano Superefetivo<small>testado no superefetivo</small></a>
       <a href="#efetividade" data-page="efet">Com efetividade<small>multiplicador por pokémon</small></a>
-      <a href="#rotacao" data-page="rot">1.5× Rotações<small>skills M1–M9</small></a>
     </nav>
     <div class="page-note" id="page-note" hidden>
-      <strong>Página de Efetividade.</strong> Digite o dano medido no <b>Dummy neutro</b> e marque em cada card quanto aquele pokémon bate no alvo (×0,25 até ×2). Os pokémon, danos, stars, held e precisão são os mesmos da página "Dano neutro"; o multiplicador só vale aqui.
+      <strong>Página de Efetividade.</strong> Digite o dano medido no <b>Dummy neutro</b> e marque em cada card quanto aquele pokémon bate no alvo (×0,25 até ×2). Os pokémon, danos, stars, held e precisão são os mesmos da página "Dano Superefetivo"; o multiplicador só vale aqui.
     </div>
 
     <section class="card resumo" aria-labelledby="resumo-h">
@@ -649,11 +673,11 @@
       <div class="head">
         <h2 id="teams-h">2. Seus times</h2>
         <div class="tools">
-          <div class="fmt-switch" id="fmtBox">
-            <span class="fs-lbl" id="fs-l" data-fmt="2x2x2">2×2×2<small>3 times de 2</small></span>
-            <button type="button" class="sw" id="fmtSwitch" role="switch" aria-checked="false" aria-labelledby="fs-sw-lbl"><span class="knob"></span></button>
-            <span class="sr-only" id="fs-sw-lbl">Formato 3×3 (desligado = 2×2×2)</span>
-            <span class="fs-lbl" id="fs-r" data-fmt="3x3">3×3<small>2 times de 3</small></span>
+          <div class="fmt-seg" id="fmtBox" role="radiogroup" aria-label="Formato">
+            <span class="fmt-knob" aria-hidden="true"></span>
+            <button type="button" role="radio" data-fmt="2x2x2">2×2×2<small>3 times de 2</small></button>
+            <button type="button" role="radio" data-fmt="3x3">3×3<small>2 times de 3</small></button>
+            <button type="button" role="radio" data-fmt="1.5">1.5×<small>rotações por skill</small></button>
           </div>
           <button type="button" class="btn" id="toggle-cand" aria-pressed="false" aria-controls="cand-col">+ Testar Pokémon novo</button>
           <label class="chk"><input type="checkbox" id="useTests" />Considerar testes (stars e held)</label>
@@ -668,6 +692,18 @@
         <summary>Como usar: arrastar cards, stars, held e posições</summary>
         <p class="hint">Arraste os cards: solte sobre outro card para trocar de time, ou na área do time para adicionar. No celular, arraste pelo ⋮⋮. O dano digitado deve ser o dano com as stars ATUAIS (linha amarela): ele não é recalculado. A linha azul e o Held teste são testes: suba uma estrela ou um Held e o dano sobe pelo bônus, o card fica azul. A 1ª posição de cada time é o OFFTANK e a 2ª é o DMG: os cards se reorganizam sozinhos pelo papel. DMG/OFFTANK joga na posição que o parceiro deixar livre.</p>
       </details>
+      <div class="rot-panel" id="rot-panel" hidden>
+        <div class="rot-bar">
+          <div class="mgroup"><label class="mlabel" for="rotN">Rotações</label>
+            <input class="in num small" id="rotN" inputmode="numeric" /></div>
+          <div class="mgroup"><label class="mlabel" for="rotP">Máx. pokémon por rotação</label>
+            <input class="in num small" id="rotP" inputmode="numeric" /></div>
+          <div class="mgroup"><label class="mlabel" for="rotPct">Meta por rotação</label>
+            <input class="in num small" id="rotPct" inputmode="numeric" /><span class="mlabel">% do dano do Hazard</span></div>
+        </div>
+        <p class="hint rot-how">Em cada card, anote o dano de cada skill (M1 a M9) e o tipo: <b>Normal</b>, <b>Stun/Silence</b> (no máximo 1 por rotação) ou <b>Buff</b> (aumenta a próxima skill do mesmo pokémon; informe o % depois de testar). A página distribui as skills nas rotações e decide onde vale usar o buff.</p>
+        <div id="rot-out"></div>
+      </div>
       <div class="teams-row" id="teams-row">
         <div id="teams"></div>
         <aside class="cand-col" id="cand-col" hidden>
@@ -679,25 +715,6 @@
         </aside>
       </div>
       <div id="suggest"></div>
-    </section>
-
-    <section class="card rot-sec" id="rot-sec" aria-labelledby="rot-h">
-      <div class="head">
-        <h2 id="rot-h">2. Rotações 1.5×</h2>
-        <p class="hint">Digite o dano de cada skill medido no Dummy neutro e marque as de stun/silence. A página distribui as skills entre as rotações.</p>
-      </div>
-      <div class="rot-bar">
-        <div class="mgroup"><label class="mlabel" for="rotN">Rotações</label>
-          <input class="in num small" id="rotN" inputmode="numeric" /></div>
-        <div class="mgroup"><label class="mlabel" for="rotP">Máx. pokémon por rotação</label>
-          <input class="in num small" id="rotP" inputmode="numeric" /></div>
-        <div class="mgroup"><label class="mlabel" for="rotPct">Meta por rotação</label>
-          <input class="in num small" id="rotPct" inputmode="numeric" /><span class="mlabel">% do dano do Hazard</span></div>
-        <label class="chk"><input type="checkbox" id="rotMult" />Aplicar efetividade do card (×)</label>
-      </div>
-      <div id="rot-out"></div>
-      <h3 class="rot-sub">Skills de cada pokémon</h3>
-      <div class="skill-grid" id="rot-skills"></div>
     </section>
 
     <section class="card">
@@ -756,9 +773,11 @@
       // Formato: 2x2x2 = 3 times de 2 · 3x3 = 2 times de 3. Os pokémon são os mesmos;
       // cada formato guarda a sua própria divisão (t2 / t3) e m.team é sempre a do formato ativo.
       function is3() { return state.format === "3x3"; }
-      function NT() { return is3() ? 2 : 3; }
+      function is15() { return state.format === "1.5"; }
+      function NT() { return is15() ? state.rot.n : is3() ? 2 : 3; }
       function TS() { return is3() ? 3 : 2; }
-      function TEAMS() { return is3() ? [0, 1] : [0, 1, 2]; }
+      function TEAMS() { const a = []; for (let i = 0; i < NT(); i++) a.push(i); return a; }
+      function teamLabel(k) { return is15() ? "Rotação " + (k + 1) : "Time " + LETTERS[k]; }
       function teamKey() { return is3() ? "t3" : "t2"; }
       const DEFAULT_TABLE = [
         [560, 549, 537, 526, 515, 505, 0],
@@ -814,14 +833,15 @@
       const MULTS = [0.25, 0.5, 1, 1.25, 1.5, 1.75, 2];
       function multNum(v) { v = Number(v); return Number.isFinite(v) && v > 0 && v <= 10 ? v : 1; }
       function isEff() { return location.hash === "#efetividade"; }
-      function isRot() { return location.hash === "#rotacao"; }
-      function emptySkills() { const a = []; for (let k = 0; k < 9; k++) a.push({ d: null, cc: false }); return a; }
+
+      function emptySkills() { const a = []; for (let k = 0; k < 9; k++) a.push({ d: null, t: "n", bp: null }); return a; }
       function normSkills(arr) {
         const out = emptySkills();
         if (Array.isArray(arr)) arr.slice(0, 9).forEach(function (x, k) {
           if (!x || typeof x !== "object") return;
-          const d = Number(x.d);
-          out[k] = { d: Number.isFinite(d) && d > 0 ? d : null, cc: x.cc === true };
+          const d = Number(x.d), bp = Number(x.bp);
+          const t = x.t === "cc" || x.t === "buff" || x.t === "n" ? x.t : (x.cc === true ? "cc" : "n");
+          out[k] = { d: Number.isFinite(d) && d > 0 ? d : null, t: t, bp: Number.isFinite(bp) && bp > 0 ? bp : null };
         });
         return out;
       }
@@ -853,7 +873,7 @@
       function freshMons() {
         return clone(DEFAULT_MONS).map(function (m, i) { m.id = "m" + (i + 1); m.t2 = m.team; m.t3 = i < 3 ? 0 : 1; return m; });
       }
-      const state = { rune: 5, basis: "agora", format: "2x2x2", teamPct: [0, 0, 0], useTests: true, showCand: false, rot: { n: 5, maxP: 2, pct: 100, useMult: false }, medal: 2.5, base: 560, step: 3, mons: freshMons(), cand: freshCand(), table: clone(DEFAULT_TABLE) };
+      const state = { rune: 5, basis: "agora", format: "2x2x2", teamPct: [0, 0, 0], useTests: true, showCand: false, rot: { n: 5, maxP: 2, pct: 100 }, medal: 2.5, base: 560, step: 3, mons: freshMons(), cand: freshCand(), table: clone(DEFAULT_TABLE) };
 
       const el = {
         runes: document.getElementById("runes"),
@@ -879,7 +899,7 @@
           if (Number.isInteger(d.rune) && d.rune >= 0 && d.rune <= 5) state.rune = d.rune;
           if (d.basis === "agora" || d.basis === "depois") state.basis = d.basis;
           if (typeof d.useTests === "boolean") state.useTests = d.useTests;
-          if (d.format === "3x3" || d.format === "2x2x2") state.format = d.format;
+          if (d.format === "3x3" || d.format === "2x2x2" || d.format === "1.5") state.format = d.format;
           if (typeof d.showCand === "boolean") state.showCand = d.showCand;
           state.medal = precNum(d.medal, state.medal);
           if (Array.isArray(d.teamPct) && d.teamPct.length === 3) {
@@ -919,10 +939,9 @@
           if (d.rot && typeof d.rot === "object") {
             const rn = Number(d.rot.n), rp = Number(d.rot.maxP);
             state.rot = {
-              n: Number.isInteger(rn) && rn >= 1 && rn <= 12 ? rn : 5,
+              n: Number.isInteger(rn) && rn >= 1 && rn <= 6 ? rn : 5,
               maxP: Number.isInteger(rp) && rp >= 1 && rp <= 6 ? rp : 2,
-              pct: Number.isInteger(Number(d.rot.pct)) && Number(d.rot.pct) >= 10 && Number(d.rot.pct) <= 200 ? Number(d.rot.pct) : 100,
-              useMult: d.rot.useMult === true
+              pct: Number.isInteger(Number(d.rot.pct)) && Number(d.rot.pct) >= 10 && Number(d.rot.pct) <= 200 ? Number(d.rot.pct) : 100
             };
           }
         }
@@ -999,10 +1018,15 @@
         return state.mons.reduce(function (s, m) { return s + (m.team === team ? monDmg(m) : 0); }, 0);
       }
       function totals() {
+        if (is15()) {
+          const R = rotResult();
+          return TEAMS().map(function (k) { return R && R.rots[k] ? R.rots[k].tot : 0; });
+        }
         return TEAMS().map(function (t) { return Math.round(teamBase(t) * (1 + state.teamPct[t] / 100)); });
       }
       function need(i, r) {
-        return state.base * 1000 * (1 + (state.step / 100) * i) * (1 - RUNES[r].pct / 100);
+        const f = is15() ? state.rot.pct / 100 : 1;
+        return state.base * 1000 * (1 + (state.step / 100) * i) * (1 - RUNES[r].pct / 100) * f;
       }
       function reqK(i, r) { return Math.ceil(need(i, r) / 1000 - 1e-9); }
       function maxHz(r, total) {
@@ -1032,8 +1056,16 @@
         return Math.min(dmgHz(r, t), precCap(list || state.mons));
       }
       function flat(groups) { return groups.reduce(function (a, g) { return a.concat(g); }, []); }
+      function groupMembers(k) {
+        if (!is15()) return sortedMembers(k);
+        const R = rotResult();
+        if (!R || !R.rots[k]) return [];
+        const seen = [];
+        R.rots[k].items.forEach(function (it) { if (seen.indexOf(it.p) < 0) seen.push(it.p); });
+        return seen.sort(function (a, b) { return a - b; }).map(function (pi) { return state.mons[pi]; });
+      }
       function namesOf(team) {
-        return sortPair(state.mons.filter(function (m) { return m.team === team; }))
+        return groupMembers(team)
           .map(function (m) { return esc(m.name || "sem nome"); }).join(" + ");
       }
 
@@ -1057,10 +1089,11 @@
       }
       function arrangementIssues() {
         const out = [];
+        if (is15()) return out;
         TEAMS().forEach(function (t) {
           const g = state.mons.filter(function (m) { return m.team === t; });
-          if (g.length !== TS()) out.push("Time " + LETTERS[t] + " está com " + g.length + " pokémon" + (g.length === 1 ? "" : "s"));
-          else if (!teamOk(g)) out.push("Time " + LETTERS[t] + " " + teamProblem(g));
+          if (g.length !== TS()) out.push("" + teamLabel(t) + " está com " + g.length + " pokémon" + (g.length === 1 ? "" : "s"));
+          else if (!teamOk(g)) out.push("" + teamLabel(t) + " " + teamProblem(g));
         });
         return out;
       }
@@ -1089,6 +1122,7 @@
       function teamPerms() { return is3() ? PERMS2 : PERMS; }
 
       function bestSplit() {
+        if (is15()) return null;
         let best = null;
         groupings().forEach(function (p) {
           if (!p.every(function (g) { return teamOk(g.map(function (i) { return state.mons[i]; })); })) return;
@@ -1136,7 +1170,7 @@
           if (i === 1) return { text: "2ª posição · DMG" + fx2, cls: "slot dmg" + (role === "OFFTANK" ? " bad" : "") };
           return { text: "Extra · fora do " + (is3() ? "3×3" : "2×2×2"), cls: "slot extra" };
         };
-        const sl = isCand ? { text: "Candidato · ainda fora dos times", cls: "slot extra" } : slotInfo(idx, m.role);
+        const sl = isCand ? { text: "Candidato · ainda fora dos times", cls: "slot extra" } : is15() ? { text: "Pokémon " + (idx + 1), cls: "slot" } : slotInfo(idx, m.role);
         const row = function (kind, level, label) {
           let h = "";
           for (let n = 1; n <= 5; n++) {
@@ -1160,6 +1194,7 @@
               const on = multNum(m.mult) === v;
               return "<button type=\"button\" class=\"mchip" + (on ? " on" : "") + (v === 1 ? " neutral" : v < 1 ? " low" : " high") + "\" data-mult=\"" + v + "\" aria-pressed=\"" + on + "\">" + multTxt(v) + (v === 1 ? " neutro" : "") + "</button>";
             }).join("") + "</div></div>" : "") +
+          (is15() && !isCand ? skillsHtml(m) : "") +
           "<div class=\"prec-row\">" +
             "<label class=\"fld\">Precisão treino (pts)<input class=\"in num\" data-f=\"train\" inputmode=\"decimal\" value=\"" + fmt(m.train) + "\" /></label>" +
             "<label class=\"berry\"><input type=\"checkbox\" data-f=\"berry\"" + (m.berry ? " checked" : "") + " />Berry +" + BERRY + "</label>" +
@@ -1188,17 +1223,40 @@
         el.cand.innerHTML = cardHtml(state.cand, 0, true);
       }
 
+      function skillsHtml(m) {
+        const tiles = m.skills.map(function (sk, k) {
+          const tp = sk.t;
+          return "<div class=\"sk t-" + tp + "\">" +
+            "<div class=\"sk-top\"><span class=\"sk-l\">M" + (k + 1) + "</span>" +
+            "<select class=\"sk-t\" data-skt=\"" + m.id + ":" + k + "\" aria-label=\"Tipo da skill M" + (k + 1) + "\">" +
+              [["n", "Normal"], ["cc", "Stun"], ["buff", "Buff"]].map(function (o) {
+                return "<option value=\"" + o[0] + "\"" + (tp === o[0] ? " selected" : "") + ">" + o[1] + "</option>";
+              }).join("") + "</select></div>" +
+            "<input class=\"in num sk-in\" data-sk=\"" + m.id + ":" + k + "\" inputmode=\"decimal\" placeholder=\"dano\" aria-label=\"Dano da skill M" + (k + 1) + "\" value=\"" + (sk.d ? fmt(sk.d) : "") + "\" />" +
+            "<label class=\"sk-b\">+<input class=\"in num\" data-skb=\"" + m.id + ":" + k + "\" inputmode=\"decimal\" placeholder=\"?\" aria-label=\"Aumento do buff na próxima skill, em %\" value=\"" + (sk.bp ? fmt(sk.bp) : "") + "\" />% próx.</label>" +
+            "</div>";
+        }).join("");
+        return "<div class=\"skills-box\"><div class=\"skills-head\"><span>Skills (dano de cada uma)</span><span class=\"skc-sum\" data-sksum=\"" + m.id + "\"></span></div>" +
+          "<div class=\"sk-grid\">" + tiles + "</div></div>";
+      }
+
       function buildRoster() {
         const card = function (m, idx) { return cardHtml(m, idx, false); };
+        if (is15()) {
+          el.teams.innerHTML = "<div class=\"teams-grid f15\">" + state.mons.map(function (m, i) { return card(m, i); }).join("") + "</div>";
+          buildCand();
+          buildPrec();
+          return;
+        }
         el.teams.innerHTML = "<div class=\"teams-grid" + (is3() ? " f3" : "") + "\">" + TEAMS().map(function (t) {
           const members = sortedMembers(t);
           const body = members.length
             ? members.map(card).join("")
             : "<div class=\"zone-empty\">Arraste um pokémon para cá</div>";
           return "<article class=\"team\" data-team=\"" + t + "\">" +
-            "<header><span class=\"tname\">Time " + LETTERS[t] + "</span><span class=\"tcount\" data-count=\"" + t + "\"></span><span class=\"tweak\" data-weak=\"" + t + "\" hidden>mais fraco</span></header>" +
+            "<header><span class=\"tname\">" + teamLabel(t) + "</span><span class=\"tcount\" data-count=\"" + t + "\"></span><span class=\"tweak\" data-weak=\"" + t + "\" hidden>mais fraco</span></header>" +
             "<div class=\"zone\">" + body + "</div>" +
-            "<div class=\"tbonus\"><label for=\"tp" + t + "\">Bônus do time</label><input class=\"in num\" id=\"tp" + t + "\" data-tpct=\"" + t + "\" inputmode=\"decimal\" value=\"" + fmt(state.teamPct[t]) + "\" aria-label=\"Percentual extra de dano do Time " + LETTERS[t] + "\" /><span>%</span></div>" +
+            "<div class=\"tbonus\"><label for=\"tp" + t + "\">Bônus do time</label><input class=\"in num\" id=\"tp" + t + "\" data-tpct=\"" + t + "\" inputmode=\"decimal\" value=\"" + fmt(state.teamPct[t]) + "\" aria-label=\"Percentual extra de dano do " + teamLabel(t) + "\" /><span>%</span></div>" +
             "<footer><span class=\"hint\" data-tlabel=\"" + t + "\">Total do time</span><span class=\"ttot\" data-total=\"" + t + "\"></span><span class=\"thaz\" data-thaz=\"" + t + "\"></span></footer>" +
             "</article>";
         }).join("") + "</div>";
@@ -1235,7 +1293,7 @@
         const weak = Math.min.apply(null, t);
         const weakIdx = t.indexOf(weak);
         const color = RUNES[state.rune].color;
-        TEAMS().forEach(function (i) {
+        if (!is15()) TEAMS().forEach(function (i) {
           const members = state.mons.filter(function (m) { return m.team === i; });
           const tot = el.teams.querySelector("[data-total=\"" + i + "\"]");
           const haz = el.teams.querySelector("[data-thaz=\"" + i + "\"]");
@@ -1283,23 +1341,23 @@
           if (nx != null) L.push("<p>Hazard " + (off + 1) + " exige " + fmt(nx) + " pts (" + fmt(nx * PT_PCT) + "%) em cada pokémon: faltam " + fmt(nx - pMin) + " pts.</p>");
         } else if (off < 0) {
           big = "Abaixo do Hazard 0";
-          L.push("<p>O time mais fraco (Time " + LETTERS[wi] + ", " + fmt(weak) + ") não chega a " + reqK(0, r.id) + "k.</p>");
+          L.push("<p>O time mais fraco (" + teamLabel(wi) + ", " + fmt(weak) + ") não chega a " + reqK(0, r.id) + "k.</p>");
         } else {
           const slack = weak - need(off, r.id);
           big = "Hazard " + off;
-          L.push("<p>Limitado pelo <strong>Time " + LETTERS[wi] + "</strong> (" + namesOf(wi) + ") com " + fmt(weak) + ". Exige " + reqK(off, r.id) + "k, folga de " + kfmt(slack) +
+          L.push("<p>Limitado pelo <strong>" + teamLabel(wi) + "</strong> (" + namesOf(wi) + ") com " + fmt(weak) + ". Exige " + reqK(off, r.id) + "k, folga de " + kfmt(slack) +
             (slack < 2000 ? " <span class=\"warnt\">(dentro da margem de erro)</span>" : "") + ".</p>");
           const pr = state.table[off][6];
           L.push("<p>Precisão necessária: <strong>" + fmt(pr) + " pts (" + fmt(pr * PT_PCT) + "%)</strong> · a sua menor é " + fmt(pMin) + " pts (" + fmt(pMin * PT_PCT) + "%) <span class=\"" + (pMin >= pr ? "st-ok" : "warnt") + "\">" + (pMin >= pr ? "✓" : "✗") + "</span></p>");
           if (off + 1 < state.table.length) {
-            L.push("<p>Próximo: Hazard " + (off + 1) + " exige " + reqK(off + 1, r.id) + "k, faltam " + kfmt(need(off + 1, r.id) - weak) + " no Time " + LETTERS[wi] + ".</p>");
+            L.push("<p>Próximo: Hazard " + (off + 1) + " exige " + reqK(off + 1, r.id) + "k, faltam " + kfmt(need(off + 1, r.id) - weak) + " no " + teamLabel(wi) + ".</p>");
           } else {
             L.push("<p>Já é o Hazard máximo da tabela.</p>");
           }
         }
         const chips = t.map(function (v, i) {
           const h = maxHz(state.rune, v);
-          return "<span class=\"chip" + (i === wi ? " weak" : "") + "\">Time " + LETTERS[i] + " · " + fmt(v) + " · " + (h < 0 ? "abaixo do H0" : "Hazard " + h) + "</span>";
+          return "<span class=\"chip" + (i === wi ? " weak" : "") + "\">" + teamLabel(i) + " · " + fmt(v) + " · " + (h < 0 ? "abaixo do H0" : "Hazard " + h) + "</span>";
         }).join("");
         const issues = arrangementIssues();
         if (issues.length) L.unshift("<p class=\"warnt\">Atenção: sua divisão atual não vale no jogo (" + esc(issues.join("; ")) + "). Esse Hazard é só uma estimativa.</p>");
@@ -1328,7 +1386,7 @@
             if (c === r) {
               const reach = TEAMS().filter(function (x) { return t[x] >= need(i, r); });
               cls = "col-sel " + (i === off ? "best" : reach.length === NT() ? "ok" : reach.length ? "part" : "no");
-              tag = i === off ? "✓ máx" : reach.length === NT() ? "✓" : reach.map(function (x) { return LETTERS[x]; }).join(" ");
+              tag = i === off ? "✓ máx" : reach.length === NT() ? "✓" : reach.map(function (x) { return is15() ? "R" + (x + 1) : LETTERS[x]; }).join(" ");
             }
             td.className = cls;
             who.textContent = tag;
@@ -1352,6 +1410,7 @@
       }
 
       function paintSuggest(t) {
+        if (is15()) { el.suggest.innerHTML = ""; el.suggest._best = null; return; }
         const best = bestSplit();
         const curMin = Math.min.apply(null, t);
         const issues = arrangementIssues();
@@ -1362,7 +1421,7 @@
           const hNew = official(state.rune, best.totals);
           const lines = best.pairs.map(function (pr, k) {
             const grp = sortPair(pr.map(function (i) { return state.mons[i]; }));
-            return "Time " + LETTERS[k] + ": " + grp.map(function (m) { return esc(m.name || "sem nome"); }).join(" + ") + " (" + fmt(best.totals[k]) + ")";
+            return "" + teamLabel(k) + ": " + grp.map(function (m) { return esc(m.name || "sem nome"); }).join(" + ") + " (" + fmt(best.totals[k]) + ")";
           }).join("<br>");
           html = "<div class=\"box warn\"><strong>Sua divisão atual não vale no jogo:</strong> " + esc(issues.join("; ")) + ". A melhor divisão válida deixa o time mais fraco em " + fmt(best.min) +
             " (Hazard " + (hNew < 0 ? "abaixo do 0" : hNew) + " com a Runa " + state.rune + ").<br>" + lines +
@@ -1372,7 +1431,7 @@
           const hNew = official(state.rune, best.totals);
           const lines = best.pairs.map(function (pr, k) {
             const grp = sortPair(pr.map(function (i) { return state.mons[i]; }));
-            return "Time " + LETTERS[k] + ": " + grp.map(function (m) { return esc(m.name || "sem nome"); }).join(" + ") + " (" + fmt(best.totals[k]) + ")";
+            return "" + teamLabel(k) + ": " + grp.map(function (m) { return esc(m.name || "sem nome"); }).join(" + ") + " (" + fmt(best.totals[k]) + ")";
           }).join("<br>");
           html = "<div class=\"box tip\"><strong>Dá para melhorar só reorganizando os times:</strong> o time mais fraco sobe de " + fmt(curMin) + " para " + fmt(best.min) +
             " (Hazard " + (hNow < 0 ? "abaixo do 0" : hNow) + " → " + (hNew < 0 ? "abaixo do 0" : hNew) + " com a Runa " + state.rune + ").<br>" + lines +
@@ -1429,21 +1488,22 @@
             const n = esc(m.name || "sem nome");
             return m === state.cand ? "<strong>" + n + "</strong>" : n;
           }).join(" + ");
-          return "Time " + LETTERS[k] + ": " + names + " (" + fmt(totals[k]) + ")";
+          return "" + teamLabel(k) + ": " + names + " (" + fmt(totals[k]) + ")";
         }).join("<br>");
       }
 
       function syncCandCol() {
         const col = document.getElementById("cand-col");
         const btn = document.getElementById("toggle-cand");
-        col.hidden = !state.showCand;
-        document.getElementById("teams-row").classList.toggle("with-cand", state.showCand);
+        col.hidden = !state.showCand || is15();
+        document.getElementById("teams-row").classList.toggle("with-cand", state.showCand && !is15());
         btn.setAttribute("aria-pressed", String(state.showCand));
         btn.textContent = state.showCand ? "− Ocultar Pokémon novo" : "+ Testar Pokémon novo";
       }
 
       function paintCand() {
         syncCandCol();
+        if (is15()) { el.candOut.innerHTML = ""; el.candOut._rows = null; return; }
         if (!state.showCand) { el.candOut.innerHTML = ""; el.candOut._rows = null; return; }
         const c = state.cand;
         const cardEl = el.cand.querySelector(".mon");
@@ -1509,7 +1569,7 @@
           const cname = esc(c.name || "o Pokémon novo");
           if (topWins) {
             const moves = top.mode === "best" ? " Isso reorganiza os times, veja abaixo." : "";
-            head = "<div class=\"box tip\"><strong>Recomendação:</strong> coloque <strong>" + cname + "</strong> no <strong>Time " + LETTERS[k] + "</strong>, " + pos +
+            head = "<div class=\"box tip\"><strong>Recomendação:</strong> coloque <strong>" + cname + "</strong> no <strong>" + teamLabel(k) + "</strong>, " + pos +
               ", no lugar de <strong>" + esc(top.row.old.name || "sem nome") + "</strong>." + moves +
               "<br>O time mais fraco sobe de " + fmt(curMin) + " para " + fmt(top.o.min) + " (" + hzTxt(curH) + " → " + hzTxt(newH) + " com a Runa " + state.rune + ")." +
               (reorgGain ? "<br><span class=\"hint\">Comparado com o melhor que você já faz só reorganizando os times atuais" + (nowValid ? " (hoje está em " + fmt(nowMin) + ", " + hzTxt(nowH) + ")" : "") + ".</span>" : "") +
@@ -1549,6 +1609,10 @@
 
       function precRows() {
         const rows = [];
+        if (is15()) {
+          state.mons.forEach(function (m) { rows.push({ m: m, team: "" }); });
+          return rows;
+        }
         TEAMS().forEach(function (t) {
           sortedMembers(t).forEach(function (m) { rows.push({ m: m, team: LETTERS[t] }); });
         });
@@ -1623,10 +1687,10 @@
         const pCap = precCap(state.mons);
         const weak = Math.min.apply(null, t);
         const wi = t.indexOf(weak);
-        document.getElementById("resumo-hint").textContent = (isEff() ? "Efetividade · " : "Dummy neutro · ") + (is3() ? "3×3" : "2×2×2") + " · Runa " + r.id + " (" + r.bonus + ") · medalhas " + fmt(state.medal) + "% · dano " + (state.basis === "depois" ? "Depois" : "Agora") + (state.useTests ? " · com testes" : "");
+        document.getElementById("resumo-hint").textContent = (isEff() ? "Efetividade · " : "Superefetivo · ") + (is15() ? "1.5× · " + NT() + " rotações" : is3() ? "3×3" : "2×2×2") + " · Runa " + r.id + " (" + r.bonus + ") · medalhas " + fmt(state.medal) + "% · dano " + (state.basis === "depois" ? "Depois" : "Agora") + (state.useTests ? " · com testes" : "");
 
         const teamCards = TEAMS().map(function (i) {
-          const mem = sortedMembers(i);
+          const mem = groupMembers(i);
           const h = mem.length ? Math.min(maxHz(state.rune, t[i]), precCap(mem)) : -1;
           const names = mem.map(function (m, k) {
             const n = esc((m.name || "sem nome").replace(/^Shiny\s+/i, ""));
@@ -1634,7 +1698,7 @@
           }).join(" · ") || "vazio";
           const isWeak = i === wi && mem.length > 0;
           return "<div class=\"rs-card" + (isWeak ? " weak" : "") + "\">" +
-            "<div class=\"rs-t\">Time " + LETTERS[i] + (isWeak ? "<span class=\"rs-tag\">mais fraco</span>" : "") + "</div>" +
+            "<div class=\"rs-t\">" + teamLabel(i) + (isWeak ? "<span class=\"rs-tag\">mais fraco</span>" : "") + "</div>" +
             "<div class=\"rs-names\" title=\"" + esc(mem.map(function (m) { return m.name; }).join(" + ")) + "\">" + names + "</div>" +
             "<div class=\"rs-dmg\">" + fmt(t[i]) + "</div>" +
             "<div class=\"rs-hz\" style=\"color:" + r.color + "\">" + hzTxt(h) + "</div>" +
@@ -1644,7 +1708,7 @@
         let lim;
         if (off < 0) lim = "nenhum Hazard ainda";
         else if (pCap < dH) lim = "segurado pela precisão";
-        else lim = "segurado pelo dano do Time " + LETTERS[wi];
+        else lim = "segurado pelo dano do " + teamLabel(wi);
         const offCard = "<div class=\"rs-card off\" style=\"--rc:" + r.color + "\">" +
           "<div class=\"rs-sub\">Hazard oficial</div>" +
           "<div class=\"rs-big\">" + (off < 0 ? "—" : off) + "</div>" +
@@ -1665,9 +1729,9 @@
             const dmgLine = shortT.length
               ? "<span class=\"nx-no\">" + shortT.map(function (k) {
                   const f = reqD - t[k];
-                  return "Time " + LETTERS[k] + " falta " + kfmt(f) + " (+" + fmt(Math.ceil(f / t[k] * 1000) / 10) + "%)";
+                  return "" + teamLabel(k) + " falta " + kfmt(f) + " (+" + fmt(Math.ceil(f / t[k] * 1000) / 10) + "%)";
                 }).join("<br>") + "</span>"
-              : "<span class=\"nx-ok\">✓ os " + NT() + " times têm</span>";
+              : "<span class=\"nx-ok\">✓ " + (is15() ? "as " + NT() + " rotações têm" : "os " + NT() + " times têm") + "</span>";
             const shortM = state.mons.filter(function (m) { return precOf(m) + 1e-9 < reqP; });
             let precLine;
             if (!shortM.length) {
@@ -1695,7 +1759,7 @@
               "<div class=\"nx-foot\">" + foot + "</div></div>";
           }).join("") + "</div>";
         }
-        box.innerHTML = "<div class=\"rs-row\"" + (is3() ? " style=\"grid-template-columns:repeat(3,minmax(0,1fr))\"" : "") + ">" + teamCards + offCard + "</div>" + next;
+        box.innerHTML = "<div class=\"rs-row\"" + (is3() ? " style=\"grid-template-columns:repeat(3,minmax(0,1fr))\"" : is15() ? " style=\"grid-template-columns:repeat(" + Math.min(NT() + 1, 6) + ",minmax(0,1fr))\"" : "") + ">" + teamCards + offCard + "</div>" + next;
       }
 
 
@@ -1708,15 +1772,43 @@
           return ((t ^ t >>> 14) >>> 0) / 4294967296;
         };
       }
+      // fator do card: efetividade (aba Efetividade) e testes de star/held aplicados ao dano das skills
+      function skillFactor(m) {
+        let f = isEff() ? multNum(m.mult) : 1;
+        const base = eff(m);
+        if (testActive(m) && base > 0) f *= neutralDmg(m) / base;
+        return f;
+      }
       function rotSkills() {
         const list = [];
         state.mons.forEach(function (m, pi) {
-          const f = state.rot.useMult ? multNum(m.mult) : 1;
+          const f = skillFactor(m);
           m.skills.forEach(function (sk, k) {
-            if (sk && sk.d > 0) list.push({ p: pi, k: k, d: Math.round(sk.d * f), cc: sk.cc });
+            const d = sk.d > 0 ? Math.round(sk.d * f) : 0;
+            const isBuff = sk.t === "buff";
+            if (d > 0 || (isBuff && sk.bp > 0)) list.push({ p: pi, k: k, d: d, cc: sk.t === "cc", buff: isBuff, bp: isBuff ? (sk.bp || 0) : 0 });
           });
         });
         return list;
+      }
+      // Dano de um pokémon dentro da rotação: soma das skills + bônus dos buffs.
+      // Cada buff aumenta UMA skill seguinte do mesmo pokémon; o maior buff vai na skill mais forte.
+      function pokeDamage(items) {
+        let tot = 0;
+        const bps = [], tg = [];
+        items.forEach(function (it) {
+          tot += it.d;
+          if (it.buff) { if (it.bp > 0) bps.push(it); } else tg.push(it);
+        });
+        bps.sort(function (a, b) { return b.bp - a.bp; });
+        tg.sort(function (a, b) { return b.d - a.d; });
+        const pairs = [];
+        for (let i = 0; i < bps.length && i < tg.length; i++) {
+          const extra = Math.round(tg[i].d * bps[i].bp / 100);
+          tot += extra;
+          pairs.push({ buff: bps[i], target: tg[i], extra: extra });
+        }
+        return { tot: tot, pairs: pairs };
       }
       // Distribui as skills em N rotações: no máx. 1 stun/silence e no máx. maxP pokémon por rotação.
       // Objetivo: a rotação mais fraca o mais forte possível (é ela que decide o Hazard).
@@ -1725,36 +1817,46 @@
         const N = state.rot.n, maxP = state.rot.maxP;
         if (!S.length) return null;
         const L = S.length;
+        const anyBuff = S.some(function (x) { return x.buff; });
         function evaluate(a) {
-          const tot = new Array(N).fill(0), cc = new Array(N).fill(0), pm = [];
-          for (let r = 0; r < N; r++) pm.push(0);
+          const tot = new Array(N).fill(0), cc = new Array(N).fill(0), pm = new Array(N).fill(0);
+          const groups = anyBuff ? [] : null;
+          if (anyBuff) for (let r = 0; r < N; r++) groups.push({});
           for (let i = 0; i < L; i++) {
             const r = a[i];
             if (r < 0) continue;
-            tot[r] += S[i].d;
-            if (S[i].cc) cc[r]++;
-            pm[r] |= (1 << S[i].p);
+            const x = S[i];
+            if (x.cc) cc[r]++;
+            pm[r] |= (1 << x.p);
+            if (anyBuff) (groups[r][x.p] = groups[r][x.p] || []).push(x);
+            else tot[r] += x.d;
           }
-          let ok = true;
           for (let r = 0; r < N; r++) {
-            if (cc[r] > 1) { ok = false; break; }
-            let c = 0, x = pm[r];
-            while (x) { c += x & 1; x >>= 1; }
-            if (c > maxP) { ok = false; break; }
+            if (cc[r] > 1) return { ok: false };
+            let c = 0, v = pm[r];
+            while (v) { c += v & 1; v >>= 1; }
+            if (c > maxP) return { ok: false };
+            if (anyBuff) {
+              let t = 0;
+              for (const pk in groups[r]) t += pokeDamage(groups[r][pk]).tot;
+              tot[r] = t;
+            }
           }
-          return { ok: ok, tot: tot };
+          return { ok: true, tot: tot };
         }
-        function better(x, y) { // x melhor que y? (vetor ordenado crescente, lexicográfico)
+        function better(x, y) {
           const a = x.slice().sort(function (p, q) { return p - q; }), b = y.slice().sort(function (p, q) { return p - q; });
           for (let i = 0; i < a.length; i++) { if (a[i] !== b[i]) return a[i] > b[i]; }
           return false;
         }
         const R = rng(12345);
         let best = null;
-        const restarts = 24, iters = 2500;
+        const restarts = 24, iters = anyBuff ? 1800 : 2500;
         for (let rs = 0; rs < restarts; rs++) {
           const order = S.map(function (_, i) { return i; }).sort(function (i, j) {
-            return (S[j].d * (rs ? 0.85 + 0.3 * R() : 1)) - (S[i].d * (rs ? 0.85 + 0.3 * R() : 1));
+            const vi = (S[i].d + S[i].bp * 1000) * (rs ? 0.85 + 0.3 * R() : 1);
+            const vj = (S[j].d + S[j].bp * 1000) * (rs ? 0.85 + 0.3 * R() : 1);
+            return vj - vi;
           });
           const a = new Array(L).fill(-1);
           order.forEach(function (i) {
@@ -1762,7 +1864,7 @@
             for (let r = 0; r < N; r++) {
               a[i] = r;
               const e = evaluate(a);
-              if (e.ok && e.tot[r] - S[i].d < low) { low = e.tot[r] - S[i].d; pick = r; }
+              if (e.ok && e.tot[r] < low) { low = e.tot[r]; pick = r; }
             }
             a[i] = pick;
           });
@@ -1788,110 +1890,107 @@
           if (!best || better(cur, best.tot)) best = { a: a.slice(), tot: cur.slice() };
         }
         const rots = [];
-        for (let r = 0; r < N; r++) rots.push({ items: [], tot: best.tot[r], cc: 0 });
+        for (let r = 0; r < N; r++) rots.push({ items: [], tot: best.tot[r], cc: 0, pairs: [] });
         const unused = [];
         S.forEach(function (sk, i) {
           if (best.a[i] < 0) unused.push(sk);
           else { rots[best.a[i]].items.push(sk); if (sk.cc) rots[best.a[i]].cc++; }
         });
+        rots.forEach(function (ro) {
+          const g = {};
+          ro.items.forEach(function (it) { (g[it.p] = g[it.p] || []).push(it); });
+          Object.keys(g).forEach(function (pk) { ro.pairs = ro.pairs.concat(pokeDamage(g[pk]).pairs); });
+        });
         const total = S.reduce(function (x, y) { return x + y.d; }, 0);
         return { rots: rots, unused: unused, min: Math.min.apply(null, best.tot), total: total, nCC: S.filter(function (x) { return x.cc; }).length };
       }
-
-      function rotNeed(i) { return need(i, state.rune) * state.rot.pct / 100; }
-      function rotHz(x) {
-        let best = -1;
-        for (let i = 0; i < state.table.length; i++) if (rotNeed(i) <= x) best = i;
-        return best;
+      let ROTCACHE = null;
+      function rotResult() {
+        if (!is15()) return null;
+        if (ROTCACHE === null) ROTCACHE = rotSolve() || false;
+        return ROTCACHE || null;
       }
-      function rotK(i) { return Math.ceil(rotNeed(i) / 1000 - 1e-9); }
+
       function shortName(m) { return esc((m.name || "sem nome").replace(/^Shiny\s+/i, "")); }
 
-      function buildRot() {
-        const box = document.getElementById("rot-skills");
-        if (!box) return;
-        box.innerHTML = state.mons.map(function (m, pi) {
-          const tiles = m.skills.map(function (sk, k) {
-            return "<div class=\"sk" + (sk.cc ? " cc" : "") + "\">" +
-              "<label class=\"sk-l\" for=\"sk-" + pi + "-" + k + "\">M" + (k + 1) + "</label>" +
-              "<input class=\"in num sk-in\" id=\"sk-" + pi + "-" + k + "\" data-sk=\"" + pi + ":" + k + "\" inputmode=\"decimal\" placeholder=\"—\" value=\"" + (sk.d ? fmt(sk.d) : "") + "\" />" +
-              "<button type=\"button\" class=\"sk-cc\" data-skcc=\"" + pi + ":" + k + "\" aria-pressed=\"" + sk.cc + "\" title=\"Marcar como stun/silence\">" + (sk.cc ? "✓ stun" : "stun?") + "</button>" +
-              "</div>";
-          }).join("");
-          return "<div class=\"skc\" data-pi=\"" + pi + "\"><div class=\"skc-h\"><strong>" + shortName(m) + "</strong><span class=\"skc-sum\" data-sksum=\"" + pi + "\"></span></div>" +
-            "<div class=\"sk-grid\">" + tiles + "</div></div>";
-        }).join("");
+      function paintSkillSums() {
+        state.mons.forEach(function (m) {
+          const n = document.querySelector("[data-sksum=\"" + m.id + "\"]");
+          if (!n) return;
+          const sum = m.skills.reduce(function (a, x) { return a + (x.d || 0); }, 0);
+          const cnt = m.skills.filter(function (x) { return x.d > 0 || x.t === "buff"; }).length;
+          n.textContent = cnt ? "soma " + fmt(sum) + " · " + cnt + " skill" + (cnt > 1 ? "s" : "") : "nenhuma ainda";
+        });
       }
 
       function paintRot() {
         const out = document.getElementById("rot-out");
-        if (!out) return;
-        state.mons.forEach(function (m, pi) {
-          const n = document.querySelector("[data-sksum=\"" + pi + "\"]");
-          if (!n) return;
-          const sum = m.skills.reduce(function (a, x) { return a + (x.d || 0); }, 0);
-          const cnt = m.skills.filter(function (x) { return x.d > 0; }).length;
-          const ccs = m.skills.filter(function (x) { return x.d > 0 && x.cc; }).length;
-          n.textContent = cnt ? fmt(sum) + " · " + cnt + " skill" + (cnt > 1 ? "s" : "") + (ccs ? " · " + ccs + " stun" : "") : "sem skills";
-        });
-        if (!isRot()) return;
-        const res = rotSolve();
+        if (!out || !is15()) return;
+        paintSkillSums();
+        const res = rotResult();
         if (!res) {
-          out.innerHTML = "<div class=\"box neutral\">Preencha o dano das skills (M1 a M9) dos pokémon abaixo para calcular as rotações.</div>";
+          out.innerHTML = "<div class=\"box neutral\">Anote o dano das skills (M1 a M9) nos cards abaixo para calcular as rotações.</div>";
           return;
         }
         const r = RUNES[state.rune];
-        const N = state.rot.n;
-        const dmgH = rotHz(res.min);
+        const N = NT();
+        const t = totals();
+        const off = official(state.rune, t);
+        const dmgH = dmgHz(state.rune, t);
         const pCap = precCap(state.mons);
-        const off = Math.min(dmgH, pCap);
         const nx = off + 1 < state.table.length ? off + 1 : -1;
-        const nxNeed = nx >= 0 ? rotNeed(nx) : 0;
-        const ceil = Math.floor(res.total / N);
-        let lim = off < 0 ? "nenhum Hazard ainda" : (pCap < dmgH ? "segurado pela precisão" : "segurado pela rotação mais fraca");
+        const nxNeed = nx >= 0 ? need(nx, state.rune) : 0;
         const L = [];
         if (state.rot.pct !== 100) L.push("<p class=\"hint\">Meta por rotação: " + state.rot.pct + "% do dano do Hazard.</p>");
-        L.push("<p>Rotação mais fraca: <strong>" + fmt(res.min) + "</strong> · soma de todas as skills " + fmt(res.total) + " (teto teórico " + fmt(ceil) + " por rotação).</p>");
+        L.push("<p>Rotação mais fraca: <strong>" + fmt(res.min) + "</strong> · soma das skills " + fmt(res.total) + " (sem buff), teto ~" + fmt(Math.floor(res.total / N)) + " por rotação.</p>");
         if (nx >= 0) {
           const shortR = res.rots.filter(function (x) { return x.tot < nxNeed; }).length;
-          if (res.total < nxNeed * N) {
-            L.push("<p class=\"st-no\">Hazard " + nx + " exige " + rotK(nx) + "k em cada uma das " + N + " rotações: faltam pelo menos " + kfmt(nxNeed * N - res.total) + " no total das skills, mesmo com a divisão perfeita.</p>");
-          } else if (dmgH < nx) {
-            L.push("<p class=\"st-no\">Hazard " + nx + " exige " + rotK(nx) + "k por rotação: " + shortR + " rotação(ões) abaixo nesta divisão; a soma das skills daria, mas o stun/silence ou o limite de pokémon por rotação impedem.</p>");
+          if (dmgH < nx) {
+            L.push("<p class=\"st-no\">Hazard " + nx + " exige " + reqK(nx, state.rune) + "k em cada rotação: " + shortR + " de " + N + " abaixo nesta divisão.</p>");
           }
           if (pCap < nx) L.push("<p class=\"st-no\">Precisão: Hazard " + nx + " exige " + fmt(state.table[nx][6]) + " pts em cada pokémon (veja a seção de precisão).</p>");
         }
-        if (res.nCC > N) L.push("<p class=\"hint\">Você tem " + res.nCC + " skills de stun/silence para " + N + " rotações: no máximo " + N + " delas são usadas.</p>");
+        if (res.nCC > N) L.push("<p class=\"hint\">" + res.nCC + " skills de stun/silence para " + N + " rotações: no máximo " + N + " delas são usadas.</p>");
+        const noBp = [];
+        state.mons.forEach(function (m) { m.skills.forEach(function (sk, k) { if (sk.t === "buff" && !(sk.bp > 0)) noBp.push(shortName(m) + " M" + (k + 1)); }); });
+        if (noBp.length) L.push("<p class=\"hint\">Buff sem % informado (conta só o dano dele): " + noBp.join(", ") + ".</p>");
         const cards = res.rots.map(function (ro, i) {
-          const h = rotHz(ro.tot);
+          const h = maxHz(state.rune, ro.tot);
           const byP = {};
-          ro.items.slice().sort(function (a, b) { return a.p - b.p || a.k - b.k; }).forEach(function (sk) {
-            (byP[sk.p] = byP[sk.p] || []).push(sk);
-          });
-          const lines = Object.keys(byP).map(function (pk) {
+          ro.items.forEach(function (sk) { (byP[sk.p] = byP[sk.p] || []).push(sk); });
+          const lines = Object.keys(byP).sort(function (a, b) { return a - b; }).map(function (pk) {
             const m = state.mons[pk];
-            return "<div class=\"rl\"><b>" + shortName(m) + "</b> " + byP[pk].map(function (sk) {
-              return "<span class=\"rk" + (sk.cc ? " cc" : "") + "\">M" + (sk.k + 1) + (sk.cc ? " ⚡" : "") + "</span>";
-            }).join("") + "</div>";
+            const its = byP[pk];
+            const pairs = ro.pairs.filter(function (pr) { return pr.buff.p == pk; });
+            const used = [];
+            const toks = [];
+            pairs.forEach(function (pr) {
+              used.push(pr.buff, pr.target);
+              toks.push("<span class=\"rk bf\">M" + (pr.buff.k + 1) + " ▲+" + fmt(pr.buff.bp) + "%</span><span class=\"rk-arrow\">→</span><span class=\"rk tgt" + (pr.target.cc ? " cc" : "") + "\">M" + (pr.target.k + 1) + (pr.target.cc ? " ⚡" : "") + " <small>+" + kfmt(pr.extra) + "</small></span>");
+            });
+            its.filter(function (x) { return used.indexOf(x) < 0; }).sort(function (a, b) { return a.k - b.k; }).forEach(function (sk) {
+              toks.push("<span class=\"rk" + (sk.cc ? " cc" : "") + (sk.buff ? " bf" : "") + "\">M" + (sk.k + 1) + (sk.cc ? " ⚡" : "") + (sk.buff ? " ▲" : "") + "</span>");
+            });
+            return "<div class=\"rl\"><b>" + shortName(m) + "</b> " + toks.join("") + "</div>";
           }).join("") || "<div class=\"hint\">sem skills</div>";
           const isMin = ro.tot === res.min;
           return "<div class=\"rc" + (isMin ? " weak" : "") + "\">" +
-            "<div class=\"rc-h\"><span>Rotação " + (i + 1) + "</span>" + (ro.cc ? "<span class=\"rc-cc\">⚡ 1 stun</span>" : "<span class=\"rc-nocc\">sem stun</span>") + "</div>" +
+            "<div class=\"rc-h\"><span>Rotação " + (i + 1) + "</span>" + (ro.cc ? "<span class=\"rc-cc\">⚡ stun</span>" : "<span class=\"rc-nocc\">sem stun</span>") + "</div>" +
             "<div class=\"rc-d\">" + fmt(ro.tot) + "</div>" +
             "<div class=\"rc-hz\" style=\"color:" + r.color + "\">" + hzTxt(h) + "</div>" +
             (nx >= 0 && ro.tot < nxNeed ? "<div class=\"rc-f\">falta " + kfmt(nxNeed - ro.tot) + " p/ Hazard " + nx + "</div>" : "") +
             lines + "</div>";
         }).join("");
         const unused = res.unused.length
-          ? "<p class=\"rot-unused\"><strong>Sobram:</strong> " + res.unused.map(function (sk) { return shortName(state.mons[sk.p]) + " M" + (sk.k + 1) + (sk.cc ? " ⚡" : "") + " (" + kfmt(sk.d) + ")"; }).join(", ") + "</p>"
+          ? "<p class=\"rot-unused\"><strong>Sobram:</strong> " + res.unused.map(function (sk) { return shortName(state.mons[sk.p]) + " M" + (sk.k + 1) + (sk.cc ? " ⚡" : "") + (sk.buff ? " ▲" : "") + (sk.d ? " (" + kfmt(sk.d) + ")" : ""); }).join(", ") + "</p>"
           : "";
-        out.innerHTML = "<div class=\"rot-top\" style=\"--rc:" + r.color + "\"><div class=\"rot-off\"><div class=\"rs-sub\">Hazard oficial · Runa " + r.id + "</div><div class=\"rot-big\">" + (off < 0 ? "—" : off) + "</div><div class=\"rs-sub\">" + lim + "</div></div>" +
-          "<div class=\"rot-det\">" + L.join("") + "</div></div>" +
+        out.innerHTML = "<div class=\"rot-det\">" + L.join("") + "</div>" +
           "<div class=\"rot-cards\">" + cards + "</div>" + unused +
-          "<p class=\"hint\">⚡ = stun/silence. Cada rotação usa no máximo 1 stun/silence e no máximo " + state.rot.maxP + " pokémon. A divisão é calculada automaticamente e pode variar se houver empate.</p>";
+          "<p class=\"hint\">⚡ stun/silence (máx. 1 por rotação) · ▲ buff → skill que recebe o aumento, do mesmo pokémon. Máximo de " + state.rot.maxP + " pokémon por rotação.</p>";
       }
 
       function paint() {
+        ROTCACHE = null;
         const t = totals();
         const off = official(state.rune, t);
         paintRunes(t);
@@ -1918,27 +2017,44 @@
         save();
         syncFormat();
         buildRoster();
+        buildTable();
         paint();
       }
-      document.getElementById("fmtSwitch").addEventListener("click", function () { setFormat(is3() ? "2x2x2" : "3x3"); });
+      const FMTS = ["2x2x2", "3x3", "1.5"];
       document.querySelectorAll("#fmtBox [data-fmt]").forEach(function (l) {
         l.addEventListener("click", function () { setFormat(l.getAttribute("data-fmt")); });
+        l.addEventListener("keydown", function (ev) {
+          const i = FMTS.indexOf(state.format);
+          let n = -1;
+          if (ev.key === "ArrowRight" || ev.key === "ArrowDown") n = (i + 1) % 3;
+          if (ev.key === "ArrowLeft" || ev.key === "ArrowUp") n = (i + 2) % 3;
+          if (n < 0) return;
+          ev.preventDefault();
+          setFormat(FMTS[n]);
+          document.querySelector("#fmtBox [data-fmt=\"" + FMTS[n] + "\"]").focus();
+        });
       });
       function syncFormat() {
-        const sw = document.getElementById("fmtSwitch");
-        sw.setAttribute("aria-checked", String(is3()));
-        document.getElementById("fs-l").classList.toggle("on", !is3());
-        document.getElementById("fs-r").classList.toggle("on", is3());
+        const i = FMTS.indexOf(state.format);
+        const box = document.getElementById("fmtBox");
+        box.style.setProperty("--i", String(i));
+        box.querySelectorAll("[data-fmt]").forEach(function (b) {
+          const on = b.getAttribute("data-fmt") === state.format;
+          b.setAttribute("aria-checked", String(on));
+          b.tabIndex = on ? 0 : -1;
+          b.classList.toggle("on", on);
+        });
+        document.body.classList.toggle("fmt-15", is15());
+        document.getElementById("rot-panel").hidden = !is15();
+        const h = document.getElementById("teams-h");
+        if (h) h.textContent = is15() ? "2. Suas rotações 1.5×" : "2. Seus times";
       }
 
       function syncControls() {
         syncFormat();
-        if (document.getElementById("rotN")) {
-          document.getElementById("rotN").value = String(state.rot.n);
-          document.getElementById("rotP").value = String(state.rot.maxP);
-          document.getElementById("rotPct").value = String(state.rot.pct);
-          document.getElementById("rotMult").checked = state.rot.useMult;
-        }
+        document.getElementById("rotN").value = String(state.rot.n);
+        document.getElementById("rotP").value = String(state.rot.maxP);
+        document.getElementById("rotPct").value = String(state.rot.pct);
         document.getElementById("useTests").checked = state.useTests;
         document.querySelectorAll("input[name='basis']").forEach(function (i) { i.checked = i.value === state.basis; });
         document.querySelectorAll("input[name='basechip']").forEach(function (i) { i.checked = Number(i.value) === state.base; });
@@ -2158,14 +2274,13 @@
         state.medal = 2.5;
         state.base = 560;
         state.step = 3;
-        state.rot = { n: 5, maxP: 2, pct: 100, useMult: false };
+        state.rot = { n: 5, maxP: 2, pct: 100 };
       }
       function rebuildAll() {
         save();
         syncControls();
         buildRoster();
         buildTable();
-        buildRot();
         paint();
       }
       document.getElementById("reset-all").addEventListener("click", function () {
@@ -2418,7 +2533,7 @@
       }
 
       el.teams.addEventListener("pointerdown", function (ev) {
-        if (drag) return;
+        if (drag || is15()) return;
         if (ev.pointerType === "mouse" && ev.button !== 0) return;
         const card = ev.target.closest(".mon");
         if (!card || ev.target.closest(INTERACTIVE)) return;
@@ -2433,57 +2548,60 @@
         window.addEventListener("keydown", onDragKey);
       });
 
-      window.HazardCalc = { rotSolve: rotSolve, neutralDmg: neutralDmg, isEff: isEff, setFormat: setFormat, teamOk: teamOk, bestSplit: bestSplit, precOf: precOf, precCap: precCap, official: official, candRows: candRows, state: state, monDmg: monDmg, maxHz: maxHz, official: official, totals: totals, bestSplit: bestSplit, parseNum: parseNum };
+      window.HazardCalc = { rotSolve: rotSolve, rotResult: rotResult, pokeDamage: pokeDamage, neutralDmg: neutralDmg, isEff: isEff, setFormat: setFormat, teamOk: teamOk, bestSplit: bestSplit, precOf: precOf, precCap: precCap, official: official, candRows: candRows, state: state, monDmg: monDmg, maxHz: maxHz, official: official, totals: totals, bestSplit: bestSplit, parseNum: parseNum };
 
       function applyPage() {
         const e = isEff();
-        const ro = isRot();
-        const pg = ro ? "rot" : e ? "efet" : "neutro";
+        const pg = e ? "efet" : "neutro";
         document.body.classList.toggle("page-efet", e);
-        document.body.classList.toggle("page-rot", ro);
         document.querySelectorAll(".page-nav a").forEach(function (a) {
           const on = a.getAttribute("data-page") === pg;
           a.classList.toggle("on", on);
           if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
         });
         document.getElementById("page-note").hidden = !e;
-        document.title = ro ? "Calculadora de Hazard · Rotações 1.5×" : e ? "Calculadora de Hazard · Efetividade" : "Calculadora de Hazard";
+        document.title = e ? "Calculadora de Hazard · Efetividade" : "Calculadora de Hazard";
       }
 
-      const rotSec = document.getElementById("rot-sec");
-      rotSec.addEventListener("input", function (ev) {
-        const ks = ev.target.getAttribute("data-sk");
-        if (!ks) return;
-        const pk = ks.split(":").map(Number);
-        const raw = ev.target.value.trim();
-        if (raw === "") { state.mons[pk[0]].skills[pk[1]].d = null; ev.target.classList.remove("invalid"); save(); paintRot(); paintPrec(); return; }
+      function skRef(attr, node) {
+        const v = node.getAttribute(attr);
+        if (!v) return null;
+        const pr = v.split(":");
+        const m = findMon(pr[0]);
+        return m ? { m: m, k: Number(pr[1]) } : null;
+      }
+      el.teams.addEventListener("input", function (ev) {
+        const a = skRef("data-sk", ev.target) || skRef("data-skb", ev.target);
+        if (!a) return;
+        const isB = ev.target.hasAttribute("data-skb");
+        const raw = ev.target.value.trim().replace(/%$/, "");
+        const sk = a.m.skills[a.k];
+        if (raw === "") { if (isB) sk.bp = null; else sk.d = null; ev.target.classList.remove("invalid"); save(); paint(); return; }
         const v = parseNum(raw);
         if (!Number.isFinite(v)) { ev.target.classList.add("invalid"); return; }
         ev.target.classList.remove("invalid");
-        state.mons[pk[0]].skills[pk[1]].d = v;
+        if (isB) sk.bp = v; else sk.d = v;
         save();
-        paintRot();
+        paint();
       });
-      rotSec.addEventListener("focusout", function (ev) {
-        const ks = ev.target.getAttribute("data-sk");
-        if (!ks) return;
-        const pk = ks.split(":").map(Number);
-        const d = state.mons[pk[0]].skills[pk[1]].d;
+      el.teams.addEventListener("focusout", function (ev) {
+        const a = skRef("data-sk", ev.target) || skRef("data-skb", ev.target);
+        if (!a) return;
+        const sk = a.m.skills[a.k];
+        const v = ev.target.hasAttribute("data-skb") ? sk.bp : sk.d;
         ev.target.classList.remove("invalid");
-        ev.target.value = d ? fmt(d) : "";
+        ev.target.value = v ? fmt(v) : "";
       });
-      rotSec.addEventListener("focusin", function (ev) { if (ev.target.getAttribute("data-sk")) ev.target.select(); });
-      rotSec.addEventListener("click", function (ev) {
-        const b = ev.target.closest("[data-skcc]");
-        if (!b) return;
-        const pk = b.getAttribute("data-skcc").split(":").map(Number);
-        const sk = state.mons[pk[0]].skills[pk[1]];
-        sk.cc = !sk.cc;
-        b.setAttribute("aria-pressed", String(sk.cc));
-        b.textContent = sk.cc ? "✓ stun" : "stun?";
-        b.closest(".sk").classList.toggle("cc", sk.cc);
+      el.teams.addEventListener("focusin", function (ev) {
+        if (ev.target.hasAttribute("data-sk") || ev.target.hasAttribute("data-skb")) ev.target.select();
+      });
+      el.teams.addEventListener("change", function (ev) {
+        const a = skRef("data-skt", ev.target);
+        if (!a) return;
+        a.m.skills[a.k].t = ev.target.value;
+        ev.target.closest(".sk").className = "sk t-" + ev.target.value;
         save();
-        paintRot();
+        paint();
       });
       function bindInt(id, lo, hi, get, set) {
         const inp = document.getElementById(id);
@@ -2492,27 +2610,27 @@
           const v = Number(inp.value);
           if (!Number.isInteger(v) || v < lo || v > hi) { inp.classList.add("invalid"); return; }
           inp.classList.remove("invalid");
-          set(v); save(); paintRot();
+          set(v); save();
+          if (id === "rotN") buildTable();
+          paint();
         });
         inp.addEventListener("blur", function () { inp.classList.remove("invalid"); inp.value = String(get()); });
         inp.addEventListener("focus", function () { inp.select(); });
       }
-      bindInt("rotN", 1, 12, function () { return state.rot.n; }, function (v) { state.rot.n = v; });
+      bindInt("rotN", 1, 6, function () { return state.rot.n; }, function (v) { state.rot.n = v; });
       bindInt("rotPct", 10, 200, function () { return state.rot.pct; }, function (v) { state.rot.pct = v; });
       bindInt("rotP", 1, 6, function () { return state.rot.maxP; }, function (v) { state.rot.maxP = v; });
-      document.getElementById("rotMult").addEventListener("change", function (ev) { state.rot.useMult = ev.target.checked; save(); paintRot(); });
       window.addEventListener("hashchange", function () {
         applyPage();
         buildRoster();
-        buildRot();
         paint();
         window.scrollTo(0, 0);
       });
 
       load();
+      if (location.hash === "#rotacao") { state.format = "1.5"; history.replaceState(null, "", location.pathname); }
       applyPage();
       syncControls();
-      buildRot();
       buildRoster();
       buildTable();
       paint();
