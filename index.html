@@ -135,6 +135,19 @@
     .eff.test { color: var(--tc); }
     .eff.test strong { color: var(--tc); }
     :root { --tc: #4db3ff; }
+    .brute-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 8px; margin-top: 8px; padding: 6px 8px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--sunken); font-size: 0.8rem; }
+    .brute-row:has(input:checked) { border-color: rgba(248, 113, 113, .6); }
+    .brute-name { font-weight: 700; color: #FCA5A5; margin-right: auto; display: inline-flex; align-items: center; gap: 6px; }
+    .brute-name small { font-weight: 600; color: var(--muted); }
+    .bchk { display: inline-flex; align-items: center; gap: 5px; min-height: 32px; padding: 2px 8px; border: 1px solid var(--line-strong); border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--text); }
+    .bchk input { width: 16px; height: 16px; accent-color: #EF4444; cursor: pointer; }
+    .bchk:has(input:checked) { border-color: #EF4444; color: #FCA5A5; }
+    .bchk.test { color: var(--tc); }
+    .bchk.test input { accent-color: var(--tc); }
+    .bchk.test.diff { border-color: var(--tc); background: color-mix(in srgb, var(--tc) 12%, transparent); }
+    .bdot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex: none; }
+    .bdot.red { background: #EF4444; box-shadow: 0 0 0 2px rgba(239, 68, 68, .25); }
+    .bdot.yellow { background: #FACC15; box-shadow: 0 0 0 2px rgba(250, 204, 21, .25); }
     .held-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
     .held-row .fld.test { color: var(--tc); }
     .held-row .fld.test select.diff { border-color: var(--tc); color: var(--tc); }
@@ -629,6 +642,8 @@
     @media (max-width: 900px) { .teams-grid.f15 { grid-template-columns: 1fr; } }
     @media (max-width: 640px) {
       .fmt-seg button small { display: none; }
+      .brute-name { flex-basis: 100%; }
+      .bchk { flex: 1; justify-content: center; }
       .sk-row { grid-template-columns: 28px minmax(0, 1fr) auto; gap: 6px; }
       .sk-tb { padding: 2px 6px; }
       .sk-list .sk.t-buff .sk-b { padding-left: 0; }
@@ -883,12 +898,12 @@
         { id: "t3", name: "T3", pct: 2 }
       ];
       const DEFAULT_MONS = [
-        { name: "Shiny Houndoom", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: 0, now: 318159, after: null, train: 20, berry: false, mult: 1, skills: emptySkills() },
-        { name: "Shiny Misdreavus", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: 0, now: 307870, after: null, train: 20, berry: false, mult: 1, skills: emptySkills() },
-        { name: "Shiny Tauros", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: 1, now: 294639, after: null, train: 20, berry: false, mult: 1, skills: emptySkills() },
-        { name: "Shiny Dusknoir", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: 1, now: 344778, after: null, train: 20, berry: false, mult: 1, skills: emptySkills() },
-        { name: "Shiny Hydreigon", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: 2, now: 324169, after: null, train: 20, berry: false, mult: 1, skills: emptySkills() },
-        { name: "Shiny Smeargle Ghost", role: "", tier: "t1", stars: 0, test: null, held: 0, heldTest: null, team: 2, now: 290236, after: null, train: 20, berry: false, mult: 1, skills: emptySkills() }
+        { name: "Shiny Houndoom", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, brute: false, bruteTest: null, team: 0, now: 318159, after: null, train: 20, berry: false, mult: 1, skills: emptySkills() },
+        { name: "Shiny Misdreavus", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, brute: false, bruteTest: null, team: 0, now: 307870, after: null, train: 20, berry: false, mult: 1, skills: emptySkills() },
+        { name: "Shiny Tauros", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, brute: false, bruteTest: null, team: 1, now: 294639, after: null, train: 20, berry: false, mult: 1, skills: emptySkills() },
+        { name: "Shiny Dusknoir", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, brute: false, bruteTest: null, team: 1, now: 344778, after: null, train: 20, berry: false, mult: 1, skills: emptySkills() },
+        { name: "Shiny Hydreigon", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, brute: false, bruteTest: null, team: 2, now: 324169, after: null, train: 20, berry: false, mult: 1, skills: emptySkills() },
+        { name: "Shiny Smeargle Ghost", role: "", tier: "t1", stars: 0, test: null, held: 0, heldTest: null, brute: false, bruteTest: null, team: 2, now: 290236, after: null, train: 20, berry: false, mult: 1, skills: emptySkills() }
       ];
       const HELDS = [0, 8, 12, 16, 19, 22, 25, 28];
       function tierOf(id) { return TIERS.find(function (t) { return t.id === id; }) || TIERS[2]; }
@@ -916,7 +931,7 @@
       }
       function precNum(v, def) { v = Number(v); return Number.isFinite(v) && v >= 0 ? v : def; }
       function freshCand() {
-        return { id: "cand", name: "", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, team: -1, now: 0, after: null, train: 20, berry: false, mult: 1, skills: emptySkills() };
+        return { id: "cand", name: "", role: "", tier: "super", stars: 0, test: null, held: 0, heldTest: null, brute: false, bruteTest: null, team: -1, now: 0, after: null, train: 20, berry: false, mult: 1, skills: emptySkills() };
       }
       function normCand(c) {
         c = c && typeof c === "object" ? c : {};
@@ -930,6 +945,8 @@
           test: num(c.test, 5),
           held: num(c.held, 7) == null ? 0 : c.held,
           heldTest: num(c.heldTest, 7),
+          brute: c.brute === true,
+          bruteTest: typeof c.bruteTest === "boolean" && c.bruteTest !== (c.brute === true) ? c.bruteTest : null,
           team: -1,
           now: Number.isFinite(Number(c.now)) && Number(c.now) > 0 ? Number(c.now) : 0,
           after: (c.after == null || c.after === "" || !Number.isFinite(Number(c.after))) ? null : Number(c.after),
@@ -986,6 +1003,8 @@
                 test: Number.isInteger(m.test) && m.test >= 0 && m.test <= 5 ? m.test : null,
                 held: Number.isInteger(m.held) && m.held >= 0 && m.held <= 7 ? m.held : 0,
                 heldTest: Number.isInteger(m.heldTest) && m.heldTest >= 0 && m.heldTest <= 7 ? m.heldTest : null,
+                brute: m.brute === true,
+                bruteTest: typeof m.bruteTest === "boolean" && m.bruteTest !== (m.brute === true) ? m.bruteTest : null,
                 t2: [0, 1, 2].indexOf(m.t2) >= 0 ? m.t2 : ([0, 1, 2].indexOf(m.team) >= 0 && d.format !== "3x3" ? m.team : Math.floor(i / 2)),
                 t3: [0, 1].indexOf(m.t3) >= 0 ? m.t3 : (i < 3 ? 0 : 1),
                 now: Number.isFinite(Number(m.now)) ? Number(m.now) : 0,
@@ -1050,13 +1069,16 @@
       }
       function tStars(m) { return m.test == null ? m.stars : m.test; }
       function tHeld(m) { return m.heldTest == null ? m.held : m.heldTest; }
-      function testActive(m) { return state.useTests && (tStars(m) !== m.stars || tHeld(m) !== m.held); }
-      function bonus(m, stars, held) { return 1 + stars * tierOf(m.tier).pct / 100 + HELDS[held] / 100; }
+      function tBrute(m) { return m.bruteTest == null ? !!m.brute : m.bruteTest; }
+      function testActive(m) { return state.useTests && (tStars(m) !== m.stars || tHeld(m) !== m.held || tBrute(m) !== !!m.brute); }
+      // Brute Berry: +5% somado aos bônus de star e held
+      function bonus(m, stars, held, brute) { return 1 + stars * tierOf(m.tier).pct / 100 + HELDS[held] / 100 + (brute ? BRUTE : 0) / 100; }
+      function testRatio(m) { return bonus(m, tStars(m), tHeld(m), tBrute(m)) / bonus(m, m.stars, m.held, !!m.brute); }
       // dano no Dummy Neutro (com testes de star/held, se houver)
       function neutralDmg(m) {
         const d = eff(m);
         if (!testActive(m)) return Math.round(d);
-        return Math.round(d * bonus(m, tStars(m), tHeld(m)) / bonus(m, m.stars, m.held));
+        return Math.round(d * testRatio(m));
       }
       // página Efetividade: aplica o multiplicador do pokémon
       function monDmg(m) {
@@ -1073,6 +1095,7 @@
           const dl = nd - base;
           const parts = [];
           if (tStars(m) !== m.stars) parts.push(m.stars + "★ → " + tStars(m) + "★");
+          if (tBrute(m) !== !!m.brute) parts.push(tBrute(m) ? "+ Brute Berry" : "sem Brute Berry");
           if (tHeld(m) !== m.held) parts.push("ATK " + m.held + " → ATK " + tHeld(m));
           cls = "eff test";
           html = "teste " + parts.join(" · ") + " · <strong>" + fmt(nd) + "</strong> (" + (dl >= 0 ? "+" : "") + fmt(dl) + ")";
@@ -1105,6 +1128,7 @@
         return best;
       }
       const BERRY = 25;
+      const BRUTE = 5; // Brute Berry: +5% de dano
       const PT_PCT = 0.2;
       function precOf(m) {
         return m.train + (m.berry ? BERRY : 0) + state.medal / PT_PCT;
@@ -1254,11 +1278,16 @@
           }).join("");
         };
         const starsRows = row("cur", m.stars, "Atual") + row("test", tStars(m), "Teste");
+        const bruteRow = "<div class=\"brute-row\" role=\"group\" aria-label=\"Brute Berry, +" + BRUTE + "% de dano\">" +
+          "<span class=\"brute-name\"><i class=\"bdot red\" aria-hidden=\"true\"></i>Brute Berry <small>+" + BRUTE + "% dano</small></span>" +
+          "<label class=\"bchk\" title=\"Marque se o dano que você anotou já foi testado com a Brute Berry\"><input type=\"checkbox\" data-f=\"brute\"" + (m.brute ? " checked" : "") + " />já no dano</label>" +
+          "<label class=\"bchk test" + (tBrute(m) !== !!m.brute ? " diff" : "") + "\" title=\"Simula colocar (ou tirar) a Brute Berry\"><input type=\"checkbox\" data-f=\"bruteTest\"" + (tBrute(m) ? " checked" : "") + " />teste</label>" +
+          "</div>";
         const stars = starsRows +
           "<div class=\"held-row\">" +
             "<label class=\"fld\">Held atual<select class=\"in\" data-f=\"held\">" + heldOpts(m.held) + "</select></label>" +
             "<label class=\"fld test\">Held teste<select class=\"in" + (tHeld(m) !== m.held ? " diff" : "") + "\" data-f=\"heldTest\">" + heldOpts(tHeld(m)) + "</select></label>" +
-          "</div>" +
+          "</div>" + bruteRow +
           (isEff() ? "<div class=\"mult-box\"><div class=\"mult-head\"><span>Efetividade (multiplicador)</span>" +
             "<label class=\"mult-in\">×<input class=\"in num\" data-f=\"mult\" inputmode=\"decimal\" value=\"" + fmt(multNum(m.mult)) + "\" aria-label=\"Multiplicador de efetividade\" /></label></div>" +
             "<div class=\"mult-chips\" role=\"group\" aria-label=\"Multiplicador de efetividade\">" + MULTS.map(function (v) {
@@ -1268,7 +1297,7 @@
           (is15() && !isCand ? skillsHtml(m) : "") +
           "<div class=\"prec-row\">" +
             "<label class=\"fld\">Precisão treino (pts)<input class=\"in num\" data-f=\"train\" inputmode=\"decimal\" value=\"" + fmt(m.train) + "\" /></label>" +
-            "<label class=\"berry\"><input type=\"checkbox\" data-f=\"berry\"" + (m.berry ? " checked" : "") + " />Berry +" + BERRY + "</label>" +
+            "<label class=\"berry\"><input type=\"checkbox\" data-f=\"berry\"" + (m.berry ? " checked" : "") + " /><i class=\"bdot yellow\" aria-hidden=\"true\"></i>Focus Berry +" + BERRY + "</label>" +
           "</div>" +
           "<div class=\"prec-out\" data-prec></div>";
         const top = isCand
@@ -1294,9 +1323,10 @@
             "<div class=\"slot-row\"><div class=\"" + sl.cls + "\">" + sl.text + "</div></div>" + top +
             (testActive(m) ? "<p class=\"m15-test\">Teste de star/held ativo: o dano das skills está ajustado por ele (marque “Mostrar papel, raridade, stars e held” para ver).</p>" : "") +
             skillsHtml(m) + multBox +
+            bruteRow +
             "<div class=\"prec-row\">" +
               "<label class=\"fld\">Precisão treino (pts)<input class=\"in num\" data-f=\"train\" inputmode=\"decimal\" value=\"" + fmt(m.train) + "\" /></label>" +
-              "<label class=\"berry\"><input type=\"checkbox\" data-f=\"berry\"" + (m.berry ? " checked" : "") + " />Berry +" + BERRY + "</label>" +
+              "<label class=\"berry\"><input type=\"checkbox\" data-f=\"berry\"" + (m.berry ? " checked" : "") + " /><i class=\"bdot yellow\" aria-hidden=\"true\"></i>Focus Berry +" + BERRY + "</label>" +
             "</div>" +
             "<div class=\"prec-out\" data-prec></div>" +
             "<div class=\"mon-det\">" +
@@ -1943,7 +1973,7 @@
       function skillFactor(m) {
         let f = isEff() ? multNum(m.mult) : 1;
         const base = eff(m);
-        if (testActive(m)) f *= base > 0 ? neutralDmg(m) / base : bonus(m, tStars(m), tHeld(m)) / bonus(m, m.stars, m.held);
+        if (testActive(m)) f *= base > 0 ? neutralDmg(m) / base : testRatio(m);
         return f;
       }
       function rotSkills() {
@@ -2434,6 +2464,13 @@
           save();
           buildRoster();
           paint();
+        } else if (f === "brute" || f === "bruteTest") {
+          const v = ev.target.checked;
+          if (f === "brute") { m.brute = v; m.bruteTest = null; }
+          else m.bruteTest = v === !!m.brute ? null : v;
+          save();
+          buildRoster();
+          paint();
         } else if (f === "berry") {
           m.berry = ev.target.checked;
           save();
@@ -2656,7 +2693,7 @@
         paint();
       });
       document.getElementById("clear-tests").addEventListener("click", function () {
-        state.mons.concat([state.cand]).forEach(function (m) { m.test = null; m.heldTest = null; });
+        state.mons.concat([state.cand]).forEach(function (m) { m.test = null; m.heldTest = null; m.bruteTest = null; });
         save();
         buildRoster();
         paint();
