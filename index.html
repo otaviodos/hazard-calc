@@ -575,7 +575,10 @@
     .sk-list .sk.t-cc { border-color: var(--warn); background: rgba(251, 191, 36, .05); }
     .sk-list .sk.t-buff { border-color: #A78BFA; background: rgba(167, 139, 250, .06); padding-bottom: 6px; }
     .sk-hid { display: none !important; }
-    .sk-row { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 8px; align-items: center; }
+    .sk-row { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto 32px; gap: 8px; align-items: center; }
+    .sk-del { width: 32px; height: 32px; border-radius: 8px; border: 1px solid transparent; background: transparent; color: var(--muted); font-size: 1.1rem; line-height: 1; cursor: pointer; }
+    .sk-del:hover { color: #FCA5A5; border-color: rgba(248, 113, 113, .5); background: rgba(248, 113, 113, .08); }
+    .sk-del:focus-visible { outline: 2px solid var(--ring, #93C5FD); outline-offset: 2px; }
     .sk-row .sk-in { min-height: 36px; }
     .sk-tg { display: inline-flex; gap: 4px; }
     .sk-tb { min-height: 32px; padding: 2px 8px; border-radius: 8px; border: 1px dashed var(--line-strong); background: transparent; color: var(--muted); font-size: 0.75rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
@@ -644,7 +647,8 @@
       .fmt-seg button small { display: none; }
       .brute-name { flex-basis: 100%; }
       .bchk { flex: 1; justify-content: center; }
-      .sk-row { grid-template-columns: 28px minmax(0, 1fr) auto; gap: 6px; }
+      .sk-row { grid-template-columns: 26px minmax(0, 1fr) auto 30px; gap: 5px; }
+      .sk-del { width: 30px; }
       .sk-tb { padding: 2px 6px; }
       .sk-list .sk.t-buff .sk-b { padding-left: 0; }
       .fmt-seg { min-width: 0; width: 100%; }
@@ -1404,7 +1408,8 @@
           return "<div class=\"sk t-" + tp + (k >= vis ? " sk-hid" : "") + "\" data-ski=\"" + k + "\">" +
             "<div class=\"sk-row\"><label class=\"sk-l\" for=\"" + id + "\">M" + (k + 1) + "</label>" +
             "<input class=\"in num sk-in\" id=\"" + id + "\" data-sk=\"" + m.id + ":" + k + "\" inputmode=\"decimal\" enterkeyhint=\"next\" placeholder=\"dano\" value=\"" + (sk.d ? fmt(sk.d) : "") + "\" />" +
-            "<span class=\"sk-tg\">" + tb("cc", "⚡ Stun", "stun ou silence") + tb("buff", "▲ Buff", "buff") + "</span></div>" +
+            "<span class=\"sk-tg\">" + tb("cc", "⚡ Stun", "stun ou silence") + tb("buff", "▲ Buff", "buff") + "</span>" +
+            "<button type=\"button\" class=\"sk-del\" data-skdel=\"" + m.id + ":" + k + "\" aria-label=\"Apagar M" + (k + 1) + "\" title=\"Apagar M" + (k + 1) + "\">×</button></div>" +
             (tp === "buff" ? buffTestHtml(m, k) : "") +
             "</div>";
         }).join("");
@@ -2945,6 +2950,23 @@
         if (f) f.focus();
       });
       el.teams.addEventListener("click", function (ev) {
+        const del = ev.target.closest("[data-skdel]");
+        if (del) {
+          const pr = del.getAttribute("data-skdel").split(":");
+          const m = findMon(pr[0]);
+          if (!m) return;
+          const k = Number(pr[1]);
+          m.skills[k] = { d: null, t: "n", bp: null, bt: null, bd: null };
+          m.skills.forEach(function (x) { if (x.t === "buff" && x.bt === k) { x.bt = null; x.bd = null; } });
+          SKREV[m.id] = 0; // volta a mostrar só as preenchidas + a próxima
+          save();
+          buildRoster();
+          paint();
+          const vis = skillVis(m);
+          const f = el.teams.querySelector("[data-sk=\"" + m.id + ":" + Math.min(k, vis - 1) + "\"]");
+          if (f) f.focus();
+          return;
+        }
         const mo = ev.target.closest("[data-skmore]");
         if (mo) {
           const m = findMon(mo.getAttribute("data-skmore"));
