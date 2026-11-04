@@ -591,6 +591,13 @@
     .sk-more:hover { color: var(--text); }
     .sk-more:focus-visible { outline: 2px solid var(--ring, #93C5FD); outline-offset: 2px; }
     .sk-tip { margin: 6px 0 0; font-size: 0.75rem; color: var(--muted); }
+    .role15 { margin: 10px 0 8px; }
+    .rl-role { font-size: 0.65rem; font-weight: 800; letter-spacing: .03em; padding: 1px 5px; border-radius: 5px; border: 1px solid var(--line-strong); color: var(--muted); }
+    .rl-role.r-offtank { color: #93C5FD; border-color: rgba(147, 197, 253, .5); }
+    .rl-role.r-dmg { color: #FCA5A5; border-color: rgba(252, 165, 165, .5); }
+    .rl-role.r-flex { color: #C4B5FD; border-color: rgba(196, 181, 253, .5); }
+    .rc.notank { border-color: #F87171; }
+    .rc-tk { margin: 4px 0; font-size: 0.75rem; font-weight: 700; color: #FCA5A5; }
     .rl-empty { margin-top: 6px; padding: 6px 8px; border: 1px dashed var(--line); border-radius: 10px; font-size: 0.75rem; color: var(--muted); display: flex; align-items: center; gap: 8px; }
     .rl-empty .rl-key { background: var(--line-strong); color: var(--muted); }
     .rot-sticky { position: sticky; bottom: 8px; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 12px; padding: 10px 14px; border: 1px solid var(--gold); border-radius: 12px; background: color-mix(in srgb, var(--gold) 10%, var(--panel)); box-shadow: 0 8px 24px rgba(0, 0, 0, .45); font-size: 0.88rem; }
@@ -629,7 +636,8 @@
     .rl-copy:hover { border-color: var(--gold); }
     .rl-copy:focus-visible { outline: 2px solid var(--ring, #93C5FD); outline-offset: 2px; }
     .rl-copy.copied { border-color: var(--ok); background: rgba(74, 222, 128, .08); }
-    .rl-top { display: flex; align-items: center; gap: 8px; }
+    .rl-top { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; min-width: 0; }
+    .rl-top b { min-width: 0; overflow-wrap: anywhere; }
     .rl-key { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 6px; background: var(--gold); color: #1A1403; font-weight: 800; font-size: 0.8rem; font-family: var(--font-num, monospace); }
     .rl-cp { margin-left: auto; font-size: 0.75rem; color: var(--gold); font-weight: 700; }
     .rl-copy.copied .rl-cp { color: var(--ok); }
@@ -774,7 +782,7 @@
           <div class="mgroup"><label class="mlabel" for="rotPct">Meta por rotação</label>
             <input class="in num small" id="rotPct" inputmode="numeric" aria-describedby="rotPctHelp" /><span class="mlabel">% do dano do Hazard</span>
             <span class="hint" id="rotPctHelp">quanto cada rotação precisa matar</span></div>
-          <label class="chk"><input type="checkbox" id="rotDet" />Mostrar papel, raridade, stars e held nos cards</label>
+          <label class="chk"><input type="checkbox" id="rotDet" />Mostrar raridade, stars e held nos cards</label>
         </div>
         <ol class="rot-steps">
           <li><b>Anote</b> o dano de cada skill nos cards abaixo. Enter vai para a próxima; dá para colar vários números de uma vez.</li>
@@ -782,7 +790,7 @@
           <li><b>Copie</b> o <code>!autocombo</code> de cada pokémon nas rotações.</li>
         </ol>
         <details class="rot-rules"><summary>Regras usadas no cálculo</summary>
-          <p class="hint">No máximo 1 stun/silence por rotação · no máximo 2 pokémon por rotação (ajustável) · cada pokémon em no máximo 2 rotações seguidas · o buff aumenta a próxima skill do mesmo pokémon: a página escolhe a mais forte e coloca o buff em penúltimo e a buffada em último no comando.</p>
+          <p class="hint">Pelo menos 1 OFFTANK ou FLEX por rotação (DMG não segura sozinho; sem papel conta como quem segura) · no máximo 1 stun/silence por rotação · no máximo 2 pokémon por rotação (ajustável) · cada pokémon em no máximo 2 rotações seguidas · o buff aumenta a próxima skill do mesmo pokémon: a página escolhe a mais forte e coloca o buff em penúltimo e a buffada em último no comando.</p>
         </details>
         <div id="rot-out"></div>
       </div>
@@ -1325,6 +1333,7 @@
             }).join("") + "</div></div>" : "";
           return "<div class=\"mon m15" + (testActive(m) ? " testing" : "") + "\" data-id=\"" + m.id + "\">" +
             "<div class=\"slot-row\"><div class=\"" + sl.cls + "\">" + sl.text + "</div></div>" + top +
+            "<label class=\"fld role15\">Papel<select class=\"in\" data-f=\"role\">" + roleOpts(m.role) + "</select></label>" +
             (testActive(m) ? "<p class=\"m15-test\">Teste de star/held ativo: o dano das skills está ajustado por ele (marque “Mostrar papel, raridade, stars e held” para ver).</p>" : "") +
             skillsHtml(m) + multBox +
             bruteRow +
@@ -1335,7 +1344,6 @@
             "<div class=\"prec-out\" data-prec></div>" +
             "<div class=\"mon-det\">" +
               "<div class=\"mon-fields\">" +
-                "<label class=\"fld\">Papel<select class=\"in\" data-f=\"role\">" + roleOpts(m.role) + "</select></label>" +
                 "<label class=\"fld\">Raridade<select class=\"in\" data-f=\"tier\">" + tierOpts(m.tier) + "</select></label>" +
                 "<label class=\"fld\">Dano (stars atuais)<input class=\"in num\" data-f=\"now\" inputmode=\"decimal\" value=\"" + fmt(m.now) + "\" /></label>" +
                 "<label class=\"fld\">Dano depois<input class=\"in num\" data-f=\"after\" inputmode=\"decimal\" placeholder=\"igual\" value=\"" + (m.after == null ? "" : fmt(m.after)) + "\" /></label>" +
@@ -2021,6 +2029,10 @@
         if (!S.length) return null;
         const L = S.length;
         const anyBuff = S.some(function (x) { return x.buff; });
+        // pokémon que seguram (lurar): tudo que não é DMG (OFFTANK, FLEX ou sem papel)
+        let TK = 0;
+        state.mons.forEach(function (m, pi) { if (m.role !== "DMG") TK |= (1 << pi); });
+        const PEN = 1e9;
         function evaluate(a) {
           const tot = new Array(N).fill(0), cc = new Array(N).fill(0), pm = new Array(N).fill(0), rm = [0, 0, 0, 0, 0, 0];
           const groups = anyBuff ? [] : null;
@@ -2048,7 +2060,11 @@
               tot[r] = t;
             }
           }
-          return { ok: true, tot: tot };
+          let sc = tot;
+          for (let r = 0; r < N; r++) {
+            if (!(pm[r] & TK)) { if (sc === tot) sc = tot.slice(); sc[r] = -PEN; }
+          }
+          return { ok: true, tot: sc, raw: tot, pm: pm };
         }
         function better(x, y) {
           const a = x.slice().sort(function (p, q) { return p - q; }), b = y.slice().sort(function (p, q) { return p - q; });
@@ -2127,7 +2143,9 @@
           if (!best || better(cur, best.tot)) best = { a: a.slice(), tot: cur.slice() };
         }
         const rots = [];
-        for (let r = 0; r < N; r++) rots.push({ items: [], tot: best.tot[r], cc: 0, pairs: [] });
+        const fin = evaluate(best.a);
+        best.tot = fin.raw;
+        for (let r = 0; r < N; r++) rots.push({ items: [], tot: best.tot[r], cc: 0, pairs: [], noTank: !(fin.pm[r] & TK) });
         const unused = [];
         S.forEach(function (sk, i) {
           if (best.a[i] < 0) unused.push(sk);
@@ -2213,7 +2231,7 @@
         if (!is15()) return null;
         if (ROTCACHE === null) {
           // só refaz a divisão quando skills, nº de rotações ou pokémon por rotação mudam
-          const key = JSON.stringify([rotSkills(), state.rot.n, state.rot.maxP]);
+          const key = JSON.stringify([rotSkills(), state.rot.n, state.rot.maxP, state.mons.map(function (m) { return m.role; })]);
           if (key !== ROTKEY || ROTMEMO === null) { ROTKEY = key; ROTMEMO = rotSolve() || false; }
           ROTCACHE = ROTMEMO;
         }
@@ -2260,6 +2278,12 @@
           }
           if (pCap < nx) L.push("<p class=\"st-no\">Precisão: Hazard " + nx + " exige " + fmt(state.table[nx][6]) + " pts em cada pokémon (veja a seção de precisão).</p>");
         }
+        const noTk = res.rots.filter(function (x) { return x.noTank; }).length;
+        if (noTk) {
+          const tanks = state.mons.filter(function (m) { return m.role !== "DMG" && m.skills.some(function (x) { return x.d > 0; }); }).length;
+          L.push("<p class=\"st-no\">" + noTk + (noTk > 1 ? " rotações ficaram" : " rotação ficou") + " sem OFFTANK/FLEX. Com " + N + " rotações e cada pokémon em no máximo 2, são precisos pelo menos " + Math.ceil(N / 2) +
+            " pokémon que não sejam DMG, com skills anotadas (hoje: " + tanks + "). Marque o papel nos cards ou diminua o número de rotações.</p>");
+        }
         if (res.nCC > N) L.push("<p class=\"hint\">" + res.nCC + " skills de stun/silence para " + N + " rotações: no máximo " + N + " delas são usadas.</p>");
         const noBp = [];
         state.mons.forEach(function (m) { m.skills.forEach(function (sk, k) { if (sk.t === "buff" && !(buffPct(m, k) > 0)) noBp.push(shortName(m) + " M" + (k + 1)); }); });
@@ -2277,7 +2301,7 @@
                 (pr ? " <small>+" + kfmt(pr.extra) + "</small>" : "") + "</span>" + (sk.buff ? "<span class=\"rk-arrow\">→</span>" : "");
             }).join("");
             return "<button type=\"button\" class=\"rl rl-copy\" data-cmd=\"" + esc(cmd) + "\" title=\"Copiar comando\">" +
-              "<span class=\"rl-top\"><span class=\"rl-key\" title=\"Atalho\">" + key + "</span><b>" + shortName(m) + "</b><span class=\"rl-cp\">Copiar</span></span>" +
+              "<span class=\"rl-top\"><span class=\"rl-key\" title=\"Atalho\">" + key + "</span><b>" + shortName(m) + "</b>" + (m.role ? "<span class=\"rl-role r-" + m.role.toLowerCase() + "\">" + m.role + "</span>" : "") + "<span class=\"rl-cp\">Copiar</span></span>" +
               "<span class=\"rl-toks\">" + toks + "</span>" +
               "<code class=\"rl-cmd\">" + esc(cmd) + "</code></button>";
           }).join("") || "<div class=\"hint\">sem skills</div>";
@@ -2287,8 +2311,9 @@
             }
           }
           const isMin = ro.tot === res.min;
-          return "<div class=\"rc" + (isMin ? " weak" : "") + "\">" +
+          return "<div class=\"rc" + (isMin ? " weak" : "") + (ro.noTank ? " notank" : "") + "\">" +
             "<div class=\"rc-h\"><span>Rotação " + (i + 1) + "</span>" + (ro.cc ? "<span class=\"rc-cc\">⚡ stun</span>" : "<span class=\"rc-nocc\">sem stun</span>") + "</div>" +
+            (ro.noTank ? "<div class=\"rc-tk\">⚠ sem OFFTANK: ninguém segura essa rotação</div>" : "") +
             "<div class=\"rc-d\">" + fmt(ro.tot) + "</div>" +
             "<div class=\"rc-hz\" style=\"color:" + r.color + "\">" + hzTxt(h) + "</div>" +
             (nx >= 0 && ro.tot < nxNeed ? "<div class=\"rc-f\">falta " + kfmt(nxNeed - ro.tot) + " p/ Hazard " + nx + "</div>" : "") +
