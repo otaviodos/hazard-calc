@@ -1985,8 +1985,7 @@
       // fator do card: efetividade (aba Efetividade) e testes de star/held aplicados ao dano das skills
       function skillFactor(m) {
         let f = isEff() ? multNum(m.mult) : 1;
-        const base = eff(m);
-        if (testActive(m)) f *= base > 0 ? neutralDmg(m) / base : testRatio(m);
+        if (testActive(m)) f *= testRatio(m);
         return f;
       }
       function rotSkills() {
@@ -2047,8 +2046,11 @@
             if (anyBuff) (groups[r][x.p] = groups[r][x.p] || []).push(x);
             else tot[r] += x.d;
           }
-          // cada pokémon em no máximo 2 rotações (uma parte numa, o resto na seguinte)
-          for (let q = 0; q < 6; q++) { let c = 0, v = rm[q]; while (v) { c += v & 1; v >>= 1; } if (c > 2) return { ok: false }; }
+          // cada pokémon em no máximo 2 rotações, e se forem 2, seguidas (uma parte numa, o resto na seguinte)
+          for (let q = 0; q < 6; q++) {
+            const v = rm[q];
+            if (v & (v - 1)) { const lo = v & -v; if (v !== (lo | (lo << 1))) return { ok: false }; }
+          }
           for (let r = 0; r < N; r++) {
             if (cc[r] > 1) return { ok: false };
             let c = 0, v = pm[r];
@@ -2246,7 +2248,9 @@
           if (!n) return;
           const sum = m.skills.reduce(function (a, x) { return a + (x.d || 0); }, 0);
           const cnt = m.skills.filter(function (x) { return x.d > 0 || x.t === "buff"; }).length;
-          n.textContent = cnt ? "soma " + fmt(sum) + " · " + cnt + " skill" + (cnt > 1 ? "s" : "") : "nenhuma ainda";
+          const f = skillFactor(m);
+          const used = m.skills.reduce(function (a, x) { return a + (x.d > 0 ? Math.round(x.d * f) : 0); }, 0);
+          n.textContent = cnt ? "soma " + fmt(sum) + (Math.abs(f - 1) > 1e-9 ? " → conta " + fmt(used) + " (×" + fmt(Math.round(f * 1000) / 1000) + ")" : "") + " · " + cnt + " skill" + (cnt > 1 ? "s" : "") : "nenhuma ainda";
         });
       }
 
