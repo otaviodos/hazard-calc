@@ -603,6 +603,7 @@
     .rot-sticky { position: sticky; bottom: 8px; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 12px; padding: 10px 14px; border: 1px solid var(--gold); border-radius: 12px; background: color-mix(in srgb, var(--gold) 10%, var(--panel)); box-shadow: 0 8px 24px rgba(0, 0, 0, .45); font-size: 0.88rem; }
     .rot-sticky[hidden] { display: none; }
     html.has-sticky { scroll-padding-bottom: 140px; }
+    .m15-note { margin: 8px 0 0; font-size: 0.75rem; line-height: 1.45; color: var(--muted); }
     .m15-test { margin: 0 0 8px; padding: 6px 8px; border: 1px solid rgba(96, 165, 250, .5); border-radius: 8px; font-size: 0.75rem; color: #BFDBFE; }
     .fmt-seg { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 4px; min-height: 44px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--sunken); min-width: 330px; }
     .fmt-seg button { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; padding: 4px 10px; border: 0; background: transparent; border-radius: 999px; color: var(--muted); font-weight: 700; font-size: 0.86rem; cursor: pointer; transition: color .18s; }
@@ -1345,10 +1346,9 @@
             "<div class=\"mon-det\">" +
               "<div class=\"mon-fields\">" +
                 "<label class=\"fld\">Raridade<select class=\"in\" data-f=\"tier\">" + tierOpts(m.tier) + "</select></label>" +
-                "<label class=\"fld\">Dano (stars atuais)<input class=\"in num\" data-f=\"now\" inputmode=\"decimal\" value=\"" + fmt(m.now) + "\" /></label>" +
-                "<label class=\"fld\">Dano depois<input class=\"in num\" data-f=\"after\" inputmode=\"decimal\" placeholder=\"igual\" value=\"" + (m.after == null ? "" : fmt(m.after)) + "\" /></label>" +
               "</div>" +
-              "<div class=\"stars-box\">" + starsRows + heldRow + "<div class=\"eff\" data-eff=\"" + m.id + "\" style=\"margin-top:6px\"></div></div>" +
+              "<div class=\"stars-box\">" + starsRows + heldRow +
+                "<p class=\"m15-note\">No 1.5× a conta usa o dano das skills acima. Star, held e Brute Berry <b>atuais</b> já estão dentro do que você anotou e não mudam nada; só a diferença para o <b>teste</b> muda o dano das skills. O \"Dano\" total do pokémon vale para o 2×2×2 e o 3×3.</p></div>" +
             "</div>" +
             "</div>";
         }
