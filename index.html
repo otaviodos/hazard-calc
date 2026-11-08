@@ -799,7 +799,7 @@
           <li><b>Copie</b> o <code>!autocombo</code> de cada pokémon nas rotações.</li>
         </ol>
         <details class="rot-rules"><summary>Regras usadas no cálculo</summary>
-          <p class="hint">Toda rotação abre com um OFFTANK que solta stun (de preferência) ou silence; FLEX só abre quando não dá para usar um OFFTANK sem perder dano (lura, stuna, bate um pouco e o DMG finaliza; sem papel conta como quem segura) · exatamente 1 stun/silence por rotação, e só de OFFTANK/FLEX (o de DMG não é usado) · o buff aumenta só a skill que você escolheu, e só se as duas estiverem na mesma rotação · no máximo 2 pokémon por rotação (ajustável) · cada pokémon em no máximo 2 rotações seguidas · no comando o buff vem logo antes da skill buffada (no fim; ou junto do stun, se for ele o buffado).</p>
+          <p class="hint">Toda rotação abre com um OFFTANK que solta stun (de preferência) ou silence; FLEX só abre quando não dá para usar um OFFTANK sem perder dano (lura, stuna, bate um pouco e o DMG finaliza; sem papel conta como quem segura) · no máximo 1 stun e 1 silence por rotação; o de DMG entra como dano (nunca abre a rotação) · o buff aumenta só a skill que você escolheu, e só se as duas estiverem na mesma rotação · no máximo 2 pokémon por rotação (ajustável) · cada pokémon em no máximo 2 rotações seguidas · no comando o buff vem logo antes da skill buffada (no fim; ou junto do stun, se for ele o buffado).</p>
         </details>
         <div id="rot-out"></div>
       </div>
@@ -2051,7 +2051,7 @@
         // stun/silence que podem abrir uma rotação (só de quem segura)
         const KCC = S.filter(function (x) { return x.cc && (TK & (1 << x.p)); }).length;
         function evaluate(a) {
-          const tot = new Array(N).fill(0), cc = new Array(N).fill(0), pm = new Array(N).fill(0), rm = [0, 0, 0, 0, 0, 0], pref = new Array(N).fill(0);
+          const tot = new Array(N).fill(0), cc = new Array(N).fill(0), pm = new Array(N).fill(0), rm = [0, 0, 0, 0, 0, 0], pref = new Array(N).fill(9), st = new Array(N).fill(0), si = new Array(N).fill(0), tcc = new Array(N).fill(0);
           const groups = anyBuff ? [] : null;
           if (anyBuff) for (let r = 0; r < N; r++) groups.push({});
           for (let i = 0; i < L; i++) {
@@ -2059,10 +2059,13 @@
             if (r < 0) continue;
             const x = S[i];
             if (x.cc) {
-              if (!(TK & (1 << x.p))) return { ok: false };
               cc[r]++;
-              // preferência (só desempata, dano igual): stun antes de silence, OFFTANK antes de FLEX
-              pref[r] = (x.sil ? 0.002 : 0) + (state.mons[x.p].role === "OFFTANK" ? 0 : 0.001);
+              if (x.sil) si[r]++; else st[r]++;
+              if (TK & (1 << x.p)) {
+                // quem abre a rotação: OFFTANK/FLEX com stun (preferido) ou silence
+                tcc[r]++;
+                pref[r] = Math.min(pref[r], (x.sil ? 0.002 : 0) + (state.mons[x.p].role === "OFFTANK" ? 0 : 0.001));
+              }
             }
             pm[r] |= (1 << x.p);
             rm[x.p] |= (1 << r);
@@ -2075,7 +2078,7 @@
             if (v & (v - 1)) { const lo = v & -v; if (v !== (lo | (lo << 1))) return { ok: false }; }
           }
           for (let r = 0; r < N; r++) {
-            if (cc[r] > 1) return { ok: false };
+            if (st[r] > 1 || si[r] > 1) return { ok: false }; // no máx. 1 stun e 1 silence por rotação
             let c = 0, v = pm[r];
             while (v) { c += v & 1; v >>= 1; }
             if (c > maxP) return { ok: false };
@@ -2087,8 +2090,8 @@
           }
           let sc = tot;
           for (let r = 0; r < N; r++) {
-            if (!(pm[r] & TK) || (KCC > 0 && cc[r] === 0)) { if (sc === tot) sc = tot.slice(); sc[r] = -PEN; }
-            else if (pref[r]) { if (sc === tot) sc = tot.slice(); sc[r] = tot[r] - pref[r]; }
+            if (!(pm[r] & TK) || (KCC > 0 && tcc[r] === 0)) { if (sc === tot) sc = tot.slice(); sc[r] = -PEN; }
+            else if (pref[r] > 0 && pref[r] < 9) { if (sc === tot) sc = tot.slice(); sc[r] = tot[r] - pref[r]; }
           }
           return { ok: true, tot: sc, raw: tot, pm: pm };
         }
@@ -2099,7 +2102,7 @@
         }
         const R = rng(12345);
         let best = null;
-        const restarts = 28, iters = anyBuff ? 2000 : 2500;
+        const restarts = 100, iters = anyBuff ? 2000 : 2500;
         for (let rs = 0; rs < restarts; rs++) {
           // chave sorteada uma vez por skill (sort com comparador aleatório dá ordens diferentes conforme o navegador otimiza o código)
           const key = S.map(function (x) { return (x.d + x.bp * 1000) * (rs ? 0.85 + 0.3 * R() : 1); });
@@ -2185,7 +2188,7 @@
           if (best.a[i] < 0) unused.push(sk);
           else { rots[best.a[i]].items.push(sk); if (sk.cc) rots[best.a[i]].cc++; }
         });
-        rots.forEach(function (ro) { ro.noStun = ro.cc === 0; });
+        rots.forEach(function (ro) { ro.noStun = !ro.items.some(function (x) { return x.cc && (TK & (1 << x.p)); }); });
         rots.forEach(function (ro) {
           const g = {};
           ro.items.forEach(function (it) { (g[it.p] = g[it.p] || []).push(it); });
@@ -2217,10 +2220,11 @@
         rots.forEach(function (ro, i) {
           const prev = i > 0 ? rots[i - 1].mons : [], next = i < rots.length - 1 ? rots[i + 1].mons : [];
           const lead = function (pk) {
-            const tank = TK & (1 << pk) ? 0 : 4;
-            const stun = ro.items.some(function (x) { return x.p === pk && x.cc; }) ? 0 : 2;
+            const tank = TK & (1 << pk) ? 0 : 8;
+            const cc = ro.items.some(function (x) { return x.p === pk && x.cc; }) ? 0 : 4;
+            const stun = ro.items.some(function (x) { return x.p === pk && x.cc && !x.sil; }) ? 0 : 2;
             const off = state.mons[pk].role === "OFFTANK" ? 0 : 1;
-            return tank + stun + off;
+            return tank + cc + stun + off;
           };
           ro.mons.sort(function (a, b) {
             const ra = (prev.indexOf(a) >= 0 ? 0 : 1) + (next.indexOf(a) >= 0 ? 1 : 0);
@@ -2230,7 +2234,7 @@
           ro.seqs = ro.mons.map(function (pk) { return { p: pk, seq: comboSeq(ro, pk) }; });
         });
         const total = S.reduce(function (x, y) { return x + y.d; }, 0);
-        return { rots: rots, unused: unused, min: Math.min.apply(null, best.tot), total: total, nCC: S.filter(function (x) { return x.cc; }).length };
+        return { rots: rots, unused: unused, min: Math.min.apply(null, best.tot), total: total, nCC: S.filter(function (x) { return x.cc && !x.sil; }).length, nSil: S.filter(function (x) { return x.sil; }).length };
       }
       // Sequência de um pokémon na rotação: skills em ordem (M1, M2...) e, no final, o buff seguido da skill que ele aumenta.
       // Buff sem % testado vai antes da skill mais forte do pokémon nessa rotação.
@@ -2331,7 +2335,7 @@
           L.push("<p class=\"st-no\">" + noTk + (noTk > 1 ? " rotações ficaram" : " rotação ficou") + " sem OFFTANK/FLEX. Com " + N + " rotações e cada pokémon em no máximo 2, são precisos pelo menos " + Math.ceil(N / 2) +
             " pokémon que não sejam DMG, com skills anotadas (hoje: " + tanks + "). Marque o papel nos cards ou diminua o número de rotações.</p>");
         }
-        if (res.nCC > N) L.push("<p class=\"hint\">" + res.nCC + " skills de stun/silence para " + N + " rotações: no máximo " + N + " delas são usadas.</p>");
+        if (res.nCC > N || res.nSil > N) L.push("<p class=\"hint\">" + res.nCC + " stuns e " + res.nSil + " silences para " + N + " rotações: no máximo 1 stun e 1 silence por rotação.</p>");
         const noBp = [];
         state.mons.forEach(function (m) { m.skills.forEach(function (sk, k) { if (sk.t === "buff" && !(buffPct(m, k) > 0)) noBp.push(shortName(m) + " M" + (k + 1)); }); });
         if (noBp.length) L.push("<p class=\"hint\">Buff ainda não testado (o aumento não entra na conta; a ordem já coloca o buff antes da skill mais forte): " + noBp.join(", ") + ".</p>");
@@ -2359,7 +2363,7 @@
           }
           const isMin = ro.tot === res.min;
           return "<div class=\"rc" + (isMin ? " weak" : "") + (ro.noTank || ro.noStun ? " notank" : "") + "\">" +
-            "<div class=\"rc-h\"><span>Rotação " + (i + 1) + "</span>" + (ro.cc ? "<span class=\"rc-cc\">" + (ro.items.some(function (x) { return x.cc && x.sil; }) ? "🔇 silence" : "⚡ stun") + "</span>" : "<span class=\"rc-nocc\">sem stun</span>") + "</div>" +
+            "<div class=\"rc-h\"><span>Rotação " + (i + 1) + "</span>" + (ro.cc ? "<span class=\"rc-cc\">" + [ro.items.some(function (x) { return x.cc && !x.sil; }) ? "⚡ stun" : "", ro.items.some(function (x) { return x.sil; }) ? "🔇 silence" : ""].filter(Boolean).join(" + ") + "</span>" : "<span class=\"rc-nocc\">sem stun</span>") + "</div>" +
             (ro.noTank ? "<div class=\"rc-tk\">⚠ sem OFFTANK: ninguém segura essa rotação</div>" : ro.noStun ? "<div class=\"rc-tk\">⚠ sem stun/silence para abrir a rotação</div>" : "") +
             "<div class=\"rc-d\">" + fmt(ro.tot) + "</div>" +
             "<div class=\"rc-hz\" style=\"color:" + r.color + "\">" + hzTxt(h) + "</div>" +
