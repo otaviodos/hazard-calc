@@ -795,7 +795,7 @@
           <li><b>Copie</b> o <code>!autocombo</code> de cada pokémon nas rotações.</li>
         </ol>
         <details class="rot-rules"><summary>Regras usadas no cálculo</summary>
-          <p class="hint">Pelo menos 1 OFFTANK ou FLEX por rotação (DMG não segura sozinho; sem papel conta como quem segura) · no máximo 1 stun/silence por rotação · no máximo 2 pokémon por rotação (ajustável) · cada pokémon em no máximo 2 rotações seguidas · o buff aumenta a próxima skill do mesmo pokémon: a página escolhe a mais forte e coloca o buff em penúltimo e a buffada em último no comando.</p>
+          <p class="hint">Pelo menos 1 OFFTANK ou FLEX por rotação, e ele é sempre o primeiro (lura, stuna, bate um pouco e o DMG finaliza; sem papel conta como quem segura) · no máximo 1 stun/silence por rotação, e só do OFFTANK/FLEX (stun de DMG não é usado) · o buff nunca vai no stun · no máximo 2 pokémon por rotação (ajustável) · cada pokémon em no máximo 2 rotações seguidas · o buff aumenta a próxima skill do mesmo pokémon: a página escolhe a mais forte e coloca o buff em penúltimo e a buffada em último no comando.</p>
         </details>
         <div id="rot-out"></div>
       </div>
@@ -2012,7 +2012,7 @@
         const bps = [], tg = [];
         items.forEach(function (it) {
           tot += it.d;
-          if (it.buff) { if (it.bp > 0) bps.push(it); } else tg.push(it);
+          if (it.buff) { if (it.bp > 0) bps.push(it); } else if (!it.cc) tg.push(it);
         });
         bps.sort(function (a, b) { return b.bp - a.bp; });
         tg.sort(function (a, b) { return b.d - a.d; });
@@ -2044,7 +2044,7 @@
             const r = a[i];
             if (r < 0) continue;
             const x = S[i];
-            if (x.cc) cc[r]++;
+            if (x.cc) { if (!(TK & (1 << x.p))) return { ok: false }; cc[r]++; }
             pm[r] |= (1 << x.p);
             rm[x.p] |= (1 << r);
             if (anyBuff) (groups[r][x.p] = groups[r][x.p] || []).push(x);
@@ -2187,10 +2187,16 @@
         })();
         rots.forEach(function (ro, i) {
           const prev = i > 0 ? rots[i - 1].mons : [], next = i < rots.length - 1 ? rots[i + 1].mons : [];
+          const lead = function (pk) {
+            const tank = TK & (1 << pk) ? 0 : 4;
+            const stun = ro.items.some(function (x) { return x.p === pk && x.cc; }) ? 0 : 2;
+            const off = state.mons[pk].role === "OFFTANK" ? 0 : 1;
+            return tank + stun + off;
+          };
           ro.mons.sort(function (a, b) {
             const ra = (prev.indexOf(a) >= 0 ? 0 : 1) + (next.indexOf(a) >= 0 ? 1 : 0);
             const rb = (prev.indexOf(b) >= 0 ? 0 : 1) + (next.indexOf(b) >= 0 ? 1 : 0);
-            return ra - rb || a - b;
+            return lead(a) - lead(b) || ra - rb || a - b;
           });
           ro.seqs = ro.mons.map(function (pk) { return { p: pk, seq: comboSeq(ro, pk) }; });
         });
@@ -2205,7 +2211,7 @@
         const tgOf = new Map();
         pairs.forEach(function (pr) { tgOf.set(pr.target, pr.buff); });
         const pairedBuffs = pairs.map(function (pr) { return pr.buff; });
-        const free = its.filter(function (x) { return !x.buff; }).sort(function (a, b) { return b.d - a.d; });
+        const free = its.filter(function (x) { return !x.buff && !x.cc; }).sort(function (a, b) { return b.d - a.d; });
         its.filter(function (x) { return x.buff && pairedBuffs.indexOf(x) < 0; }).forEach(function (b) {
           const t = free.find(function (x) { return !tgOf.has(x); });
           if (t) { tgOf.set(t, b); pairedBuffs.push(b); }
@@ -2213,8 +2219,9 @@
         // skills sem buff em ordem (M1, M2...); depois o buff (penúltima) e a skill buffada (última),
         // para o buff nunca cair na skill errada
         const seq = [];
+        its.filter(function (x) { return x.cc; }).forEach(function (x) { seq.push(x); });
         its.filter(function (x) { return x.buff && pairedBuffs.indexOf(x) < 0; }).forEach(function (b) { seq.push(b); });
-        its.filter(function (x) { return !x.buff && !tgOf.has(x); }).sort(function (a, b) { return a.k - b.k; }).forEach(function (x) { seq.push(x); });
+        its.filter(function (x) { return !x.buff && !x.cc && !tgOf.has(x); }).sort(function (a, b) { return a.k - b.k; }).forEach(function (x) { seq.push(x); });
         its.filter(function (x) { return tgOf.has(x); }).sort(function (a, b) { return a.k - b.k; }).forEach(function (x) {
           seq.push(tgOf.get(x));
           seq.push(x);
@@ -2328,7 +2335,7 @@
             lines + "</div>";
         }).join("");
         const unused = res.unused.length
-          ? "<p class=\"rot-unused\"><strong>Sobram:</strong> " + res.unused.map(function (sk) { return shortName(state.mons[sk.p]) + " M" + (sk.k + 1) + (sk.cc ? " ⚡" : "") + (sk.buff ? " ▲" : "") + (sk.d ? " (" + kfmt(sk.d) + ")" : ""); }).join(", ") + "</p>"
+          ? "<p class=\"rot-unused\"><strong>Sobram:</strong> " + res.unused.map(function (sk) { return shortName(state.mons[sk.p]) + " M" + (sk.k + 1) + (sk.cc ? (state.mons[sk.p].role === "DMG" ? " ⚡ stun de DMG" : " ⚡") : "") + (sk.buff ? " ▲" : "") + (sk.d ? " (" + kfmt(sk.d) + ")" : ""); }).join(", ") + "</p>"
           : "";
         const all = [];
         res.rots.forEach(function (ro, i) { ro.seqs.forEach(function (sq, j) { all.push((i * state.rot.maxP + j + 1) + ": " + comboCmd(sq.seq)); }); });
@@ -2338,7 +2345,7 @@
           (nx >= 0 && res.min < nxNeed ? " · faltam " + kfmt(nxNeed - res.min) + " p/ Hazard " + nx : "");
         out.innerHTML = "<div class=\"rot-det\">" + L.join("") + "</div>" +
           "<div class=\"rot-cards\">" + cards + "</div>" + unused + allBox +
-          "<p class=\"hint\">Toque no pokémon da rotação para copiar o <code>!autocombo</code>. O número é o atalho: 1 e 2 na rotação 1, 3 e 4 na rotação 2... ⚡ stun/silence (máx. 1 por rotação) · ▲ buff: sempre a penúltima, e a skill buffada a última.</p>";
+          "<p class=\"hint\">Toque no pokémon da rotação para copiar o <code>!autocombo</code>. O número é o atalho: 1 e 2 na rotação 1, 3 e 4 na rotação 2... O OFFTANK vem primeiro: lura e solta o ⚡ stun logo no começo do comando, depois o DMG finaliza · ▲ buff: sempre a penúltima, e a skill buffada a última.</p>";
         syncSticky();
       }
 
@@ -2660,6 +2667,26 @@
       document.getElementById("export-btn").addEventListener("click", function () {
         save();
         const payload = { app: "hazard-calc", version: 1, exportedAt: new Date().toISOString(), data: JSON.parse(JSON.stringify(state)) };
+        // resultado do 1.5× (só leitura; o import recalcula a partir das skills)
+        const rr = rotResult();
+        if (rr) {
+          payload.rotacoes15 = {
+            runa: state.rune,
+            hazardOficial: Math.min.apply(null, rr.rots.map(function (ro) { return maxHz(state.rune, ro.tot); })),
+            rotacoes: rr.rots.map(function (ro, i) {
+              return {
+                rotacao: i + 1,
+                dano: ro.tot,
+                hazard: maxHz(state.rune, ro.tot),
+                semOfftank: !!ro.noTank,
+                pokemon: ro.seqs.map(function (sq, j) {
+                  return { atalho: i * state.rot.maxP + j + 1, nome: state.mons[sq.p].name, papel: state.mons[sq.p].role || "", comando: comboCmd(sq.seq) };
+                })
+              };
+            }),
+            sobram: rr.unused.map(function (sk) { return state.mons[sk.p].name + " M" + (sk.k + 1) + " (" + (sk.d || 0) + ")"; })
+          };
+        }
         const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
