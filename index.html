@@ -586,6 +586,8 @@
     .sk-tg { display: inline-flex; gap: 4px; }
     .sk-tb { min-height: 32px; padding: 2px 8px; border-radius: 8px; border: 1px dashed var(--line-strong); background: transparent; color: var(--muted); font-size: 0.75rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
     .sk-tb:hover { color: var(--text); border-color: var(--muted); }
+    .sk-tb.sil.on { border-style: solid; border-color: #38BDF8; color: #7DD3FC; background: rgba(56, 189, 248, .1); }
+    .sk-list .sk.t-sil { border-color: #38BDF8; background: rgba(56, 189, 248, .05); }
     .sk-tb.cc.on { border-style: solid; border-color: var(--warn); color: var(--warn); background: rgba(251, 191, 36, .1); }
     .sk-tb.buff.on { border-style: solid; border-color: #A78BFA; color: #C4B5FD; background: rgba(167, 139, 250, .12); }
     .sk-tb:focus-visible { outline: 2px solid var(--ring, #93C5FD); outline-offset: 2px; }
@@ -657,6 +659,8 @@
     @media (max-width: 900px) { .teams-grid.f15 { grid-template-columns: 1fr; } }
     @media (max-width: 640px) {
       .fmt-seg button small { display: none; }
+      .sk-tb .tbl { display: none; }
+      .sk-tb { min-width: 34px; }
       .brute-name { flex-basis: 100%; }
       .bchk { flex: 1; justify-content: center; }
       .sk-row { grid-template-columns: 26px minmax(0, 1fr) auto 30px; gap: 5px; }
@@ -791,11 +795,11 @@
         <div class="dev-note" role="note"><span class="dev-tag">Em desenvolvimento</span><span>O formato 1.5× ainda está sendo ajustado e pode ter erros. Sugestões ou problemas? Fale no Discord com <b class="dev-user">Otavio5885</b>.</span></div>
         <ol class="rot-steps">
           <li><b>Anote</b> o dano de cada skill nos cards abaixo. Enter vai para a próxima; dá para colar vários números de uma vez.</li>
-          <li>Marque <b>⚡ Stun</b> e <b>▲ Buff</b>. No buff, anote quanto a skill deu com ele.</li>
+          <li>Marque <b>⚡ Stun</b>, <b>🔇 Silence</b> e <b>▲ Buff</b>. No buff, escolha a skill que ele aumenta e anote quanto ela passa a dar.</li>
           <li><b>Copie</b> o <code>!autocombo</code> de cada pokémon nas rotações.</li>
         </ol>
         <details class="rot-rules"><summary>Regras usadas no cálculo</summary>
-          <p class="hint">Pelo menos 1 OFFTANK ou FLEX por rotação, e ele é sempre o primeiro (lura, stuna, bate um pouco e o DMG finaliza; sem papel conta como quem segura) · no máximo 1 stun/silence por rotação, e só do OFFTANK/FLEX (stun de DMG não é usado) · o buff nunca vai no stun · no máximo 2 pokémon por rotação (ajustável) · cada pokémon em no máximo 2 rotações seguidas · o buff aumenta a próxima skill do mesmo pokémon: a página escolhe a mais forte e coloca o buff em penúltimo e a buffada em último no comando.</p>
+          <p class="hint">Toda rotação abre com um OFFTANK ou FLEX que solta stun ou silence (lura, stuna, bate um pouco e o DMG finaliza; sem papel conta como quem segura) · exatamente 1 stun/silence por rotação, e só de OFFTANK/FLEX (o de DMG não é usado) · o buff aumenta só a skill que você escolheu, e só se as duas estiverem na mesma rotação · no máximo 2 pokémon por rotação (ajustável) · cada pokémon em no máximo 2 rotações seguidas · no comando o buff vem logo antes da skill buffada (no fim; ou junto do stun, se for ele o buffado).</p>
         </details>
         <div id="rot-out"></div>
       </div>
@@ -939,7 +943,7 @@
         if (Array.isArray(arr)) arr.slice(0, 9).forEach(function (x, k) {
           if (!x || typeof x !== "object") return;
           const d = Number(x.d), bp = Number(x.bp);
-          const t = x.t === "cc" || x.t === "buff" || x.t === "n" ? x.t : (x.cc === true ? "cc" : "n");
+          const t = x.t === "cc" || x.t === "sil" || x.t === "buff" || x.t === "n" ? x.t : (x.cc === true ? "cc" : "n");
           const bt = Number(x.bt), bd = Number(x.bd);
           out[k] = { d: Number.isFinite(d) && d > 0 ? d : null, t: t, bp: Number.isFinite(bp) && bp > 0 ? bp : null,
             bt: x.bt != null && Number.isInteger(bt) && bt >= 0 && bt < 9 ? bt : null, bd: Number.isFinite(bd) && bd > 0 ? bd : null };
@@ -1376,11 +1380,19 @@
       function buffTarget(m, k) {
         const sk = m.skills[k];
         if (sk.bt != null && sk.bt !== k && m.skills[sk.bt] && m.skills[sk.bt].t !== "buff") return sk.bt;
+        if (sk.t === "buff" && sk.bt == null && !(sk.bd > 0)) return -1;
         let best = -1;
         m.skills.forEach(function (x, j) { if (j !== k && x.t !== "buff" && x.d > 0 && (best < 0 || x.d > m.skills[best].d)) best = j; });
         return best;
       }
       // % do buff descoberto no teste: (dano com buff ÷ dano normal − 1)
+      function buffLabel(m, k) {
+        const sk = m.skills[k], tg = buffTarget(m, k);
+        if (tg < 0) return "escolha a skill";
+        if (!(sk.bd > 0)) return "anote o dano com buff";
+        if (!(m.skills[tg].d > 0)) return "anote o dano normal da M" + (tg + 1);
+        return sk.bd > m.skills[tg].d ? "+" + fmt(sk.bd - m.skills[tg].d) : "menor que o normal?";
+      }
       function buffPct(m, k) {
         const sk = m.skills[k];
         const tg = buffTarget(m, k);
@@ -1394,11 +1406,10 @@
           if (j === k || x.t === "buff") return "";
           return "<option value=\"" + j + "\"" + (j === tg ? " selected" : "") + ">M" + (j + 1) + (x.d ? " (" + kfmt(x.d) + ")" : "") + "</option>";
         }).join("");
-        const pct = buffPct(m, k);
-        return "<div class=\"sk-b\"><span>Teste:</span>" +
-          "<select class=\"sk-bt\" data-skbt=\"" + m.id + ":" + k + "\" aria-label=\"Skill usada logo depois do buff no teste\">" + opts + "</select>" +
-          "<span>com buff deu</span><input class=\"in num\" data-skbd=\"" + m.id + ":" + k + "\" inputmode=\"decimal\" placeholder=\"dano\" aria-label=\"Dano da skill com o buff\" value=\"" + (sk.bd ? fmt(sk.bd) : "") + "\" />" +
-          "<span class=\"sk-bp\" data-skbp=\"" + m.id + ":" + k + "\">" + (pct > 0 ? "≈ +" + fmt(Math.round(pct * 10) / 10) + "%" : "teste para descobrir") + "</span></div>";
+        return "<div class=\"sk-b\"><span>Buffa a</span>" +
+          "<select class=\"sk-bt\" data-skbt=\"" + m.id + ":" + k + "\" aria-label=\"Skill que o buff aumenta\">" + (tg < 0 ? "<option value=\"\" selected>escolha</option>" : "") + opts + "</select>" +
+          "<span>que passa a dar</span><input class=\"in num\" data-skbd=\"" + m.id + ":" + k + "\" inputmode=\"decimal\" placeholder=\"dano\" aria-label=\"Dano da skill buffada com o buff\" value=\"" + (sk.bd ? fmt(sk.bd) : "") + "\" />" +
+          "<span class=\"sk-bp\" data-skbp=\"" + m.id + ":" + k + "\">" + buffLabel(m, k) + "</span></div>";
       }
 
       // quantas skills mostrar: as preenchidas + a próxima vazia
@@ -1415,12 +1426,12 @@
           const id = "sk-" + m.id + "-" + k;
           const tb = function (kind, label, aria) {
             const on = tp === kind;
-            return "<button type=\"button\" class=\"sk-tb " + kind + (on ? " on" : "") + "\" data-sktb=\"" + m.id + ":" + k + ":" + kind + "\" aria-pressed=\"" + on + "\" aria-label=\"M" + (k + 1) + ": " + aria + "\">" + label + "</button>";
+            return "<button type=\"button\" class=\"sk-tb " + kind + (on ? " on" : "") + "\" data-sktb=\"" + m.id + ":" + k + ":" + kind + "\" aria-pressed=\"" + on + "\" aria-label=\"M" + (k + 1) + ": " + aria + "\" title=\"" + aria.charAt(0).toUpperCase() + aria.slice(1) + "\">" + label + "</button>";
           };
           return "<div class=\"sk t-" + tp + (k >= vis ? " sk-hid" : "") + "\" data-ski=\"" + k + "\">" +
             "<div class=\"sk-row\"><label class=\"sk-l\" for=\"" + id + "\">M" + (k + 1) + "</label>" +
             "<input class=\"in num sk-in\" id=\"" + id + "\" data-sk=\"" + m.id + ":" + k + "\" inputmode=\"decimal\" enterkeyhint=\"next\" placeholder=\"dano\" value=\"" + (sk.d ? fmt(sk.d) : "") + "\" />" +
-            "<span class=\"sk-tg\">" + tb("cc", "⚡ Stun", "stun ou silence") + tb("buff", "▲ Buff", "buff") + "</span>" +
+            "<span class=\"sk-tg\">" + tb("cc", "⚡<span class=\"tbl\"> Stun</span>", "stun") + tb("sil", "🔇<span class=\"tbl\"> Silence</span>", "silence") + tb("buff", "▲<span class=\"tbl\"> Buff</span>", "buff") + "</span>" +
             "<button type=\"button\" class=\"sk-del\" data-skdel=\"" + m.id + ":" + k + "\" aria-label=\"Apagar M" + (k + 1) + "\" title=\"Apagar M" + (k + 1) + "\">×</button></div>" +
             (tp === "buff" ? buffTestHtml(m, k) : "") +
             "</div>";
@@ -1999,8 +2010,11 @@
           m.skills.forEach(function (sk, k) {
             const d = sk.d > 0 ? Math.round(sk.d * f) : 0;
             const isBuff = sk.t === "buff";
-            const bp = isBuff ? buffPct(m, k) : 0;
-            if (d > 0 || isBuff) list.push({ p: pi, k: k, d: d, cc: sk.t === "cc", buff: isBuff, bp: bp });
+            const isCC = sk.t === "cc" || sk.t === "sil";
+            const bt = isBuff ? buffTarget(m, k) : -1;
+            // dano a mais na skill buffada = o que ela passa a dar com o buff − o normal dela
+            const bx = isBuff && bt >= 0 && sk.bd > 0 && m.skills[bt].d > 0 && sk.bd > m.skills[bt].d ? Math.round((sk.bd - m.skills[bt].d) * f) : 0;
+            if (d > 0 || isBuff || isCC) list.push({ p: pi, k: k, d: d, cc: isCC, sil: sk.t === "sil", buff: isBuff, bt: bt, bx: bx, bp: bx });
           });
         });
         return list;
@@ -2009,19 +2023,17 @@
       // Cada buff aumenta UMA skill seguinte do mesmo pokémon; o maior buff vai na skill mais forte.
       function pokeDamage(items) {
         let tot = 0;
-        const bps = [], tg = [];
-        items.forEach(function (it) {
-          tot += it.d;
-          if (it.buff) { if (it.bp > 0) bps.push(it); } else if (!it.cc) tg.push(it);
+        const pairs = [], used = [];
+        items.forEach(function (it) { tot += it.d; });
+        // cada buff aumenta só a skill que você escolheu, e só se ela estiver na mesma rotação
+        items.forEach(function (b) {
+          if (!b.buff || b.bt < 0) return;
+          const t = items.find(function (x) { return x.k === b.bt && x.p === b.p && !x.buff; });
+          if (!t || used.indexOf(t) >= 0) return;
+          used.push(t);
+          tot += b.bx;
+          pairs.push({ buff: b, target: t, extra: b.bx });
         });
-        bps.sort(function (a, b) { return b.bp - a.bp; });
-        tg.sort(function (a, b) { return b.d - a.d; });
-        const pairs = [];
-        for (let i = 0; i < bps.length && i < tg.length; i++) {
-          const extra = Math.round(tg[i].d * bps[i].bp / 100);
-          tot += extra;
-          pairs.push({ buff: bps[i], target: tg[i], extra: extra });
-        }
         return { tot: tot, pairs: pairs };
       }
       // Distribui as skills em N rotações: no máx. 1 stun/silence e no máx. maxP pokémon por rotação.
@@ -2036,6 +2048,8 @@
         let TK = 0;
         state.mons.forEach(function (m, pi) { if (m.role !== "DMG") TK |= (1 << pi); });
         const PEN = 1e9;
+        // stun/silence que podem abrir uma rotação (só de quem segura)
+        const KCC = S.filter(function (x) { return x.cc && (TK & (1 << x.p)); }).length;
         function evaluate(a) {
           const tot = new Array(N).fill(0), cc = new Array(N).fill(0), pm = new Array(N).fill(0), rm = [0, 0, 0, 0, 0, 0];
           const groups = anyBuff ? [] : null;
@@ -2068,7 +2082,7 @@
           }
           let sc = tot;
           for (let r = 0; r < N; r++) {
-            if (!(pm[r] & TK)) { if (sc === tot) sc = tot.slice(); sc[r] = -PEN; }
+            if (!(pm[r] & TK) || (KCC > 0 && cc[r] === 0)) { if (sc === tot) sc = tot.slice(); sc[r] = -PEN; }
           }
           return { ok: true, tot: sc, raw: tot, pm: pm };
         }
@@ -2135,8 +2149,16 @@
               const t = Math.floor(R() * (N + 1)) - 1;
               if (t === old) continue;
               a[i] = t;
-              const e = evaluate(a);
-              if (e.ok && !better(cur, e.tot)) cur = e.tot; else a[i] = old;
+              let e = evaluate(a);
+              if (e.ok && !better(cur, e.tot)) cur = e.tot;
+              else if (t >= 0 && R() < 0.5) {
+                // troca com despejo: tira da rotação t os outros pokémon (ficam sem uso) e põe esta skill
+                const ev = [];
+                for (let j = 0; j < L; j++) if (a[j] === t && S[j].p !== S[i].p) { ev.push(j); a[j] = -1; }
+                e = ev.length ? evaluate(a) : null;
+                if (e && e.ok && !better(cur, e.tot)) cur = e.tot;
+                else { ev.forEach(function (j) { a[j] = t; }); a[i] = old; }
+              } else a[i] = old;
             } else {
               const j = Math.floor(R() * L);
               if (a[j] === old) continue;
@@ -2151,12 +2173,13 @@
         const rots = [];
         const fin = evaluate(best.a);
         best.tot = fin.raw;
-        for (let r = 0; r < N; r++) rots.push({ items: [], tot: best.tot[r], cc: 0, pairs: [], noTank: !(fin.pm[r] & TK) });
+        for (let r = 0; r < N; r++) rots.push({ items: [], tot: best.tot[r], cc: 0, pairs: [], noTank: !(fin.pm[r] & TK), noStun: false });
         const unused = [];
         S.forEach(function (sk, i) {
           if (best.a[i] < 0) unused.push(sk);
           else { rots[best.a[i]].items.push(sk); if (sk.cc) rots[best.a[i]].cc++; }
         });
+        rots.forEach(function (ro) { ro.noStun = ro.cc === 0; });
         rots.forEach(function (ro) {
           const g = {};
           ro.items.forEach(function (it) { (g[it.p] = g[it.p] || []).push(it); });
@@ -2212,17 +2235,14 @@
         pairs.forEach(function (pr) { tgOf.set(pr.target, pr.buff); });
         const pairedBuffs = pairs.map(function (pr) { return pr.buff; });
         const free = its.filter(function (x) { return !x.buff && !x.cc; }).sort(function (a, b) { return b.d - a.d; });
-        its.filter(function (x) { return x.buff && pairedBuffs.indexOf(x) < 0; }).forEach(function (b) {
-          const t = free.find(function (x) { return !tgOf.has(x); });
-          if (t) { tgOf.set(t, b); pairedBuffs.push(b); }
-        });
+        void free;
         // skills sem buff em ordem (M1, M2...); depois o buff (penúltima) e a skill buffada (última),
         // para o buff nunca cair na skill errada
         const seq = [];
-        its.filter(function (x) { return x.cc; }).forEach(function (x) { seq.push(x); });
+        its.filter(function (x) { return x.cc; }).forEach(function (x) { if (tgOf.has(x)) seq.push(tgOf.get(x)); seq.push(x); });
         its.filter(function (x) { return x.buff && pairedBuffs.indexOf(x) < 0; }).forEach(function (b) { seq.push(b); });
         its.filter(function (x) { return !x.buff && !x.cc && !tgOf.has(x); }).sort(function (a, b) { return a.k - b.k; }).forEach(function (x) { seq.push(x); });
-        its.filter(function (x) { return tgOf.has(x); }).sort(function (a, b) { return a.k - b.k; }).forEach(function (x) {
+        its.filter(function (x) { return tgOf.has(x) && !x.cc; }).sort(function (a, b) { return a.k - b.k; }).forEach(function (x) {
           seq.push(tgOf.get(x));
           seq.push(x);
         });
@@ -2293,6 +2313,12 @@
           }
           if (pCap < nx) L.push("<p class=\"st-no\">Precisão: Hazard " + nx + " exige " + fmt(state.table[nx][6]) + " pts em cada pokémon (veja a seção de precisão).</p>");
         }
+        const noSt = res.rots.filter(function (x) { return x.noStun; }).length;
+        if (noSt) {
+          const have = state.mons.reduce(function (a, m) { return a + (m.role === "DMG" ? 0 : m.skills.filter(function (x) { return x.t === "cc" || x.t === "sil"; }).length); }, 0);
+          L.push("<p class=\"st-no\">" + noSt + (noSt > 1 ? " rotações ficaram" : " rotação ficou") + " sem stun/silence. O primeiro pokémon de cada rotação precisa abrir com stun ou silence: são precisos " + N +
+            " (1 por rotação) de OFFTANK/FLEX, e hoje há " + have + ". Marque ⚡ Stun ou 🔇 Silence nas skills dos OFFTANK/FLEX ou diminua o número de rotações.</p>");
+        }
         const noTk = res.rots.filter(function (x) { return x.noTank; }).length;
         if (noTk) {
           const tanks = state.mons.filter(function (m) { return m.role !== "DMG" && m.skills.some(function (x) { return x.d > 0; }); }).length;
@@ -2312,7 +2338,7 @@
             const toks = sq.seq.map(function (sk, q) {
               const pr = ro.pairs.find(function (x) { return x.target === sk; });
               const nextIsTarget = sk.buff && sq.seq[q + 1] && ro.pairs.some(function (x) { return x.buff === sk && x.target === sq.seq[q + 1]; });
-              return "<span class=\"rk" + (sk.cc ? " cc" : "") + (sk.buff ? " bf" : "") + (pr ? " tgt" : "") + "\">M" + (sk.k + 1) + (sk.cc ? " ⚡" : "") + (sk.buff ? " ▲" : "") +
+              return "<span class=\"rk" + (sk.cc ? " cc" : "") + (sk.buff ? " bf" : "") + (pr ? " tgt" : "") + "\">M" + (sk.k + 1) + (sk.cc ? (sk.sil ? " 🔇" : " ⚡") : "") + (sk.buff ? " ▲" : "") +
                 (pr ? " <small>+" + kfmt(pr.extra) + "</small>" : "") + "</span>" + (sk.buff ? "<span class=\"rk-arrow\">→</span>" : "");
             }).join("");
             return "<button type=\"button\" class=\"rl rl-copy\" data-cmd=\"" + esc(cmd) + "\" title=\"Copiar comando\">" +
@@ -2326,16 +2352,16 @@
             }
           }
           const isMin = ro.tot === res.min;
-          return "<div class=\"rc" + (isMin ? " weak" : "") + (ro.noTank ? " notank" : "") + "\">" +
-            "<div class=\"rc-h\"><span>Rotação " + (i + 1) + "</span>" + (ro.cc ? "<span class=\"rc-cc\">⚡ stun</span>" : "<span class=\"rc-nocc\">sem stun</span>") + "</div>" +
-            (ro.noTank ? "<div class=\"rc-tk\">⚠ sem OFFTANK: ninguém segura essa rotação</div>" : "") +
+          return "<div class=\"rc" + (isMin ? " weak" : "") + (ro.noTank || ro.noStun ? " notank" : "") + "\">" +
+            "<div class=\"rc-h\"><span>Rotação " + (i + 1) + "</span>" + (ro.cc ? "<span class=\"rc-cc\">" + (ro.items.some(function (x) { return x.cc && x.sil; }) ? "🔇 silence" : "⚡ stun") + "</span>" : "<span class=\"rc-nocc\">sem stun</span>") + "</div>" +
+            (ro.noTank ? "<div class=\"rc-tk\">⚠ sem OFFTANK: ninguém segura essa rotação</div>" : ro.noStun ? "<div class=\"rc-tk\">⚠ sem stun/silence para abrir a rotação</div>" : "") +
             "<div class=\"rc-d\">" + fmt(ro.tot) + "</div>" +
             "<div class=\"rc-hz\" style=\"color:" + r.color + "\">" + hzTxt(h) + "</div>" +
             (nx >= 0 && ro.tot < nxNeed ? "<div class=\"rc-f\">falta " + kfmt(nxNeed - ro.tot) + " p/ Hazard " + nx + "</div>" : "") +
             lines + "</div>";
         }).join("");
         const unused = res.unused.length
-          ? "<p class=\"rot-unused\"><strong>Sobram:</strong> " + res.unused.map(function (sk) { return shortName(state.mons[sk.p]) + " M" + (sk.k + 1) + (sk.cc ? (state.mons[sk.p].role === "DMG" ? " ⚡ stun de DMG" : " ⚡") : "") + (sk.buff ? " ▲" : "") + (sk.d ? " (" + kfmt(sk.d) + ")" : ""); }).join(", ") + "</p>"
+          ? "<p class=\"rot-unused\"><strong>Sobram:</strong> " + res.unused.map(function (sk) { return shortName(state.mons[sk.p]) + " M" + (sk.k + 1) + (sk.cc ? (sk.sil ? " 🔇" : " ⚡") + (state.mons[sk.p].role === "DMG" ? " de DMG" : "") : "") + (sk.buff ? " ▲" : "") + (sk.d ? " (" + kfmt(sk.d) + ")" : ""); }).join(", ") + "</p>"
           : "";
         const all = [];
         res.rots.forEach(function (ro, i) { ro.seqs.forEach(function (sq, j) { all.push((i * state.rot.maxP + j + 1) + ": " + comboCmd(sq.seq)); }); });
@@ -2345,7 +2371,7 @@
           (nx >= 0 && res.min < nxNeed ? " · faltam " + kfmt(nxNeed - res.min) + " p/ Hazard " + nx : "");
         out.innerHTML = "<div class=\"rot-det\">" + L.join("") + "</div>" +
           "<div class=\"rot-cards\">" + cards + "</div>" + unused + allBox +
-          "<p class=\"hint\">Toque no pokémon da rotação para copiar o <code>!autocombo</code>. O número é o atalho: 1 e 2 na rotação 1, 3 e 4 na rotação 2... O OFFTANK vem primeiro: lura e solta o ⚡ stun logo no começo do comando, depois o DMG finaliza · ▲ buff: sempre a penúltima, e a skill buffada a última.</p>";
+          "<p class=\"hint\">Toque no pokémon da rotação para copiar o <code>!autocombo</code>. O número é o atalho: 1 e 2 na rotação 1, 3 e 4 na rotação 2... O OFFTANK vem primeiro: lura e solta o ⚡ stun / 🔇 silence logo no começo do comando, depois o DMG finaliza · ▲ buff: sempre a penúltima, e a skill buffada a última.</p>";
         syncSticky();
       }
 
@@ -2679,6 +2705,7 @@
                 dano: ro.tot,
                 hazard: maxHz(state.rune, ro.tot),
                 semOfftank: !!ro.noTank,
+                semStun: !!ro.noStun,
                 pokemon: ro.seqs.map(function (sq, j) {
                   return { atalho: i * state.rot.maxP + j + 1, nome: state.mons[sq.p].name, papel: state.mons[sq.p].role || "", comando: comboCmd(sq.seq) };
                 })
@@ -3084,8 +3111,7 @@
         }
         if (!sk.bt && sk.bt !== 0) sk.bt = buffTarget(a.m, a.k) >= 0 ? buffTarget(a.m, a.k) : null;
         const lab = document.querySelector("[data-skbp=\"" + a.m.id + ":" + a.k + "\"]");
-        const pct = buffPct(a.m, a.k);
-        if (lab) lab.textContent = pct > 0 ? "≈ +" + fmt(Math.round(pct * 10) / 10) + "%" : (sk.bd ? "menor que o normal?" : "teste para descobrir");
+        if (lab) lab.textContent = buffLabel(a.m, a.k);
         save();
         paintSoon();
       });
