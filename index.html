@@ -1140,7 +1140,7 @@
       }
       function reqK(i, r) { return Math.ceil(need(i, r) / 1000 - 1e-9); }
       function maxHz(r, total) {
-        let best = -1;
+        let best = 0; // Hazard 0 é o mínimo: sempre dá para fazer
         for (let i = 0; i < state.table.length; i++) if (need(i, r) <= total) best = i;
         return best;
       }
@@ -1499,7 +1499,7 @@
           const on = r.id === state.rune;
           return "<button type=\"button\" class=\"rune" + (on ? " on" : "") + "\" data-rune=\"" + r.id + "\" style=\"--rc:" + r.color + "\" aria-pressed=\"" + on + "\">" +
             "<span class=\"gem\"></span><span class=\"rn\">Runa " + r.id + "</span><span class=\"rb\">" + r.bonus + "</span>" +
-            "<span class=\"rh\">" + (h < 0 ? "abaixo do Hazard 0" : "Hazard " + h) + "</span></button>";
+            "<span class=\"rh\">" + "Hazard " + Math.max(0, h) + "</span></button>";
         }).join("");
       }
 
@@ -1517,7 +1517,7 @@
           const hd = maxHz(state.rune, t[i]);
           const h = members.length ? Math.min(hd, precCap(members)) : hd;
           tot.textContent = fmt(t[i]);
-          haz.textContent = (h < 0 ? "abaixo do Hazard 0" : "Hazard " + h) + (h < hd ? " (precisão)" : "");
+          haz.textContent = "Hazard " + Math.max(0, h) + (h < hd ? " (precisão)" : "");
           haz.style.color = color;
           wk.hidden = !(i === weakIdx && members.length > 0);
           lab.textContent = state.teamPct[i] > 0 ? "Total (pokémons " + fmt(teamBase(i)) + " + " + fmt(state.teamPct[i]) + "% do time)" : "Total do time";
@@ -1571,7 +1571,7 @@
         }
         const chips = t.map(function (v, i) {
           const h = maxHz(state.rune, v);
-          return "<span class=\"chip" + (i === wi ? " weak" : "") + "\">" + teamLabel(i) + " · " + fmt(v) + " · " + (h < 0 ? "abaixo do H0" : "Hazard " + h) + "</span>";
+          return "<span class=\"chip" + (i === wi ? " weak" : "") + "\">" + teamLabel(i) + " · " + fmt(v) + " · " + "Hazard " + Math.max(0, h) + "</span>";
         }).join("");
         const issues = arrangementIssues();
         if (issues.length) L.unshift("<p class=\"warnt\">Atenção: sua divisão atual não vale no jogo (" + esc(issues.join("; ")) + "). Esse Hazard é só uma estimativa.</p>");
@@ -1638,7 +1638,7 @@
             return "" + teamLabel(k) + ": " + grp.map(function (m) { return esc(m.name || "sem nome"); }).join(" + ") + " (" + fmt(best.totals[k]) + ")";
           }).join("<br>");
           html = "<div class=\"box warn\"><strong>Sua divisão atual não vale no jogo:</strong> " + esc(issues.join("; ")) + ". A melhor divisão válida deixa o time mais fraco em " + fmt(best.min) +
-            " (Hazard " + (hNew < 0 ? "abaixo do 0" : hNew) + " com a Runa " + state.rune + ").<br>" + lines +
+            " (Hazard " + Math.max(0, hNew) + " com a Runa " + state.rune + ").<br>" + lines +
             "<br><button type=\"button\" class=\"btn gold\" id=\"apply-split\">Aplicar essa divisão</button></div>";
         } else if (best.min > curMin) {
           const hNow = official(state.rune, t);
@@ -1648,7 +1648,7 @@
             return "" + teamLabel(k) + ": " + grp.map(function (m) { return esc(m.name || "sem nome"); }).join(" + ") + " (" + fmt(best.totals[k]) + ")";
           }).join("<br>");
           html = "<div class=\"box tip\"><strong>Dá para melhorar só reorganizando os times:</strong> o time mais fraco sobe de " + fmt(curMin) + " para " + fmt(best.min) +
-            " (Hazard " + (hNow < 0 ? "abaixo do 0" : hNow) + " → " + (hNew < 0 ? "abaixo do 0" : hNew) + " com a Runa " + state.rune + ").<br>" + lines +
+            " (Hazard " + Math.max(0, hNow) + " → " + Math.max(0, hNew) + " com a Runa " + state.rune + ").<br>" + lines +
             "<br><button type=\"button\" class=\"btn gold\" id=\"apply-split\">Aplicar essa divisão</button></div>";
         } else {
           html = "<div class=\"box neutral\">Sua divisão já é a melhor possível para o time mais fraco.</div>";
@@ -1693,7 +1693,7 @@
         });
       }
 
-      function hzTxt(h) { return h < 0 ? "abaixo do Hazard 0" : "Hazard " + h; }
+      function hzTxt(h) { return "Hazard " + Math.max(0, h); }
       function sgn(n) { return (n > 0 ? "+" : n < 0 ? "−" : "") + fmt(Math.abs(n)); }
 
       function groupLines(groups, totals) {
