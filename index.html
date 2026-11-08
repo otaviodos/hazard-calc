@@ -799,7 +799,7 @@
           <li><b>Copie</b> o <code>!autocombo</code> de cada pokémon nas rotações.</li>
         </ol>
         <details class="rot-rules"><summary>Regras usadas no cálculo</summary>
-          <p class="hint">Toda rotação abre com um OFFTANK ou FLEX que solta stun ou silence (lura, stuna, bate um pouco e o DMG finaliza; sem papel conta como quem segura) · exatamente 1 stun/silence por rotação, e só de OFFTANK/FLEX (o de DMG não é usado) · o buff aumenta só a skill que você escolheu, e só se as duas estiverem na mesma rotação · no máximo 2 pokémon por rotação (ajustável) · cada pokémon em no máximo 2 rotações seguidas · no comando o buff vem logo antes da skill buffada (no fim; ou junto do stun, se for ele o buffado).</p>
+          <p class="hint">Toda rotação abre com um OFFTANK que solta stun (de preferência) ou silence; FLEX só abre quando não dá para usar um OFFTANK sem perder dano (lura, stuna, bate um pouco e o DMG finaliza; sem papel conta como quem segura) · exatamente 1 stun/silence por rotação, e só de OFFTANK/FLEX (o de DMG não é usado) · o buff aumenta só a skill que você escolheu, e só se as duas estiverem na mesma rotação · no máximo 2 pokémon por rotação (ajustável) · cada pokémon em no máximo 2 rotações seguidas · no comando o buff vem logo antes da skill buffada (no fim; ou junto do stun, se for ele o buffado).</p>
         </details>
         <div id="rot-out"></div>
       </div>
@@ -2051,14 +2051,19 @@
         // stun/silence que podem abrir uma rotação (só de quem segura)
         const KCC = S.filter(function (x) { return x.cc && (TK & (1 << x.p)); }).length;
         function evaluate(a) {
-          const tot = new Array(N).fill(0), cc = new Array(N).fill(0), pm = new Array(N).fill(0), rm = [0, 0, 0, 0, 0, 0];
+          const tot = new Array(N).fill(0), cc = new Array(N).fill(0), pm = new Array(N).fill(0), rm = [0, 0, 0, 0, 0, 0], pref = new Array(N).fill(0);
           const groups = anyBuff ? [] : null;
           if (anyBuff) for (let r = 0; r < N; r++) groups.push({});
           for (let i = 0; i < L; i++) {
             const r = a[i];
             if (r < 0) continue;
             const x = S[i];
-            if (x.cc) { if (!(TK & (1 << x.p))) return { ok: false }; cc[r]++; }
+            if (x.cc) {
+              if (!(TK & (1 << x.p))) return { ok: false };
+              cc[r]++;
+              // preferência (só desempata, dano igual): stun antes de silence, OFFTANK antes de FLEX
+              pref[r] = (x.sil ? 0.002 : 0) + (state.mons[x.p].role === "OFFTANK" ? 0 : 0.001);
+            }
             pm[r] |= (1 << x.p);
             rm[x.p] |= (1 << r);
             if (anyBuff) (groups[r][x.p] = groups[r][x.p] || []).push(x);
@@ -2083,6 +2088,7 @@
           let sc = tot;
           for (let r = 0; r < N; r++) {
             if (!(pm[r] & TK) || (KCC > 0 && cc[r] === 0)) { if (sc === tot) sc = tot.slice(); sc[r] = -PEN; }
+            else if (pref[r]) { if (sc === tot) sc = tot.slice(); sc[r] = tot[r] - pref[r]; }
           }
           return { ok: true, tot: sc, raw: tot, pm: pm };
         }
