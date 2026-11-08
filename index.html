@@ -799,7 +799,7 @@
           <li><b>Copie</b> o <code>!autocombo</code> de cada pokémon nas rotações.</li>
         </ol>
         <details class="rot-rules"><summary>Regras usadas no cálculo</summary>
-          <p class="hint">Toda rotação abre com um OFFTANK que solta stun (de preferência) ou silence; FLEX só abre quando não dá para usar um OFFTANK sem perder dano (lura, stuna, bate um pouco e o DMG finaliza; sem papel conta como quem segura) · no máximo 1 stun e 1 silence por rotação; o de DMG entra como dano (nunca abre a rotação) · o buff aumenta só a skill que você escolheu, e só se as duas estiverem na mesma rotação · no máximo 2 pokémon por rotação (ajustável) · cada pokémon em no máximo 2 rotações seguidas · no comando o buff vem logo antes da skill buffada (no fim; ou junto do stun, se for ele o buffado).</p>
+          <p class="hint">Toda rotação abre com um OFFTANK que solta stun (de preferência) ou silence; FLEX só abre quando não dá para usar um OFFTANK sem perder dano (lura, stuna, bate um pouco e o DMG finaliza; sem papel conta como quem segura) · de preferência só 1 stun/silence por rotação; stun + silence juntos só quando isso sobe o Hazard; o de DMG entra como dano (nunca abre a rotação) · o buff aumenta só a skill que você escolheu, e só se as duas estiverem na mesma rotação · no máximo 2 pokémon por rotação (ajustável) · cada pokémon em no máximo 2 rotações seguidas · no comando o buff vem logo antes da skill buffada (no fim; ou junto do stun, se for ele o buffado).</p>
         </details>
         <div id="rot-out"></div>
       </div>
@@ -2038,7 +2038,8 @@
       }
       // Distribui as skills em N rotações: no máx. 1 stun/silence e no máx. maxP pokémon por rotação.
       // Objetivo: a rotação mais fraca o mais forte possível (é ela que decide o Hazard).
-      function rotSolve() {
+      // single = true: no máx. 1 stun/silence por rotação (o preferido); false: pode stun + silence juntos
+      function rotSolve(single) {
         const S = rotSkills();
         const N = state.rot.n, maxP = state.rot.maxP;
         if (!S.length) return null;
@@ -2079,6 +2080,7 @@
           }
           for (let r = 0; r < N; r++) {
             if (st[r] > 1 || si[r] > 1) return { ok: false }; // no máx. 1 stun e 1 silence por rotação
+            if (single && cc[r] > 1) return { ok: false };
             let c = 0, v = pm[r];
             while (v) { c += v & 1; v >>= 1; }
             if (c > maxP) return { ok: false };
@@ -2091,7 +2093,7 @@
           let sc = tot;
           for (let r = 0; r < N; r++) {
             if (!(pm[r] & TK) || (KCC > 0 && tcc[r] === 0)) { if (sc === tot) sc = tot.slice(); sc[r] = -PEN; }
-            else if (pref[r] > 0 && pref[r] < 9) { if (sc === tot) sc = tot.slice(); sc[r] = tot[r] - pref[r]; }
+            else if ((pref[r] > 0 && pref[r] < 9) || cc[r] > 1) { if (sc === tot) sc = tot.slice(); sc[r] = tot[r] - (pref[r] < 9 ? pref[r] : 0) - (cc[r] > 1 ? 0.004 : 0); }
           }
           return { ok: true, tot: sc, raw: tot, pm: pm };
         }
@@ -2274,8 +2276,15 @@
         if (!is15()) return null;
         if (ROTCACHE === null) {
           // só refaz a divisão quando skills, nº de rotações ou pokémon por rotação mudam
-          const key = JSON.stringify([rotSkills(), state.rot.n, state.rot.maxP, state.mons.map(function (m) { return m.role; })]);
-          if (key !== ROTKEY || ROTMEMO === null) { ROTKEY = key; ROTMEMO = rotSolve() || false; }
+          const key = JSON.stringify([rotSkills(), state.rot.n, state.rot.maxP, state.mons.map(function (m) { return m.role; }), state.rune, state.rot.pct, state.base, state.step]);
+          if (key !== ROTKEY || ROTMEMO === null) {
+            ROTKEY = key;
+            // preferência: 1 stun/silence por rotação; stun + silence juntos só se isso subir o Hazard
+            const one = rotSolve(true), two = rotSolve(false);
+            const hz = function (x) { return x ? maxHz(state.rune, x.min) : -1; };
+            if (two && (!one || hz(two) > hz(one))) { two.double = true; two.hzSingle = one ? hz(one) : -1; ROTMEMO = two; }
+            else ROTMEMO = one || two || false;
+          }
           ROTCACHE = ROTMEMO;
         }
         return ROTCACHE || null;
@@ -2323,6 +2332,10 @@
           }
           if (pCap < nx) L.push("<p class=\"st-no\">Precisão: Hazard " + nx + " exige " + fmt(state.table[nx][6]) + " pts em cada pokémon (veja a seção de precisão).</p>");
         }
+        if (res.double) {
+          const dbl = res.rots.map(function (ro, i) { return ro.cc > 1 ? i + 1 : 0; }).filter(Boolean);
+          if (dbl.length) L.push("<p class=\"hint\">Rotação " + dbl.join(", ") + (dbl.length > 1 ? " usam" : " usa") + " stun + silence juntos: com só 1 por rotação o máximo seria " + hzTxt(res.hzSingle) + ".</p>");
+        }
         const noSt = res.rots.filter(function (x) { return x.noStun; }).length;
         if (noSt) {
           const have = state.mons.reduce(function (a, m) { return a + (m.role === "DMG" ? 0 : m.skills.filter(function (x) { return x.t === "cc" || x.t === "sil"; }).length); }, 0);
@@ -2335,7 +2348,8 @@
           L.push("<p class=\"st-no\">" + noTk + (noTk > 1 ? " rotações ficaram" : " rotação ficou") + " sem OFFTANK/FLEX. Com " + N + " rotações e cada pokémon em no máximo 2, são precisos pelo menos " + Math.ceil(N / 2) +
             " pokémon que não sejam DMG, com skills anotadas (hoje: " + tanks + "). Marque o papel nos cards ou diminua o número de rotações.</p>");
         }
-        if (res.nCC > N || res.nSil > N) L.push("<p class=\"hint\">" + res.nCC + " stuns e " + res.nSil + " silences para " + N + " rotações: no máximo 1 stun e 1 silence por rotação.</p>");
+        if (res.nCC > N) L.push("<p class=\"hint\">" + res.nCC + " stuns para " + N + " rotações: no máximo " + N + " são usados (1 por rotação).</p>");
+        if (res.nSil > N) L.push("<p class=\"hint\">" + res.nSil + " silences para " + N + " rotações: no máximo " + N + " são usadas (1 por rotação).</p>");
         const noBp = [];
         state.mons.forEach(function (m) { m.skills.forEach(function (sk, k) { if (sk.t === "buff" && !(buffPct(m, k) > 0)) noBp.push(shortName(m) + " M" + (k + 1)); }); });
         if (noBp.length) L.push("<p class=\"hint\">Buff ainda não testado (o aumento não entra na conta; a ordem já coloca o buff antes da skill mais forte): " + noBp.join(", ") + ".</p>");
