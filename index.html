@@ -853,6 +853,11 @@
           <input class="in num small" id="stepIn" inputmode="decimal" aria-label="Percentual que sobe por Hazard" />
           <span class="mlabel">%</span>
         </div>
+        <div class="mgroup" id="g-max"><span class="mlabel">Hazard máximo</span>
+          <button type="button" class="btn" id="maxHzDec" aria-label="Diminuir o Hazard máximo">−</button>
+          <input class="in num small" id="maxHzIn" inputmode="numeric" aria-label="Hazard máximo da tabela" />
+          <button type="button" class="btn" id="maxHzInc" aria-label="Aumentar o Hazard máximo">+</button>
+        </div>
       </div>
       <p class="hint" id="model-note"></p>
       <div id="summary"></div>
@@ -863,7 +868,7 @@
         <span><i style="background:rgba(240,160,75,0.35)"></i>Só alguns times fazem (letras)</span>
         <span>Hazard riscado: algum pokémon não tem a precisão.</span>
       </div>
-      <p class="hint foot">Precisão em pontos (1 ponto = 0,2%), editável. Cada um dos 6 pokémon precisa ter a precisão do Hazard; o Hazard oficial já considera isso.</p>
+      <p class="hint foot">Precisão em pontos (1 ponto = 0,2%), editável. Em "Hazard máximo" você aumenta a tabela além do 17: o dano segue a fórmula e a precisão continua subindo no mesmo passo das últimas linhas. Cada um dos 6 pokémon precisa ter a precisão do Hazard; o Hazard oficial já considera isso.</p>
     </section>
     <footer class="site-foot">Calculadora de Hazard · criado por <strong>Morthus</strong> · Titan 3 Server</footer>
   </div>
@@ -902,6 +907,20 @@
         [815, 795, 779, 763, 748, 733, 60],
         [845, 825, 807, 791, 775, 760, 65]
       ];
+      const MIN_HZ = DEFAULT_TABLE.length - 1, MAX_HZ = 100;
+      // Muda o Hazard máximo da tabela. O dano das linhas novas vem da fórmula (base, % por Hazard e Runa);
+      // a precisão continua no mesmo passo das duas últimas linhas (+5 pts por Hazard no padrão) e segue editável.
+      function setMaxHz(n) {
+        n = Math.max(MIN_HZ, Math.min(MAX_HZ, Math.round(n)));
+        const T = state.table;
+        if (T.length > n + 1) T.length = n + 1;
+        while (T.length < n + 1) {
+          const L = T.length, d = T[L - 1][6] - T[L - 2][6];
+          const row = RUNES.map(function (r) { return reqK(L, r.id); });
+          row.push(T[L - 1][6] + (d > 0 ? d : 5));
+          T.push(row);
+        }
+      }
       const RUNES = [
         { id: 0, bonus: "sem bônus", pct: 0, color: "#9aa3b8" },
         { id: 1, bonus: "+2%", pct: 2, color: "#3cbf8c" },
@@ -1039,7 +1058,7 @@
           }
           state.mons.forEach(function (m) { m.team = m[teamKey()]; });
           if (d.cand) state.cand = normCand(d.cand);
-          if (Array.isArray(d.table) && d.table.length === 18 && d.table.every(function (r) {
+          if (Array.isArray(d.table) && d.table.length >= 18 && d.table.length <= 101 && d.table.every(function (r) {
             return Array.isArray(r) && r.length === 7 && r.every(function (v) { return Number.isFinite(v); });
           })) state.table = d.table;
           if (state.table[0][1] === 540) state.table[0][1] = 549; // valor lido errado: o cursor cobria o último dígito
@@ -2472,6 +2491,7 @@
         document.querySelectorAll("input[name='basechip']").forEach(function (i) { i.checked = Number(i.value) === state.base; });
         document.getElementById("baseIn").value = fmt(state.base);
         document.getElementById("stepIn").value = fmt(state.step);
+        document.getElementById("maxHzIn").value = String(state.table.length - 1);
         document.getElementById("medalIn").value = fmt(state.medal);
       }
 
@@ -2840,6 +2860,20 @@
         save();
         paint();
       });
+      function applyMaxHz(n) {
+        const inp = document.getElementById("maxHzIn");
+        if (Number.isFinite(n)) {
+          setMaxHz(n);
+          save();
+          buildTable();
+          paint();
+        }
+        inp.value = String(state.table.length - 1);
+      }
+      document.getElementById("maxHzIn").addEventListener("change", function (ev) { applyMaxHz(parseNum(ev.target.value)); });
+      document.getElementById("maxHzIn").addEventListener("keydown", function (ev) { if (ev.key === "Enter") ev.target.blur(); });
+      document.getElementById("maxHzDec").addEventListener("click", function () { applyMaxHz(state.table.length - 2); });
+      document.getElementById("maxHzInc").addEventListener("click", function () { applyMaxHz(state.table.length); });
       ["baseIn", "stepIn"].forEach(function (id) {
         document.getElementById(id).addEventListener("blur", function (ev) {
           ev.target.classList.remove("invalid");
