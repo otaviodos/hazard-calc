@@ -715,6 +715,21 @@
     .sk-b .in { width: 110px; min-height: 30px; padding: 2px 6px; }
     .sk-bt { background: var(--sunken); color: #C4B5FD; border: 1px solid #A78BFA; border-radius: 6px; font-size: 0.75rem; padding: 3px 4px; cursor: pointer; }
     .sk-bp { color: var(--ok); font-weight: 700; }
+    .sk-list .sk .sk-b { margin-top: 6px; padding-left: 38px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 0.8rem; color: #C4B5FD; }
+    .sk-b.pick { color: var(--text); }
+    .sk-bchip { display: inline-flex; align-items: center; min-height: 30px; padding: 2px 10px; border-radius: 999px; background: rgba(167, 139, 250, .18); border: 1px solid #A78BFA; color: #DDD6FE; font-weight: 700; cursor: grab; user-select: none; }
+    .sk-bchip:active { cursor: grabbing; }
+    .sk-bgo, .sk-bx { min-height: 30px; padding: 2px 10px; border-radius: 8px; border: 1px dashed #A78BFA; background: transparent; color: #C4B5FD; font: inherit; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+    .sk-bx { border-style: solid; border-color: var(--line-strong); color: var(--muted); }
+    .sk-bgo:hover, .sk-bx:hover { color: var(--text); }
+    .sk-bset { display: block; width: calc(100% - 38px); margin: 6px 0 0 38px; min-height: 34px; border-radius: 8px; border: 1px dashed #A78BFA; background: rgba(167, 139, 250, .08); color: #DDD6FE; font: inherit; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+    .sk-bset:hover { background: rgba(167, 139, 250, .2); }
+    .sk-bgo:focus-visible, .sk-bx:focus-visible, .sk-bset:focus-visible { outline: 2px solid var(--ring, #93C5FD); outline-offset: 2px; }
+    .sk-list .sk.recv { border-color: rgba(167, 139, 250, .6); background: rgba(167, 139, 250, .05); }
+    .sk-list .sk.drop-on { border-color: #A78BFA; background: rgba(167, 139, 250, .18); }
+    .sk-recv { margin-top: 6px; padding-left: 38px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 0.78rem; color: #C4B5FD; font-weight: 700; }
+    .sk-recv label { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-weight: 600; }
+    .sk-recv .in { width: 110px; min-height: 30px; padding: 2px 6px; }
     .rl-copy { display: flex; flex-direction: column; align-items: stretch; gap: 4px; width: 100%; text-align: left; margin-top: 6px; padding: 8px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--panel); color: inherit; font: inherit; cursor: pointer; transition: border-color .18s, background-color .18s; }
     .rl-copy:hover { border-color: var(--gold); }
     .rl-copy:focus-visible { outline: 2px solid var(--ring, #93C5FD); outline-offset: 2px; }
@@ -1502,17 +1517,29 @@
         if (tg >= 0 && sk.bd > 0 && m.skills[tg].d > 0 && sk.bd > m.skills[tg].d) return (sk.bd / m.skills[tg].d - 1) * 100;
         return sk.bp > 0 ? sk.bp : 0;
       }
+      // Buff: só diz qual skill ele aumenta. Escolha tocando na skill (ou arrastando o ▲ até ela).
+      let BUFFPICK = null; // { id, k }: buff esperando você tocar na skill que ele aumenta
       function buffTestHtml(m, k) {
-        const sk = m.skills[k];
         const tg = buffTarget(m, k);
-        const opts = m.skills.map(function (x, j) {
-          if (j === k || x.t === "buff") return "";
-          return "<option value=\"" + j + "\"" + (j === tg ? " selected" : "") + ">M" + (j + 1) + (x.d ? " (" + kfmt(x.d) + ")" : "") + "</option>";
-        }).join("");
-        return "<div class=\"sk-b\"><span>Buffa a</span>" +
-          "<select class=\"sk-bt\" data-skbt=\"" + m.id + ":" + k + "\" aria-label=\"Skill que o buff aumenta\">" + (tg < 0 ? "<option value=\"\" selected>escolha</option>" : "") + opts + "</select>" +
-          "<span>que passa a dar</span><input class=\"in num\" data-skbd=\"" + m.id + ":" + k + "\" inputmode=\"decimal\" placeholder=\"dano\" aria-label=\"Dano da skill buffada com o buff\" value=\"" + (sk.bd ? fmt(sk.bd) : "") + "\" />" +
-          "<span class=\"sk-bp\" data-skbp=\"" + m.id + ":" + k + "\">" + buffLabel(m, k) + "</span></div>";
+        if (BUFFPICK && BUFFPICK.id === m.id && BUFFPICK.k === k) {
+          return "<div class=\"sk-b pick\"><span>Toque na skill que a <b>M" + (k + 1) + "</b> vai buffar</span><button type=\"button\" class=\"sk-bx\" data-bcancel=\"" + m.id + "\">cancelar</button></div>";
+        }
+        if (tg < 0) return "<div class=\"sk-b\"><button type=\"button\" class=\"sk-bgo\" data-bpick=\"" + m.id + ":" + k + "\">Escolher a skill que ela buffa</button></div>";
+        return "<div class=\"sk-b\"><span class=\"sk-bchip\" draggable=\"true\" data-bdrag=\"" + m.id + ":" + k + "\" title=\"Arraste até outra skill para trocar\">▲ buffa a M" + (tg + 1) + "</span>" +
+          "<button type=\"button\" class=\"sk-bx\" data-bpick=\"" + m.id + ":" + k + "\">trocar</button></div>";
+      }
+      // linha da skill que recebe o buff (e o botão para escolher quando um buff está esperando)
+      function buffRecvHtml(m, k) {
+        if (m.skills[k].t === "buff") return "";
+        if (BUFFPICK && BUFFPICK.id === m.id && BUFFPICK.k !== k) {
+          if (!(m.skills[k].d > 0)) return ""; // só skills com dano anotado
+          return "<button type=\"button\" class=\"sk-bset\" data-bset=\"" + m.id + ":" + BUFFPICK.k + ":" + k + "\">▲ Esta é a buffada pela M" + (BUFFPICK.k + 1) + "</button>";
+        }
+        const from = m.skills.findIndex(function (x, j) { return x.t === "buff" && buffTarget(m, j) === k; });
+        if (from < 0) return "";
+        const b = m.skills[from];
+        return "<div class=\"sk-recv\"><span>▲ buffada pela M" + (from + 1) + "</span>" +
+          "<label>dano com buff<input class=\"in num\" data-skbd=\"" + m.id + ":" + from + "\" inputmode=\"decimal\" placeholder=\"opcional\" aria-label=\"Dano da M" + (k + 1) + " com o buff\" value=\"" + (b.bd ? fmt(b.bd) : "") + "\" /></label></div>";
       }
 
       // quantas skills mostrar: as preenchidas + a próxima vazia
@@ -1531,12 +1558,13 @@
             const on = tp === kind;
             return "<button type=\"button\" class=\"sk-tb " + kind + (on ? " on" : "") + "\" data-sktb=\"" + m.id + ":" + k + ":" + kind + "\" aria-pressed=\"" + on + "\" aria-label=\"M" + (k + 1) + ": " + aria + "\" title=\"" + aria.charAt(0).toUpperCase() + aria.slice(1) + "\">" + label + "</button>";
           };
-          return "<div class=\"sk t-" + tp + (k >= vis ? " sk-hid" : "") + "\" data-ski=\"" + k + "\">" +
+          const recv = buffRecvHtml(m, k);
+          return "<div class=\"sk t-" + tp + (recv ? " recv" : "") + (k >= vis ? " sk-hid" : "") + "\" data-ski=\"" + k + "\" data-skrow=\"" + m.id + ":" + k + "\">" +
             "<div class=\"sk-row\"><label class=\"sk-l\" for=\"" + id + "\">M" + (k + 1) + "</label>" +
             "<input class=\"in num sk-in\" id=\"" + id + "\" data-sk=\"" + m.id + ":" + k + "\" inputmode=\"decimal\" enterkeyhint=\"next\" placeholder=\"dano\" value=\"" + (sk.d ? fmt(sk.d) : "") + "\" />" +
             "<span class=\"sk-tg\">" + tb("cc", "⚡<span class=\"tbl\"> Stun</span>", "stun") + tb("sil", "🔇<span class=\"tbl\"> Silence</span>", "silence") + tb("buff", "▲<span class=\"tbl\"> Buff</span>", "buff") + "</span>" +
             "<button type=\"button\" class=\"sk-del\" data-skdel=\"" + m.id + ":" + k + "\" aria-label=\"Apagar M" + (k + 1) + "\" title=\"Apagar M" + (k + 1) + "\">×</button></div>" +
-            (tp === "buff" ? buffTestHtml(m, k) : "") +
+            (tp === "buff" ? buffTestHtml(m, k) : recv) +
             "</div>";
         }).join("");
         return "<div class=\"skills-box\"><div class=\"skills-head\"><span>Skills</span><span class=\"skc-sum\" data-sksum=\"" + m.id + "\"></span></div>" +
@@ -3433,6 +3461,21 @@
           if (f) f.focus();
           return;
         }
+        const bp = ev.target.closest("[data-bpick]"), bc = ev.target.closest("[data-bcancel]"), bs = ev.target.closest("[data-bset]");
+        if (bp || bc || bs) {
+          if (bp) { const q = bp.getAttribute("data-bpick").split(":"); BUFFPICK = { id: q[0], k: Number(q[1]) }; }
+          else if (bc) BUFFPICK = null;
+          else {
+            const q = bs.getAttribute("data-bset").split(":");
+            const mm = findMon(q[0]);
+            if (mm) setBuffTarget(mm, Number(q[1]), Number(q[2]));
+            BUFFPICK = null;
+          }
+          save();
+          buildRoster();
+          paint();
+          return;
+        }
         const mo = ev.target.closest("[data-skmore]");
         if (mo) {
           const m = findMon(mo.getAttribute("data-skmore"));
@@ -3447,11 +3490,53 @@
         if (!m) return;
         const sk = m.skills[Number(pr[1])];
         sk.t = sk.t === pr[2] ? "n" : pr[2];
+        if (sk.t === "buff" && buffTarget(m, Number(pr[1])) < 0) BUFFPICK = { id: m.id, k: Number(pr[1]) };
+        else if (BUFFPICK && BUFFPICK.id === m.id && BUFFPICK.k === Number(pr[1])) BUFFPICK = null;
         save();
         buildRoster();
         paint();
         const back = el.teams.querySelector("[data-sktb=\"" + b.getAttribute("data-sktb") + "\"]");
         if (back) back.focus();
+      });
+      function setBuffTarget(m, j, k) {
+        if (j === k || !m.skills[j] || !m.skills[k] || m.skills[k].t === "buff") return;
+        if (m.skills[j].bt !== k) m.skills[j].bd = null; // o dano com buff era da outra skill
+        m.skills[j].bt = k;
+      }
+      // arrastar o "▲ buffa a M…" até outra skill (mouse)
+      el.teams.addEventListener("dragstart", function (ev) {
+        const c = ev.target.closest && ev.target.closest("[data-bdrag]");
+        if (!c) return;
+        ev.dataTransfer.setData("text/plain", c.getAttribute("data-bdrag"));
+        ev.dataTransfer.effectAllowed = "move";
+      });
+      el.teams.addEventListener("dragover", function (ev) {
+        const row = ev.target.closest && ev.target.closest("[data-skrow]");
+        if (!row || row.classList.contains("t-buff")) return;
+        ev.preventDefault();
+        el.teams.querySelectorAll(".sk.drop-on").forEach(function (x) { if (x !== row) x.classList.remove("drop-on"); });
+        row.classList.add("drop-on");
+      });
+      el.teams.addEventListener("dragleave", function (ev) {
+        const row = ev.target.closest && ev.target.closest("[data-skrow]");
+        if (row && !row.contains(ev.relatedTarget)) row.classList.remove("drop-on");
+      });
+      el.teams.addEventListener("drop", function (ev) {
+        const row = ev.target.closest && ev.target.closest("[data-skrow]");
+        const src = ev.dataTransfer.getData("text/plain");
+        if (!row || !src) return;
+        ev.preventDefault();
+        const a = src.split(":"), b = row.getAttribute("data-skrow").split(":");
+        const m = findMon(a[0]);
+        if (!m || a[0] !== b[0]) { row.classList.remove("drop-on"); return; }
+        setBuffTarget(m, Number(a[1]), Number(b[1]));
+        BUFFPICK = null;
+        save();
+        buildRoster();
+        paint();
+      });
+      document.addEventListener("keydown", function (ev) {
+        if (ev.key === "Escape" && BUFFPICK) { BUFFPICK = null; buildRoster(); paint(); }
       });
       el.teams.addEventListener("focusout", function (ev) {
         const a = skRef("data-sk", ev.target) || skRef("data-skb", ev.target);
