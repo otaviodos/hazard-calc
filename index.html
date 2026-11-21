@@ -627,6 +627,26 @@
     .par-only { display: none; }
     body.fmt-par .par-only { display: block; }
     body.fmt-par .par-hide, body.fmt-par .role15 { display: none !important; }
+    .ps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
+    .ps-step { border: 1px solid var(--line-strong); border-radius: 12px; padding: 12px; background: var(--sunken); }
+    .ps-step.done { border-color: rgba(110, 231, 183, .45); }
+    .ps-h { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 0.92rem; }
+    .ps-n { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--gold); color: #1A1403; font-size: 0.78rem; font-weight: 800; flex: none; }
+    .ps-step.done .ps-n { background: var(--ok); }
+    .ps-c { margin-left: auto; font-size: 0.78rem; color: var(--muted); font-weight: 700; }
+    .ps-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .ps-chip { min-height: 38px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line-strong); background: transparent; color: var(--text); font: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+    .ps-chip:hover:not(:disabled) { border-color: var(--gold); }
+    .ps-chip.on { background: var(--gold); border-color: var(--gold); color: #1A1403; }
+    .ps-chip:disabled { opacity: .4; cursor: default; }
+    .ps-chip:focus-visible { outline: 2px solid var(--ring, #93C5FD); outline-offset: 2px; }
+    .ps-hint { margin: 0; font-size: 0.82rem; color: var(--muted); }
+    .ps-full { display: flex; flex-direction: column; gap: 6px; }
+    .ps-fr { display: grid; grid-template-columns: minmax(0, 1fr) 140px; gap: 8px; align-items: center; font-size: 0.85rem; font-weight: 600; }
+    .ps-fr .in { min-height: 36px; text-align: right; }
+    .par-rh { margin: 16px 0 10px; font-size: 1rem; }
+    .teams-grid.fpar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    @media (max-width: 760px) { .ps, .teams-grid.fpar { grid-template-columns: 1fr; } .ps-fr .in { font-size: 16px; } }
     .par-how { margin: 0 0 12px; font-size: 0.88rem; line-height: 1.55; max-width: 110ch; }
     .par-top { display: flex; align-items: center; gap: 8px 18px; flex-wrap: wrap; margin-bottom: 12px; padding: 12px 14px; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--sunken); }
     .pt-lab { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
@@ -848,10 +868,10 @@
           <div class="mgroup"><label class="mlabel" for="rotPct">Meta por rotação</label>
             <input class="in num small" id="rotPct" inputmode="numeric" aria-describedby="rotPctHelp" /><span class="mlabel">% do dano do Hazard</span>
             <span class="hint" id="rotPctHelp">quanto cada rotação precisa matar</span></div>
-          <label class="chk"><input type="checkbox" id="rotDet" />Mostrar raridade, stars e held nos cards</label>
+          <label class="chk par-hide"><input type="checkbox" id="rotDet" />Mostrar raridade, stars e held nos cards</label>
         </div>
         <div class="dev-note par-hide" role="note"><span class="dev-tag">Em desenvolvimento</span><span>O formato 1.5× ainda está sendo ajustado e pode ter erros. Sugestões ou problemas? Fale no Discord com <b class="dev-user">Otavio5885</b>.</span></div>
-        <p class="par-how par-only">4 rotações de 2 pokémon. Escolha os pokémon em cada rotação e digite o dano do combo dos <b>FULL</b>. No <b>PARCIAL</b>, anote o dano de cada skill no card dele (abaixo) e marque o ⚡ Stun: a calculadora divide as skills dele entre as duas rotações do par para as duas ficarem o mais fortes possível e mostra até que Hazard as 4 rotações chegam. Na 1ª ele usa o comando para copiar; na 2ª abre com o ⚡ e usa todo o restante.</p>
+        <p class="par-how par-only">4 rotações de 2 pokémon: 4 são FULL (combo inteiro) e 2 são PARCIAIS (dividem as skills entre duas rotações). Siga os passos; a calculadora monta a ordem que vai mais longe.</p>
         <ol class="rot-steps par-hide">
           <li><b>Anote</b> o dano de cada skill nos cards abaixo. Enter vai para a próxima; dá para colar vários números de uma vez.</li>
           <li>Marque <b>⚡ Stun</b>, <b>🔇 Silence</b> e <b>▲ Buff</b>. No buff, escolha a skill que ele aumenta e anote quanto ela passa a dar.</li>
@@ -873,6 +893,7 @@
         </aside>
       </div>
       <div id="suggest"></div>
+      <div id="par-out" class="par-only"></div>
       <div class="rot-sticky" id="rot-sticky" hidden aria-live="polite">
         <span class="rs-txt" id="rot-sticky-txt"></span>
         <button type="button" class="btn" id="rot-sticky-go">Ver rotações ↑</button>
@@ -1086,7 +1107,9 @@
           if (d.basis === "agora" || d.basis === "depois") state.basis = d.basis;
           if (typeof d.useTests === "boolean") state.useTests = d.useTests;
           if (d.format === "3x3" || d.format === "2x2x2" || d.format === "1.5" || d.format === "1.5p") state.format = d.format;
-          if (d.par && Array.isArray(d.par.s) && d.par.s.length === 6 && d.par.s.every(function (v, i, a) { return Number.isInteger(v) && v >= 0 && v < 6 && a.indexOf(v) === i; })) state.par = { s: d.par.s.slice() };
+          const okI = function (a) { return Array.isArray(a) && a.every(function (v, k) { return Number.isInteger(v) && v >= 0 && v < 6 && a.indexOf(v) === k; }); };
+          if (d.par && okI(d.par.tk) && okI(d.par.pa) && d.par.tk.length <= 4 && d.par.pa.length <= 2 && d.par.pa.every(function (v) { return d.par.tk.indexOf(v) >= 0; })) state.par = { tk: d.par.tk.slice(), pa: d.par.pa.slice() };
+          else if (d.par && okI(d.par.s) && d.par.s.length === 6) state.par = { tk: [d.par.s[0], d.par.s[1], d.par.s[3], d.par.s[4]], pa: [d.par.s[1], d.par.s[4]] };
           if (typeof d.showCand === "boolean") state.showCand = d.showCand;
           state.medal = precNum(d.medal, state.medal);
           if (Array.isArray(d.teamPct) && d.teamPct.length === 3) {
@@ -1548,8 +1571,8 @@
       function buildRoster() {
         const card = function (m, idx) { return cardHtml(m, idx, false); };
         if (is15()) {
-          const order = isPar() ? parS().slice() : state.mons.map(function (m, i) { return i; });
-          el.teams.innerHTML = "<div class=\"teams-grid f15\">" + order.map(function (i) { return card(state.mons[i], i); }).join("") + "</div>";
+          const order = isPar() ? parCfg().pa.slice() : state.mons.map(function (m, i) { return i; });
+          el.teams.innerHTML = (isPar() ? (order.length ? "<h3 class=\"par-rh\">Skills dos PARCIAIS</h3>" : "") : "") + "<div class=\"teams-grid f15" + (isPar() ? " fpar" : "") + "\">" + order.map(function (i) { return card(state.mons[i], i); }).join("") + "</div>";
           buildCand();
           buildPrec();
           return;
@@ -2355,18 +2378,17 @@
 
       // ===== 1.5× par: FULL + PARCIAL =====
       // state.par.s = [full que abre a rot 1, parcial 1→2, full da rot 2, full que abre a rot 3, parcial 3→4, full da rot 4] (índices dos pokémon)
+      // Configuração: tk = os 4 Offtanks, pa = os 2 Offtanks que fazem o PARCIAL. Os outros 2 Offtanks são FULL e abrem
+      // as rotações 1 e 3; os 2 que não são Offtank são FULL de dano nas rotações 2 e 4. A ordem é escolhida sozinha.
       function parDefault() {
-        const want = ["mightyena", "tauros", "mismagius", "houndoom", "hydreigon", "dusknoir"];
-        const used = [];
-        const s = want.map(function (w) {
-          const i = state.mons.findIndex(function (m, k) { return used.indexOf(k) < 0 && String(m.name || "").toLowerCase().indexOf(w) >= 0; });
-          if (i >= 0) used.push(i);
-          return i;
-        });
-        for (let k = 0; k < 6; k++) if (s[k] < 0) { const f = [0, 1, 2, 3, 4, 5].find(function (x) { return used.indexOf(x) < 0; }); s[k] = f; used.push(f); }
-        return s;
+        const find = function (w) { return state.mons.findIndex(function (m) { return String(m.name || "").toLowerCase().indexOf(w) >= 0; }); };
+        const tk = ["mightyena", "tauros", "houndoom", "hydreigon"].map(find).filter(function (i, k, a) { return i >= 0 && a.indexOf(i) === k; });
+        const pa = ["tauros", "hydreigon"].map(find).filter(function (i, k, a) { return i >= 0 && a.indexOf(i) === k; });
+        return { tk: tk, pa: pa };
       }
-      function parS() { if (!state.par) state.par = { s: parDefault() }; return state.par.s; }
+      function parCfg() { if (!state.par || !Array.isArray(state.par.tk) || !Array.isArray(state.par.pa)) state.par = parDefault(); return state.par; }
+      function parReady() { const c = parCfg(); return c.tk.length === 4 && c.pa.length === 2; }
+      function parS() { const R = isPar() ? rotResult() : null; return R && R.ev ? R.ev.s : null; }
       const PAR_SLOT = [
         { g: 0, txt: "Rot 1 · FULL (abre com ⚡ stun)", short: "FULL", cls: "full" },
         { g: 0, txt: "Rot 1→2 · PARCIAL (guarda o ⚡)", short: "PARCIAL", cls: "parc" },
@@ -2376,9 +2398,9 @@
         { g: 1, txt: "Rot 4 · FULL", short: "FULL", cls: "full" }
       ];
       // PARCIAL = 2º pokémon de cada par (rot 1→2 e rot 3→4): só ele precisa das skills
-      function parIsPartial(idx) { const k = parS().indexOf(idx); return k === 1 || k === 4; }
+      function parIsPartial(idx) { return parCfg().pa.indexOf(idx) >= 0; }
       function parSlotInfo(idx) {
-        const k = parS().indexOf(idx);
+        const k = (parS() || []).indexOf(idx);
         return { text: k >= 0 ? PAR_SLOT[k].txt : "Pokémon " + (idx + 1), cls: "slot" + (k >= 0 && PAR_SLOT[k].cls === "full" ? " dmg" : "") };
       }
       // dano do FULL: o dano do combo completo do card (com testes / efetividade); sem ele, a soma das skills
@@ -2459,9 +2481,23 @@
         const hd = Math.min(A.hz, B.hz);
         return { s: s, A: A, B: B, hd: hd, mm: Math.min(A.maximin, B.maximin) };
       }
+      // todas as ordens possíveis com essa configuração; fica a que vai mais longe
+      function parBest() {
+        const c = parCfg();
+        const op = c.tk.filter(function (i) { return c.pa.indexOf(i) < 0; });
+        const dm = [0, 1, 2, 3, 4, 5].filter(function (i) { return c.tk.indexOf(i) < 0; });
+        let best = null;
+        [0, 1].forEach(function (a) {
+          [0, 1].forEach(function (b) {
+            const e = parEval([op[a], c.pa[0], dm[b], op[1 - a], c.pa[1], dm[1 - b]]);
+            if (!best || e.hd > best.hd || (e.hd === best.hd && e.mm > best.mm)) best = e;
+          });
+        });
+        return best;
+      }
       function parSolve() {
-        const s = parS();
-        const ev = parEval(s);
+        if (!parReady()) return null;
+        const ev = parBest();
         const n = need(Math.max(ev.hd, 0), state.rune);
         const groups = [ev.A, ev.B];
         const rots = [], picks = [];
@@ -2495,110 +2531,77 @@
         rest.filter(function (x) { return (!ccFirst || !x.cc) && tg.has(x); }).sort(function (a, b) { return a.k - b.k; }).forEach(function (x) { seq.push(tg.get(x)); seq.push(x); });
         return seq;
       }
-      // todas as montagens com os mesmos 4 que seguram (FULL que abre + PARCIAL) e os mesmos 2 FULL de dano
-      function parCandidates(s) {
-        const tk = [s[0], s[1], s[3], s[4]], dm = [s[2], s[5]];
-        const pairings = [[[tk[0], tk[1]], [tk[2], tk[3]]], [[tk[0], tk[2]], [tk[1], tk[3]]], [[tk[0], tk[3]], [tk[1], tk[2]]]];
-        const out = [];
-        pairings.forEach(function (pp) {
-          [0, 1].forEach(function (a) {
-            [0, 1].forEach(function (b) {
-              [0, 1].forEach(function (c) {
-                out.push([pp[0][a], pp[0][1 - a], dm[c], pp[1][b], pp[1][1 - b], dm[1 - c]]);
-              });
-            });
-          });
-        });
-        return out;
-      }
-      function parSuggest() {
-        const cur = parEval(parS());
-        let best = cur;
-        const allEst = cur.A.est && cur.B.est;
-        parCandidates(parS()).forEach(function (s) {
-          const e = parEval(s);
-          // PARCIAL sem skills é estimativa ideal: só compara com montagens também estimadas
-          if ((e.A.est || e.B.est) && !allEst) return;
-          if (e.hd > best.hd || (e.hd === best.hd && e.mm > best.mm + 1)) best = e;
-        });
-        return best === cur ? null : { cur: cur, best: best };
-      }
-      function parSetSlot(k, pi) {
-        const s = parS();
-        const j = s.indexOf(pi);
-        if (j === k) return;
-        s[j] = s[k];
-        s[k] = pi;
-      }
       function paintPar() {
-        const out = document.getElementById("rot-out");
+        const out = document.getElementById("rot-out"), pout = document.getElementById("par-out");
+        const c = parCfg();
+        const nm = function (pi) { return shortName(state.mons[pi]); };
+        const chip = function (attr, i, on, dis) {
+          return "<button type=\"button\" class=\"ps-chip" + (on ? " on" : "") + "\" " + attr + "=\"" + i + "\" aria-pressed=\"" + on + "\"" + (dis ? " disabled" : "") + ">" + (on ? "✓ " : "") + nm(i) + "</button>";
+        };
+        const step = function (n, title, cnt, body, done) {
+          return "<div class=\"ps-step" + (done ? " done" : "") + "\"><div class=\"ps-h\"><span class=\"ps-n\">" + (done ? "✓" : n) + "</span><b>" + title + "</b>" + (cnt ? "<span class=\"ps-c\">" + cnt + "</span>" : "") + "</div>" + body + "</div>";
+        };
+        const s1 = step(1, "Quem são os 4 Offtanks?", c.tk.length + "/4",
+          "<div class=\"ps-chips\">" + state.mons.map(function (m, i) { const on = c.tk.indexOf(i) >= 0; return chip("data-ptk", i, on, !on && c.tk.length >= 4); }).join("") + "</div>", c.tk.length === 4);
+        const s2 = step(2, "Quais 2 Offtanks fazem o PARCIAL?", c.pa.length + "/2",
+          c.tk.length ? "<div class=\"ps-chips\">" + c.tk.map(function (i) { const on = c.pa.indexOf(i) >= 0; return chip("data-ppa", i, on, !on && c.pa.length >= 2); }).join("") + "</div>"
+            : "<p class=\"ps-hint\">Escolha os Offtanks primeiro.</p>", c.pa.length === 2);
+        const fulls = [0, 1, 2, 3, 4, 5].filter(function (i) { return c.pa.indexOf(i) < 0; });
+        const s3 = step(3, "Dano do combo dos 4 FULL", "",
+          "<div class=\"ps-full\">" + fulls.map(function (i) {
+            const m = state.mons[i];
+            return "<label class=\"ps-fr\"><span>" + nm(i) + " <span class=\"par-tag " + (c.tk.indexOf(i) >= 0 ? "parc\">OFFTANK" : "full\">DMG") + "</span></span>" +
+              "<input class=\"in num\" data-pfull=\"" + i + "\" inputmode=\"decimal\" value=\"" + (m.now > 0 ? fmt(m.now) : "") + "\" placeholder=\"dano do combo\" /></label>";
+          }).join("") + "</div>", fulls.every(function (i) { return state.mons[i].now > 0; }));
+        const pDone = c.pa.length === 2 && c.pa.every(function (i) { return state.mons[i].skills.some(function (x) { return x.d > 0; }) && state.mons[i].skills.some(function (x) { return x.t === "cc"; }); });
+        const s4 = step(4, "Dano de cada skill dos PARCIAIS", "",
+          "<p class=\"ps-hint\">" + (c.pa.length ? "Nos cards de " + c.pa.map(nm).join(" e ") + " logo abaixo: anote o dano de cada skill e marque o ⚡ Stun." : "Escolha os PARCIAIS no passo 2.") + "</p>", pDone);
+        const ae = document.activeElement, keep = ae && ae.getAttribute && ae.getAttribute("data-pfull");
+        out.innerHTML = "<div class=\"ps\">" + s1 + s2 + s3 + s4 + "</div>";
+        if (keep) { const n = out.querySelector("[data-pfull=\"" + keep + "\"]"); if (n) { n.focus(); n.select(); } }
+
         const res = rotResult();
-        if (!res) { out.innerHTML = ""; return; }
-        const s = parS();
+        if (!res) { pout.innerHTML = "<div class=\"box neutral\">Complete os passos 1 e 2 para ver as 4 rotações.</div>"; return; }
         const r = RUNES[state.rune];
         const t = totals();
         const off = official(state.rune, t);
-        const ev = res.ev;
-        const nm = function (pi) { return shortName(state.mons[pi]); };
-        const hzNow = Math.max(off, 0);
-        const nNow = need(hzNow, state.rune);
+        const ev = res.ev, sl = ev.s;
         const nx = off + 1 < state.table.length ? off + 1 : -1;
-        const sel = function (k) {
-          return "<select class=\"in pr-sel\" data-pslot=\"" + k + "\" aria-label=\"" + PAR_SLOT[k].txt + "\">" + state.mons.map(function (m, i) {
-            return "<option value=\"" + i + "\"" + (s[k] === i ? " selected" : "") + ">" + shortName(m) + "</option>";
-          }).join("") + "</select>";
+        const hzB = function (v) { const h = hzOf(v); return "<span class=\"pr-hz\" style=\"color:" + r.color + "\">" + (h < 0 ? "abaixo do Hz 0" : hzTxt(h)) + "</span>"; };
+        const row = function (n, pi, tag, d, est) {
+          return "<div class=\"pr-row\"><span class=\"pr-n\">" + n + "</span><span class=\"pr-fix\">" + nm(pi) + "</span><span class=\"par-tag " + (tag === "FULL" ? "full" : "parc") + "\">" + tag + "</span><span class=\"pr-d\">" + (est ? "~" : "") + fmt(Math.round(d)) + "</span></div>";
         };
-        const fullRow = function (k, g) {
-          const pi = s[k], d = k % 3 === 0 ? g.fo : g.fd;
-          return "<div class=\"pr-row\"><span class=\"pr-n\">" + (k % 3 === 0 ? 1 : 2) + "</span>" + sel(k) +
-            "<span class=\"par-tag full\">FULL</span>" +
-            "<input class=\"in num pr-dmg\" data-pfull=\"" + pi + "\" inputmode=\"decimal\" value=\"" + (state.mons[pi].now > 0 ? fmt(state.mons[pi].now) : "") + "\" placeholder=\"dano do combo\" aria-label=\"Dano do combo de " + nm(pi) + "\" />" +
-            (d !== state.mons[pi].now && d > 0 ? "<span class=\"pr-sub\">conta " + fmt(d) + " (teste)</span>" : "") + "</div>";
-        };
-        const ok = function (v) {
-          const h = hzOf(v);
-          return "<span class=\"pr-hz\" style=\"color:" + r.color + "\">" + (h < 0 ? "abaixo do Hz 0" : hzTxt(h)) + "</span>";
-        };
-        const pairs = [ev.A, ev.B].map(function (g, gi) {
+        const cards = [ev.A, ev.B].map(function (g, gi) {
           const pk = res.picks[gi], ra = res.rots[gi * 2], rb = res.rots[gi * 2 + 1];
-          const kO = gi * 3, kP = kO + 1, kD = kO + 2;
           const seqA = g.est ? [] : parSeq(pk.A, pk.pa, false);
           const cmd = seqA.length ? comboCmd(seqA) : "";
-          let partA;
-          if (g.est) partA = "<div class=\"pr-note warn\">Anote as skills do " + nm(g.p) + " no card dele (abaixo) e marque o ⚡ Stun. Ele precisa dar ~" + kfmt(pk.dA) + " aqui.</div>";
-          else if (!g.hasStun) partA = "<div class=\"pr-note warn\">Marque o ⚡ Stun do " + nm(g.p) + " no card dele: ele fica para abrir a rotação " + (gi * 2 + 2) + ".</div>";
-          else partA = cmd
-            ? "<button type=\"button\" class=\"pr-cmd\" data-cmd=\"" + esc(cmd) + "\"><code>" + esc(cmd) + "</code><span class=\"rl-cp\">Copiar</span></button>"
-            : "<div class=\"pr-note\">Não usa skill aqui: só lura (dividir não melhora o par).</div>";
-          const rotA = "<div class=\"pr" + (ra.tot === res.min ? " bad" : "") + "\"><div class=\"pr-h\"><b>Rotação " + (gi * 2 + 1) + "</b><span class=\"pr-tot\">" + fmt(ra.tot) + " " + ok(ra.tot) + "</span></div>" +
-            fullRow(kO, g) +
-            "<div class=\"pr-row\"><span class=\"pr-n\">2</span>" + sel(kP) + "<span class=\"par-tag parc\">PARCIAL</span><span class=\"pr-d\">" + (g.est ? "~" : "") + fmt(pk.dA) + "</span></div>" +
-            partA + "</div>";
-          const rotB = "<div class=\"pr" + (rb.tot === res.min ? " bad" : "") + "\"><div class=\"pr-h\"><b>Rotação " + (gi * 2 + 2) + "</b><span class=\"pr-tot\">" + fmt(rb.tot) + " " + ok(rb.tot) + "</span></div>" +
-            "<div class=\"pr-row\"><span class=\"pr-n\">1</span><span class=\"pr-fix\">" + nm(g.p) + "</span><span class=\"par-tag parc\">PARCIAL</span><span class=\"pr-d\">" + (g.est ? "~" : "") + fmt(pk.dB) + "</span></div>" +
-            "<div class=\"pr-note\">Abre com o ⚡ e usa todo o restante" + (!g.est && pk.B.length ? " (" + pk.B.map(function (x) { return "M" + (x.k + 1); }).join(", ") + ")" : "") + ".</div>" +
-            fullRow(kD, g) + "</div>";
-          return "<div class=\"pr-pair\">" + rotA + rotB + "</div>";
+          let noteA;
+          if (g.est) noteA = "<div class=\"pr-note warn\">Falta anotar as skills do " + nm(g.p) + " (passo 4): por enquanto é estimativa.</div>";
+          else if (!g.hasStun) noteA = "<div class=\"pr-note warn\">Marque o ⚡ Stun do " + nm(g.p) + " (passo 4).</div>";
+          else noteA = cmd ? "<button type=\"button\" class=\"pr-cmd\" data-cmd=\"" + esc(cmd) + "\"><code>" + esc(cmd) + "</code><span class=\"rl-cp\">Copiar</span></button>"
+            : "<div class=\"pr-note\">Não usa skill aqui: só lura.</div>";
+          const head = function (ro, i) { return "<div class=\"pr-h\"><b>Rotação " + (i + 1) + "</b><span class=\"pr-tot\">" + fmt(ro.tot) + " " + hzB(ro.tot) + "</span></div>"; };
+          return "<div class=\"pr-pair\">" +
+            "<div class=\"pr" + (ra.tot === res.min ? " bad" : "") + "\">" + head(ra, gi * 2) + row(1, sl[gi * 3], "FULL", g.fo) + row(2, g.p, "PARCIAL", pk.dA, g.est) + noteA + "</div>" +
+            "<div class=\"pr" + (rb.tot === res.min ? " bad" : "") + "\">" + head(rb, gi * 2 + 1) + row(1, g.p, "PARCIAL", pk.dB, g.est) +
+              "<div class=\"pr-note\">Abre com o ⚡ e usa todo o restante.</div>" + row(2, sl[gi * 3 + 2], "FULL", g.fd) + "</div></div>";
         }).join("");
-        // resumo: até onde as 4 rotações chegam
         const wIdx = res.rots.findIndex(function (ro) { return ro.tot === res.min; });
         let top = "<div class=\"par-top\"><div><div class=\"pt-lab\">Até onde chega</div><div class=\"pt-big\" style=\"color:" + r.color + "\">" + (off < 0 ? "Abaixo do Hazard 0" : hzTxt(off)) + "</div></div>" +
           "<div class=\"pt-txt\">Runa " + r.id + " · rotação mais fraca: <b>Rotação " + (wIdx + 1) + "</b> com <b>" + fmt(res.min) + "</b>";
-        if (nx >= 0) top += "<br>" + hzTxt(nx) + " pede " + reqK(nx, state.rune) + "k por rotação: falta " + kfmt(Math.max(0, need(nx, state.rune) - res.min)) + " na rotação " + (wIdx + 1) + ".";
+        if (nx >= 0) top += "<br>" + hzTxt(nx) + " pede " + reqK(nx, state.rune) + "k por rotação: falta " + kfmt(Math.max(0, need(nx, state.rune) - res.min)) + ".";
         const pCap = precCap(state.mons);
         if (pCap < ev.hd) top += "<br><span class=\"pr-no\">A precisão segura em " + hzTxt(pCap) + ".</span>";
         if (state.rot.pct !== 100) top += "<br>Meta: " + state.rot.pct + "% do dano do Hazard.";
         top += "</div></div>";
-        let sug = "";
+        let warn = "";
         [ev.A, ev.B].forEach(function (g) {
           const full = monDmg(state.mons[g.p]);
-          if (!g.est && full > 0 && Math.abs(g.P - full) / full > 0.03) sug += "<p class=\"hint\">" + nm(g.p) + ": a soma das skills (" + fmt(g.P) + ") não bate com o dano do combo dele (" + fmt(full) + "). A conta usa as skills.</p>";
+          if (!g.est && full > 0 && Math.abs(g.P - full) / full > 0.03) warn += "<p class=\"hint\">" + nm(g.p) + ": a soma das skills (" + fmt(g.P) + ") não bate com o dano do combo dele (" + fmt(full) + "). A conta usa as skills.</p>";
         });
         const stt = document.getElementById("rot-sticky-txt");
         if (stt) stt.innerHTML = "<b style=\"color:" + r.color + "\">" + hzTxt(off) + "</b> · rotação mais fraca <b>" + kfmt(res.min) + "</b>";
-        const ae = document.activeElement, keep = ae && ae.getAttribute && ae.getAttribute("data-pfull");
-        out.innerHTML = top + sug + "<div class=\"pr-grid\">" + pairs + "</div>";
-        if (keep) { const n = out.querySelector("[data-pfull=\"" + keep + "\"]"); if (n) { n.focus(); n.select(); } }
+        pout.innerHTML = "<h3 class=\"par-rh\">Resultado: as 4 rotações</h3>" + top + warn + "<div class=\"pr-grid\">" + cards + "</div>";
       }
       let ROTCACHE = null, ROTKEY = "", ROTMEMO = null;
       function rotResult() {
@@ -2638,6 +2641,7 @@
       }
 
       function paintRot() {
+        if (!isPar()) { const po = document.getElementById("par-out"); if (po) po.innerHTML = ""; }
         if (isPar() && document.getElementById("rot-out")) { paintSkillSums(); paintPar(); syncSticky(); return; }
         const out = document.getElementById("rot-out");
         if (!out || !is15()) { const st = document.getElementById("rot-sticky"); if (st) { st.hidden = true; document.documentElement.classList.remove("has-sticky"); } return; }
@@ -3509,17 +3513,20 @@
           paint();
           return;
         }
-        const sel = ev.target.closest("select[data-pslot]");
-        if (!sel) return;
-        parSetSlot(Number(sel.getAttribute("data-pslot")), Number(sel.value));
-        save();
-        buildRoster();
-        paint();
       });
       document.getElementById("rot-out").addEventListener("click", function (ev) {
-        const ap = ev.target.closest("[data-par-apply]");
-        if (ap) {
-          state.par = { s: ap.getAttribute("data-par-apply").split(",").map(Number) };
+        const tb = ev.target.closest("[data-ptk]"), pb = ev.target.closest("[data-ppa]");
+        if (tb || pb) {
+          const c = parCfg();
+          if (tb) {
+            const i = Number(tb.getAttribute("data-ptk")), at = c.tk.indexOf(i);
+            if (at >= 0) { c.tk.splice(at, 1); const ap = c.pa.indexOf(i); if (ap >= 0) c.pa.splice(ap, 1); }
+            else if (c.tk.length < 4) c.tk.push(i);
+          } else {
+            const i = Number(pb.getAttribute("data-ppa")), at = c.pa.indexOf(i);
+            if (at >= 0) c.pa.splice(at, 1); else if (c.pa.length < 2) c.pa.push(i);
+          }
+          ROTCACHE = null;
           save();
           buildRoster();
           paint();
@@ -3531,6 +3538,15 @@
         const lab = b.querySelector(".rl-cp") || b;
         const old = lab.textContent;
         copyText(txt).then(function () { lab.textContent = "Copiado ✓"; b.classList.add("copied"); },
+          function () { lab.textContent = "Não copiou: selecione o texto"; });
+        setTimeout(function () { lab.textContent = old; b.classList.remove("copied"); }, 1600);
+      });
+      document.getElementById("par-out").addEventListener("click", function (ev) {
+        const b = ev.target.closest("[data-cmd]");
+        if (!b) return;
+        const lab = b.querySelector(".rl-cp") || b;
+        const old = lab.textContent;
+        copyText(b.getAttribute("data-cmd")).then(function () { lab.textContent = "Copiado ✓"; b.classList.add("copied"); },
           function () { lab.textContent = "Não copiou: selecione o texto"; });
         setTimeout(function () { lab.textContent = old; b.classList.remove("copied"); }, 1600);
       });
