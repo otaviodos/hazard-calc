@@ -647,6 +647,100 @@
     .par-rh { margin: 16px 0 10px; font-size: 1rem; }
     .teams-grid.fpar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     @media (max-width: 760px) { .ps, .teams-grid.fpar { grid-template-columns: 1fr; } .ps-fr .in { font-size: 16px; } }
+    /* 1.5× par: configuração */
+    .pc-card { border: 1px solid var(--line-strong); border-radius: 12px; padding: 14px; background: var(--sunken); margin-bottom: 12px; min-width: 0; }
+    .pc-h { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; margin-bottom: 10px; }
+    .pc-h b { font-size: 0.95rem; }
+    .pc-sub { font-size: 0.78rem; color: var(--muted); margin: 0 0 10px; }
+    .pc-h .pc-sub { margin: 0; }
+    .prows { display: flex; flex-direction: column; gap: 6px; }
+    .prow { display: grid; grid-template-columns: 120px minmax(0, 1fr) 150px; gap: 10px; align-items: center; }
+    .pr-name { font-weight: 700; font-size: 0.9rem; }
+    .pr-seg { display: inline-grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+    .pr-rb { min-height: 36px; padding: 4px 8px; border-radius: 8px; border: 1px solid var(--line-strong); background: transparent; color: var(--muted); font: inherit; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+    .pr-rb:hover:not(:disabled) { color: var(--text); border-color: var(--muted); }
+    .pr-rb.on.r-otf { background: rgba(147, 197, 253, .16); border-color: #93C5FD; color: #BFDBFE; }
+    .pr-rb.on.r-pa { background: rgba(244, 208, 63, .16); border-color: var(--gold); color: var(--gold); }
+    .pr-rb.on.r-dmg { background: rgba(252, 165, 165, .14); border-color: #FCA5A5; color: #FECACA; }
+    .pr-rb:disabled { opacity: .35; cursor: default; }
+    .pr-rb:focus-visible, .st-b:focus-visible { outline: 2px solid var(--ring, #93C5FD); outline-offset: 2px; }
+    .pr-in { min-height: 36px; text-align: right; width: 100%; }
+    .pr-hint { font-size: 0.78rem; color: var(--muted); text-align: right; }
+    .pr-cnt { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; font-size: 0.8rem; font-weight: 700; }
+    .c-ok { color: var(--ok); }
+    .c-no { color: #FCA5A5; }
+    .pc-skills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .pc-skills .pc-card { margin-bottom: 12px; }
+    .pc-adj { margin: 0 0 12px; border: 1px solid var(--line-strong); border-radius: 12px; padding: 10px 14px; background: var(--sunken); }
+    .pc-adj > summary { cursor: pointer; font-size: 0.85rem; font-weight: 700; color: var(--muted); }
+    .adj-rows { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+    .adj-row { display: grid; grid-template-columns: 120px auto auto auto; gap: 8px 16px; align-items: center; font-size: 0.82rem; }
+    .adj-chk { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+    .adj-chk input { width: 16px; height: 16px; accent-color: var(--gold); }
+    .adj-tr { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); }
+    .adj-tr .in { width: 70px; min-height: 32px; text-align: right; }
+    /* tabela de skills */
+    .st { display: flex; flex-direction: column; gap: 4px; }
+    .st-row { display: grid; grid-template-columns: 30px minmax(80px, 1fr) auto; gap: 6px; align-items: center; padding: 2px 4px; border-radius: 8px; border: 1px solid transparent; }
+    .st.has-b .st-row { grid-template-columns: 30px minmax(80px, 1fr) auto 52px 104px; }
+    .pc-skills .st-l { display: none; }
+    .pc-skills .st-b { min-width: 34px; padding: 2px 6px; }
+    .st-head { font-size: 0.7rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; padding-bottom: 0; }
+    .st-k { font-size: 0.8rem; font-weight: 800; color: var(--gold); }
+    .st-d { min-height: 36px; text-align: right; width: 100%; }
+    .st-d:disabled { opacity: .5; cursor: not-allowed; }
+    .st-seg { display: inline-flex; gap: 3px; }
+    .st-b { min-height: 34px; min-width: 36px; padding: 2px 7px; border-radius: 7px; border: 1px solid var(--line-strong); background: transparent; color: var(--muted); font: inherit; font-size: 0.76rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
+    .st-b:hover { color: var(--text); }
+    .st-b.on.t-n { background: rgba(148, 163, 184, .14); color: var(--text); border-color: var(--muted); }
+    .st-b.on.t-cc { background: rgba(251, 191, 36, .14); color: var(--warn); border-color: var(--warn); }
+    .st-b.on.t-sil { background: rgba(56, 189, 248, .12); color: #7DD3FC; border-color: #38BDF8; }
+    .st-b.on.t-buff { background: rgba(167, 139, 250, .16); color: #DDD6FE; border-color: #A78BFA; }
+    .st-c { text-align: center; }
+    .st-rb { display: grid; place-items: center; min-height: 34px; cursor: pointer; }
+    .st-rb input { width: 18px; height: 18px; accent-color: #A78BFA; cursor: pointer; }
+    .st-src { font-size: 0.7rem; font-weight: 800; color: #C4B5FD; }
+    .st-af .in { width: 100%; min-height: 34px; text-align: right; }
+    .st-af .in.miss { border-color: #F87171; }
+    .st-row.is-cc { border-color: rgba(251, 191, 36, .35); }
+    .st-row.is-buff { border-color: rgba(167, 139, 250, .45); background: rgba(167, 139, 250, .05); }
+    .st-row.is-tg { border-color: rgba(167, 139, 250, .7); background: rgba(167, 139, 250, .08); }
+    .st-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; margin-top: 6px; font-size: 0.76rem; color: var(--muted); }
+    .st-warn { color: #FCA5A5; font-weight: 700; }
+    .teams-grid .st-head { display: none; }
+    .teams-grid .st-row, .teams-grid .st.has-b .st-row { grid-template-columns: 30px minmax(0, 1fr) auto; grid-template-areas: "k d seg" "x rb af"; row-gap: 4px; padding: 4px; }
+    .teams-grid .st-row > .st-k { grid-area: k; }
+    .teams-grid .st-row > .st-d { grid-area: d; }
+    .teams-grid .st-row > .st-seg { grid-area: seg; }
+    .teams-grid .st-row > .st-c { grid-area: rb; justify-self: start; display: inline-flex; align-items: center; gap: 6px; min-height: 30px; }
+    .teams-grid .st-row > .st-af { grid-area: af; }
+    .teams-grid .st-row > span:empty { display: none; }
+    .teams-grid .st-row > .st-rb::after { content: "recebe ▲"; font-size: 0.74rem; color: var(--muted); white-space: nowrap; }
+    .teams-grid .st-row.is-buff > .st-src { display: none; }
+    .teams-grid .st-row > .st-af .in { width: 120px; }
+    .teams-grid .st-l { display: none; }
+    .teams-grid .st-b { min-width: 34px; padding: 2px 6px; }
+    @media (max-width: 760px) {
+      .prow { grid-template-columns: 1fr; gap: 6px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+      .pr-hint { text-align: left; }
+      .pr-in { font-size: 16px; }
+      .pc-skills { grid-template-columns: 1fr; }
+      .adj-row { grid-template-columns: 1fr 1fr; }
+      .adj-row .pr-name { grid-column: 1 / -1; }
+      .st-l { display: none; }
+      .st-head { display: none; }
+      .st-row, .st.has-b .st-row { grid-template-columns: 30px minmax(0, 1fr) auto; grid-template-areas: "k d seg" "x rb af"; row-gap: 4px; padding: 4px; }
+      .st-row > .st-k { grid-area: k; }
+      .st-row > .st-d { grid-area: d; }
+      .st-row > .st-seg { grid-area: seg; }
+      .st-row > .st-c { grid-area: rb; justify-self: start; display: inline-flex; align-items: center; gap: 6px; min-height: 30px; }
+      .st-row > .st-af { grid-area: af; }
+      .st-row > span:empty { display: none; }
+      .st-row > .st-rb::after { content: "recebe ▲"; font-size: 0.74rem; color: var(--muted); white-space: nowrap; }
+      .st-row.is-buff > .st-src { display: none; }
+      .st-row > .st-af .in { width: 120px; }
+      .st-d, .st-af .in { font-size: 16px; }
+    }
     .par-how { margin: 0 0 12px; font-size: 0.88rem; line-height: 1.55; max-width: 110ch; }
     .par-top { display: flex; align-items: center; gap: 8px 18px; flex-wrap: wrap; margin-bottom: 12px; padding: 12px 14px; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--sunken); }
     .pt-lab { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
@@ -891,7 +985,7 @@
           <label class="chk par-hide"><input type="checkbox" id="rotDet" />Mostrar raridade, stars e held nos cards</label>
         </div>
         <div class="dev-note par-hide" role="note"><span class="dev-tag">Em desenvolvimento</span><span>O formato 1.5× ainda está sendo ajustado e pode ter erros. Sugestões ou problemas? Fale no Discord com <b class="dev-user">Otavio5885</b>.</span></div>
-        <p class="par-how par-only">4 rotações de 2 pokémon: 4 são FULL (combo inteiro) e 2 são PARCIAIS (dividem as skills entre duas rotações). Siga os passos; a calculadora monta a ordem que vai mais longe.</p>
+        <div id="par-cfg" class="par-only"></div>
         <ol class="rot-steps par-hide">
           <li><b>Anote</b> o dano de cada skill nos cards abaixo. Enter vai para a próxima; dá para colar vários números de uma vez.</li>
           <li>Marque <b>⚡ Stun</b>, <b>🔇 Silence</b> e <b>▲ Buff</b>. No buff, escolha a skill que ele aumenta e anote quanto ela passa a dar.</li>
@@ -1128,8 +1222,10 @@
           if (typeof d.useTests === "boolean") state.useTests = d.useTests;
           if (d.format === "3x3" || d.format === "2x2x2" || d.format === "1.5" || d.format === "1.5p") state.format = d.format;
           const okI = function (a) { return Array.isArray(a) && a.every(function (v, k) { return Number.isInteger(v) && v >= 0 && v < 6 && a.indexOf(v) === k; }); };
-          if (d.par && okI(d.par.tk) && okI(d.par.pa) && d.par.tk.length <= 4 && d.par.pa.length <= 2 && d.par.pa.every(function (v) { return d.par.tk.indexOf(v) >= 0; })) state.par = { tk: d.par.tk.slice(), pa: d.par.pa.slice() };
-          else if (d.par && okI(d.par.s) && d.par.s.length === 6) state.par = { tk: [d.par.s[0], d.par.s[1], d.par.s[3], d.par.s[4]], pa: [d.par.s[1], d.par.s[4]] };
+          const fromTk = function (tk, pa) { return [0, 1, 2, 3, 4, 5].map(function (i) { return pa.indexOf(i) >= 0 ? "pa" : tk.indexOf(i) >= 0 ? "otf" : tk.length === 4 ? "dmg" : ""; }); };
+          if (d.par && Array.isArray(d.par.role) && d.par.role.length === 6 && d.par.role.every(function (x) { return x === "" || x === "otf" || x === "pa" || x === "dmg"; })) state.par = { role: d.par.role.slice() };
+          else if (d.par && okI(d.par.tk) && okI(d.par.pa)) state.par = { role: fromTk(d.par.tk, d.par.pa) };
+          else if (d.par && okI(d.par.s) && d.par.s.length === 6) state.par = { role: fromTk([d.par.s[0], d.par.s[1], d.par.s[3], d.par.s[4]], [d.par.s[1], d.par.s[4]]) };
           if (typeof d.showCand === "boolean") state.showCand = d.showCand;
           state.medal = precNum(d.medal, state.medal);
           if (Array.isArray(d.teamPct) && d.teamPct.length === 3) {
@@ -1438,7 +1534,7 @@
               const on = multNum(m.mult) === v;
               return "<button type=\"button\" class=\"mchip" + (on ? " on" : "") + (v === 1 ? " neutral" : v < 1 ? " low" : " high") + "\" data-mult=\"" + v + "\" aria-pressed=\"" + on + "\">" + multTxt(v) + (v === 1 ? " neutro" : "") + "</button>";
             }).join("") + "</div></div>" : "") +
-          (is15() && !isCand ? skillsHtml(m) : "") +
+          (is15() && !isCand ? skillTableHtml(m) : "") +
           "<div class=\"prec-row\">" +
             "<label class=\"fld\">Precisão treino (pts)<input class=\"in num\" data-f=\"train\" inputmode=\"decimal\" value=\"" + fmt(m.train) + "\" /></label>" +
             "<label class=\"berry\"><input type=\"checkbox\" data-f=\"berry\"" + (m.berry ? " checked" : "") + " /><i class=\"bdot yellow\" aria-hidden=\"true\"></i>Focus Berry +" + BERRY + "</label>" +
@@ -1467,7 +1563,7 @@
             "<div class=\"slot-row\"><div class=\"" + sl.cls + "\">" + sl.text + "</div></div>" + top +
             "<label class=\"fld role15\">Papel<select class=\"in\" data-f=\"role\">" + roleOpts(m.role) + "</select></label>" +
             (testActive(m) ? "<p class=\"m15-test\">Teste de star/held ativo: o dano das skills está ajustado por ele (marque “Mostrar papel, raridade, stars e held” para ver).</p>" : "") +
-            (isPar() && !parIsPartial(idx) ? "" : skillsHtml(m)) + multBox +
+            skillTableHtml(m) + multBox +
             bruteRow +
             "<div class=\"prec-row\">" +
               "<label class=\"fld\">Precisão treino (pts)<input class=\"in num\" data-f=\"train\" inputmode=\"decimal\" value=\"" + fmt(m.train) + "\" /></label>" +
@@ -1502,11 +1598,8 @@
       // skill que recebe o buff no teste: a escolhida, ou a mais forte do pokémon
       function buffTarget(m, k) {
         const sk = m.skills[k];
-        if (sk.bt != null && sk.bt !== k && m.skills[sk.bt] && m.skills[sk.bt].t !== "buff") return sk.bt;
-        if (sk.t === "buff" && sk.bt == null && !(sk.bd > 0)) return -1;
-        let best = -1;
-        m.skills.forEach(function (x, j) { if (j !== k && x.t !== "buff" && x.d > 0 && (best < 0 || x.d > m.skills[best].d)) best = j; });
-        return best;
+        if (sk && sk.t === "buff" && sk.bt != null && sk.bt !== k && m.skills[sk.bt] && m.skills[sk.bt].t !== "buff") return sk.bt;
+        return -1;
       }
       // % do buff descoberto no teste: (dano com buff ÷ dano normal − 1)
       function buffLabel(m, k) {
@@ -1522,100 +1615,66 @@
         if (tg >= 0 && sk.bd > 0 && m.skills[tg].d > 0 && sk.bd > m.skills[tg].d) return (sk.bd / m.skills[tg].d - 1) * 100;
         return sk.bp > 0 ? sk.bp : 0;
       }
-      // Buff: só diz qual skill ele aumenta. Escolha tocando na skill (ou arrastando o ▲ até ela).
-      let BUFFPICK = null; // { id, k }: buff esperando você tocar na skill que ele aumenta
-      function buffTestHtml(m, k) {
-        const tg = buffTarget(m, k);
-        if (BUFFPICK && BUFFPICK.id === m.id && BUFFPICK.k === k) {
-          return "<div class=\"sk-b pick\"><span>Toque na skill que a <b>M" + (k + 1) + "</b> vai buffar</span><button type=\"button\" class=\"sk-bx\" data-bcancel=\"" + m.id + "\">cancelar</button></div>";
-        }
-        if (tg < 0) return "<div class=\"sk-b\"><button type=\"button\" class=\"sk-bgo\" data-bpick=\"" + m.id + ":" + k + "\">Escolher a skill que ela buffa</button></div>";
-        return "<div class=\"sk-b\"><span class=\"sk-bchip\" draggable=\"true\" data-bdrag=\"" + m.id + ":" + k + "\" title=\"Arraste até outra skill para trocar\">▲ buffa a M" + (tg + 1) + "</span>" +
-          "<button type=\"button\" class=\"sk-bx\" data-bpick=\"" + m.id + ":" + k + "\">trocar</button></div>";
-      }
-      // linha da skill que recebe o buff (e o botão para escolher quando um buff está esperando)
+      // ===== Tabela de skills (1.5× e 1.5× par): dano, tipo e, se houver Buff, qual skill recebe =====
+      const SKT = [["n", "Dano", ""], ["cc", "⚡", "Stun"], ["sil", "🔇", "Silence"], ["buff", "▲", "Buff"]];
+      function buffIdx(m) { return m.skills.findIndex(function (x) { return x.t === "buff"; }); }
       // primeira skill buffada sem o dano antes/depois ("M7"), ou ""
       function buffMissing(m) {
-        let out = "";
-        m.skills.forEach(function (x, j) {
-          if (out || x.t !== "buff") return;
-          const tg = buffTarget(m, j);
-          if (tg >= 0 && (!(x.bd > 0) || !(m.skills[tg].d > 0))) out = "M" + (tg + 1);
-        });
-        return out;
+        const bk = buffIdx(m);
+        if (bk < 0) return "";
+        const tg = buffTarget(m, bk);
+        if (tg < 0) return "buff sem skill assinalada";
+        return !(m.skills[bk].bd > 0) || !(m.skills[tg].d > 0) ? "M" + (tg + 1) : "";
       }
-      function buffRecvHtml(m, k) {
-        if (m.skills[k].t === "buff") return "";
-        if (BUFFPICK && BUFFPICK.id === m.id && BUFFPICK.k !== k) {
-          if (!(m.skills[k].d > 0)) return ""; // só skills com dano anotado
-          return "<button type=\"button\" class=\"sk-bset\" data-bset=\"" + m.id + ":" + BUFFPICK.k + ":" + k + "\">▲ Esta é a buffada pela M" + (BUFFPICK.k + 1) + "</button>";
+      function skFootHtml(m) {
+        const used = m.skills.filter(function (x) { return x.t !== "buff" && x.d > 0; });
+        const sum = used.reduce(function (a, x) { return a + x.d; }, 0);
+        const L = ["<span>soma " + fmt(sum) + " · " + used.length + " skill" + (used.length === 1 ? "" : "s") + "</span>"];
+        const bk = buffIdx(m);
+        if (bk >= 0) {
+          const tg = buffTarget(m, bk);
+          if (tg < 0) L.push("<span class=\"st-warn\">Assinale em “recebe” a skill que o ▲ M" + (bk + 1) + " buffa.</span>");
+          else if (!(m.skills[tg].d > 0) || !(m.skills[bk].bd > 0)) L.push("<span class=\"st-warn\">Anote o dano da M" + (tg + 1) + " antes e depois do buff.</span>");
+          else L.push("<span>▲ M" + (bk + 1) + " → M" + (tg + 1) + ": " + fmt(m.skills[tg].d) + " → " + fmt(m.skills[bk].bd) + "</span>");
         }
-        const from = m.skills.findIndex(function (x, j) { return x.t === "buff" && buffTarget(m, j) === k; });
-        if (from < 0) return "";
-        const b = m.skills[from], cur = m.skills[k];
-        const miss = !(b.bd > 0) || !(cur.d > 0);
-        return "<div class=\"sk-recv" + (miss ? " miss" : "") + "\"><span>▲ buffada pela M" + (from + 1) + "</span>" +
-          "<span class=\"sk-ba\">antes <b>" + (cur.d > 0 ? fmt(cur.d) : "anote acima") + "</b></span>" +
-          "<label>depois<input class=\"in num\" data-skbd=\"" + m.id + ":" + from + "\" inputmode=\"decimal\" placeholder=\"obrigatório\" aria-label=\"Dano da M" + (k + 1) + " depois do buff\" value=\"" + (b.bd ? fmt(b.bd) : "") + "\" /></label>" +
-          (miss ? "<span class=\"sk-req\">anote o dano antes e depois do buff</span>" : "") + "</div>";
+        return L.join("");
       }
-
-      // quantas skills mostrar: as preenchidas + a próxima vazia
-      const SKREV = {}; // skills abertas à mão (+ M…/Enter), só nesta sessão
-      function skillVis(m) {
-        let last = -1;
-        m.skills.forEach(function (x, k) { if (x.d > 0 || x.t !== "n" || x.bd > 0) last = k; });
-        return Math.min(9, Math.max(last + 2, SKREV[m.id] || 0));
-      }
-      function skillsHtml(m) {
-        const vis = skillVis(m);
-        const tiles = m.skills.map(function (sk, k) {
-          const tp = sk.t;
-          const id = "sk-" + m.id + "-" + k;
-          const tb = function (kind, label, aria) {
-            const on = tp === kind;
-            return "<button type=\"button\" class=\"sk-tb " + kind + (on ? " on" : "") + "\" data-sktb=\"" + m.id + ":" + k + ":" + kind + "\" aria-pressed=\"" + on + "\" aria-label=\"M" + (k + 1) + ": " + aria + "\" title=\"" + aria.charAt(0).toUpperCase() + aria.slice(1) + "\">" + label + "</button>";
-          };
-          const recv = buffRecvHtml(m, k);
-          return "<div class=\"sk t-" + tp + (recv ? " recv" : "") + (k >= vis ? " sk-hid" : "") + "\" data-ski=\"" + k + "\" data-skrow=\"" + m.id + ":" + k + "\">" +
-            "<div class=\"sk-row\"><label class=\"sk-l\" for=\"" + id + "\">M" + (k + 1) + "</label>" +
-            "<input class=\"in num sk-in\" id=\"" + id + "\" data-sk=\"" + m.id + ":" + k + "\" inputmode=\"decimal\" enterkeyhint=\"next\" placeholder=\"" + (tp === "buff" ? "buff: sem dano" : "dano") + "\" value=\"" + (sk.d && tp !== "buff" ? fmt(sk.d) : "") + "\"" + (tp === "buff" ? " disabled" : "") + " />" +
-            "<span class=\"sk-tg\">" + tb("cc", "⚡<span class=\"tbl\"> Stun</span>", "stun") + tb("sil", "🔇<span class=\"tbl\"> Silence</span>", "silence") + tb("buff", "▲<span class=\"tbl\"> Buff</span>", "buff") + "</span>" +
-            "<button type=\"button\" class=\"sk-del\" data-skdel=\"" + m.id + ":" + k + "\" aria-label=\"Apagar M" + (k + 1) + "\" title=\"Apagar M" + (k + 1) + "\">×</button></div>" +
-            (tp === "buff" ? buffTestHtml(m, k) : recv) +
-            "</div>";
+      function skillTableHtml(m) {
+        const bk = buffIdx(m), tg = bk >= 0 ? buffTarget(m, bk) : -1, hasB = bk >= 0;
+        const head = "<div class=\"st-row st-head\"><span>Skill</span><span>Dano</span><span>Tipo</span>" + (hasB ? "<span class=\"st-c\">Recebe</span><span>Depois</span>" : "") + "</div>";
+        const rows = m.skills.map(function (sk, k) {
+          const isB = sk.t === "buff";
+          const seg = SKT.map(function (o) {
+            const on = sk.t === o[0];
+            return "<button type=\"button\" class=\"st-b t-" + o[0] + (on ? " on" : "") + "\" data-stt=\"" + m.id + ":" + k + ":" + o[0] + "\" aria-pressed=\"" + on + "\" title=\"" + (o[2] || "Dano") + "\" aria-label=\"M" + (k + 1) + ": " + (o[2] || "dano") + "\">" + o[1] + (o[2] ? "<span class=\"st-l\"> " + o[2] + "</span>" : "") + "</button>";
+          }).join("");
+          let recv = "", after = "";
+          if (hasB) {
+            recv = isB ? "<span class=\"st-c st-src\">buff</span>"
+              : "<label class=\"st-c st-rb\" title=\"Esta skill recebe o buff\"><input type=\"radio\" name=\"rb-" + m.id + "\" data-strb=\"" + m.id + ":" + bk + ":" + k + "\"" + (k === tg ? " checked" : "") + " aria-label=\"M" + (k + 1) + " recebe o buff\" /></label>";
+            after = k === tg
+              ? "<span class=\"st-af\"><input class=\"in num" + (m.skills[bk].bd > 0 ? "" : " miss") + "\" data-skbd=\"" + m.id + ":" + bk + "\" inputmode=\"decimal\" placeholder=\"obrigatório\" aria-label=\"Dano da M" + (k + 1) + " depois do buff\" value=\"" + (m.skills[bk].bd ? fmt(m.skills[bk].bd) : "") + "\" /></span>"
+              : "<span></span>";
+          }
+          return "<div class=\"st-row" + (isB ? " is-buff" : "") + (k === tg ? " is-tg" : "") + (sk.t === "cc" ? " is-cc" : "") + "\">" +
+            "<span class=\"st-k\">M" + (k + 1) + "</span>" +
+            "<input class=\"in num st-d\" data-sk=\"" + m.id + ":" + k + "\" inputmode=\"decimal\" enterkeyhint=\"next\" placeholder=\"" + (isB ? "— buff —" : "dano") + "\" value=\"" + (sk.d && !isB ? fmt(sk.d) : "") + "\"" + (isB ? " disabled" : "") + " aria-label=\"Dano da M" + (k + 1) + "\" />" +
+            "<span class=\"st-seg\" role=\"group\" aria-label=\"Tipo da M" + (k + 1) + "\">" + seg + "</span>" + recv + after + "</div>";
         }).join("");
-        return "<div class=\"skills-box\"><div class=\"skills-head\"><span>Skills</span><span class=\"skc-sum\" data-sksum=\"" + m.id + "\"></span></div>" +
-          "<div class=\"sk-list\">" + tiles + "</div>" +
-          "<button type=\"button\" class=\"sk-more\" data-skmore=\"" + m.id + "\"" + (vis >= 9 ? " hidden" : "") + ">+ M" + (vis + 1) + "</button>" +
-          "</div>";
-      }
-      function syncSkillVis(m) {
-        const card = el.teams.querySelector(".mon[data-id=\"" + m.id + "\"]");
-        if (!card) return;
-        const vis = skillVis(m);
-        card.querySelectorAll(".sk[data-ski]").forEach(function (t) {
-          const k = Number(t.getAttribute("data-ski"));
-          const inp = t.querySelector("input[data-sk]");
-          t.classList.toggle("sk-hid", k >= vis && !(inp && inp.value.trim()) && document.activeElement !== inp);
-        });
-        const more = card.querySelector("[data-skmore]");
-        if (more) {
-          const shown = card.querySelectorAll(".sk[data-ski]:not(.sk-hid)").length;
-          more.hidden = shown >= 9;
-          more.textContent = "+ M" + (shown + 1);
-        }
-      }
-      function revealSkill(m, k) {
-        SKREV[m.id] = Math.max(SKREV[m.id] || 0, k + 1);
-        syncSkillVis(m);
-        const f = el.teams.querySelector("[data-sk=\"" + m.id + ":" + k + "\"]");
-        if (f) f.focus();
-        return f;
+        return "<div class=\"st" + (hasB ? " has-b" : "") + "\" data-st=\"" + m.id + "\">" + head + rows + "<div class=\"st-foot\" data-skfoot=\"" + m.id + "\">" + skFootHtml(m) + "</div></div>";
       }
 
       function buildRoster() {
         const card = function (m, idx) { return cardHtml(m, idx, false); };
+        const pc = document.getElementById("par-cfg");
+        if (isPar()) {
+          el.teams.innerHTML = "";
+          buildParCfg();
+          buildCand();
+          buildPrec();
+          return;
+        }
+        if (pc) pc.innerHTML = "";
         if (is15()) {
           const order = isPar() ? parCfg().pa.slice() : state.mons.map(function (m, i) { return i; });
           el.teams.innerHTML = (isPar() ? (order.length ? "<h3 class=\"par-rh\">Skills dos PARCIAIS</h3>" : "") : "") + "<div class=\"teams-grid f15" + (isPar() ? " fpar" : "") + "\">" + order.map(function (i) { return card(state.mons[i], i); }).join("") + "</div>";
@@ -2426,14 +2485,31 @@
       // state.par.s = [full que abre a rot 1, parcial 1→2, full da rot 2, full que abre a rot 3, parcial 3→4, full da rot 4] (índices dos pokémon)
       // Configuração: tk = os 4 Offtanks, pa = os 2 Offtanks que fazem o PARCIAL. Os outros 2 Offtanks são FULL e abrem
       // as rotações 1 e 3; os 2 que não são Offtank são FULL de dano nas rotações 2 e 4. A ordem é escolhida sozinha.
+      // Papel de cada pokémon no 1.5× par: "otf" = Offtank FULL, "pa" = Offtank PARCIAL, "dmg" = DMG FULL (2 de cada)
+      const PAR_ROLES = [["otf", "Offtank FULL"], ["pa", "PARCIAL"], ["dmg", "DMG FULL"]];
       function parDefault() {
-        const find = function (w) { return state.mons.findIndex(function (m) { return String(m.name || "").toLowerCase().indexOf(w) >= 0; }); };
-        const tk = ["mightyena", "tauros", "houndoom", "hydreigon"].map(find).filter(function (i, k, a) { return i >= 0 && a.indexOf(i) === k; });
-        const pa = ["tauros", "hydreigon"].map(find).filter(function (i, k, a) { return i >= 0 && a.indexOf(i) === k; });
+        const want = { mightyena: "otf", houndoom: "otf", tauros: "pa", hydreigon: "pa", mismagius: "dmg", dusknoir: "dmg" };
+        const cnt = { otf: 0, pa: 0, dmg: 0 };
+        return state.mons.map(function (m) {
+          const n = String(m.name || "").toLowerCase();
+          const key = Object.keys(want).find(function (w) { return n.indexOf(w) >= 0; });
+          const r = key ? want[key] : "";
+          if (!r || cnt[r] >= 2) return "";
+          cnt[r]++;
+          return r;
+        });
+      }
+      function parRoles() {
+        if (!state.par || !Array.isArray(state.par.role) || state.par.role.length !== 6) state.par = { role: parDefault() };
+        return state.par.role;
+      }
+      function parCount(r) { return parRoles().filter(function (x) { return x === r; }).length; }
+      function parCfg() {
+        const tk = [], pa = [];
+        parRoles().forEach(function (x, i) { if (x === "otf" || x === "pa") tk.push(i); if (x === "pa") pa.push(i); });
         return { tk: tk, pa: pa };
       }
-      function parCfg() { if (!state.par || !Array.isArray(state.par.tk) || !Array.isArray(state.par.pa)) state.par = parDefault(); return state.par; }
-      function parReady() { const c = parCfg(); return c.tk.length === 4 && c.pa.length === 2; }
+      function parReady() { return parCount("otf") === 2 && parCount("pa") === 2 && parCount("dmg") === 2; }
       function parS() { const R = isPar() ? rotResult() : null; return R && R.ev ? R.ev.s : null; }
       const PAR_SLOT = [
         { g: 0, txt: "Rot 1 · FULL (abre com ⚡ stun)", short: "FULL", cls: "full" },
@@ -2577,37 +2653,52 @@
         rest.filter(function (x) { return (!ccFirst || !x.cc) && tg.has(x); }).sort(function (a, b) { return a.k - b.k; }).forEach(function (x) { seq.push(tg.get(x)); seq.push(x); });
         return seq;
       }
-      function paintPar() {
-        const out = document.getElementById("rot-out"), pout = document.getElementById("par-out");
-        const c = parCfg();
+      let PARADJ_OPEN = false;
+      function buildParCfg() {
+        const pc = document.getElementById("par-cfg");
+        if (!pc) return;
+        const roles = parRoles();
         const nm = function (pi) { return shortName(state.mons[pi]); };
-        const chip = function (attr, i, on, dis) {
-          return "<button type=\"button\" class=\"ps-chip" + (on ? " on" : "") + "\" " + attr + "=\"" + i + "\" aria-pressed=\"" + on + "\"" + (dis ? " disabled" : "") + ">" + (on ? "✓ " : "") + nm(i) + "</button>";
-        };
-        const step = function (n, title, cnt, body, done) {
-          return "<div class=\"ps-step" + (done ? " done" : "") + "\"><div class=\"ps-h\"><span class=\"ps-n\">" + (done ? "✓" : n) + "</span><b>" + title + "</b>" + (cnt ? "<span class=\"ps-c\">" + cnt + "</span>" : "") + "</div>" + body + "</div>";
-        };
-        const s1 = step(1, "Quem são os 4 Offtanks?", c.tk.length + "/4",
-          "<div class=\"ps-chips\">" + state.mons.map(function (m, i) { const on = c.tk.indexOf(i) >= 0; return chip("data-ptk", i, on, !on && c.tk.length >= 4); }).join("") + "</div>", c.tk.length === 4);
-        const s2 = step(2, "Quais 2 Offtanks fazem o PARCIAL?", c.pa.length + "/2",
-          c.tk.length ? "<div class=\"ps-chips\">" + c.tk.map(function (i) { const on = c.pa.indexOf(i) >= 0; return chip("data-ppa", i, on, !on && c.pa.length >= 2); }).join("") + "</div>"
-            : "<p class=\"ps-hint\">Escolha os Offtanks primeiro.</p>", c.pa.length === 2);
-        const fulls = [0, 1, 2, 3, 4, 5].filter(function (i) { return c.pa.indexOf(i) < 0; });
-        const s3 = step(3, "Dano do combo dos 4 FULL", "",
-          "<div class=\"ps-full\">" + fulls.map(function (i) {
+        const rows = state.mons.map(function (m, i) {
+          const cur = roles[i];
+          const seg = PAR_ROLES.map(function (o) {
+            const on = cur === o[0], full = !on && parCount(o[0]) >= 2;
+            return "<button type=\"button\" class=\"pr-rb r-" + o[0] + (on ? " on" : "") + "\" data-prole=\"" + i + ":" + o[0] + "\" aria-pressed=\"" + on + "\"" + (full ? " disabled title=\"Já tem 2\"" : "") + ">" + o[1] + "</button>";
+          }).join("");
+          const dmg = cur === "pa" ? "<span class=\"pr-hint\">skills abaixo ↓</span>"
+            : cur ? "<input class=\"in num pr-in\" data-f=\"now\" inputmode=\"decimal\" placeholder=\"dano do combo\" value=\"" + (m.now > 0 ? fmt(m.now) : "") + "\" aria-label=\"Dano do combo de " + nm(i) + "\" />"
+            : "<span class=\"pr-hint\">escolha o papel</span>";
+          return "<div class=\"pmon prow\" data-id=\"" + m.id + "\"><span class=\"pr-name\">" + nm(i) + "</span><span class=\"pr-seg\" role=\"group\" aria-label=\"Papel de " + nm(i) + "\">" + seg + "</span>" + dmg + "</div>";
+        }).join("");
+        const cnt = PAR_ROLES.map(function (o) { const n = parCount(o[0]); return "<span class=\"" + (n === 2 ? "c-ok" : "c-no") + "\">" + o[1] + " " + n + "/2" + (n === 2 ? " ✓" : "") + "</span>"; }).join("");
+        const roleCard = "<div class=\"pc-card\"><div class=\"pc-h\"><b>Pokémon e papéis</b><span class=\"pc-sub\">2 de cada · o PARCIAL divide as skills entre duas rotações</span></div>" +
+          "<div class=\"prows\">" + rows + "</div><div class=\"pr-cnt\">" + cnt + "</div></div>";
+        const pa = parCfg().pa;
+        const skillCards = pa.length
+          ? "<div class=\"pc-skills\">" + pa.map(function (i) {
             const m = state.mons[i];
-            return "<label class=\"ps-fr\"><span>" + nm(i) + " <span class=\"par-tag " + (c.tk.indexOf(i) >= 0 ? "parc\">OFFTANK" : "full\">DMG") + "</span></span>" +
-              "<input class=\"in num\" data-pfull=\"" + i + "\" inputmode=\"decimal\" value=\"" + (m.now > 0 ? fmt(m.now) : "") + "\" placeholder=\"dano do combo\" /></label>";
-          }).join("") + "</div>", fulls.every(function (i) { return state.mons[i].now > 0; }));
-        const pDone = c.pa.length === 2 && c.pa.every(function (i) { return state.mons[i].skills.some(function (x) { return x.d > 0; }) && state.mons[i].skills.some(function (x) { return x.t === "cc"; }); });
-        const s4 = step(4, "Dano de cada skill dos PARCIAIS", "",
-          "<p class=\"ps-hint\">" + (c.pa.length ? "Nos cards de " + c.pa.map(nm).join(" e ") + " logo abaixo: anote o dano de cada skill e marque o ⚡ Stun." : "Escolha os PARCIAIS no passo 2.") + "</p>", pDone);
-        const ae = document.activeElement, keep = ae && ae.getAttribute && ae.getAttribute("data-pfull");
-        out.innerHTML = "<div class=\"ps\">" + s1 + s2 + s3 + s4 + "</div>";
-        if (keep) { const n = out.querySelector("[data-pfull=\"" + keep + "\"]"); if (n) { n.focus(); n.select(); } }
-
+            return "<div class=\"pc-card\"><div class=\"pc-h\"><b>Skills do " + nm(i) + "</b><span class=\"par-tag parc\">PARCIAL</span></div>" +
+              "<p class=\"pc-sub\">Marque o ⚡ Stun (ele abre a 2ª rotação). Se tiver ▲ Buff, assinale a skill que recebe e anote o dano depois do buff.</p>" + skillTableHtml(m) + "</div>";
+          }).join("") + "</div>"
+          : "";
+        const adj = "<details class=\"pc-adj\"" + (PARADJ_OPEN ? " open" : "") + "><summary>Ajustes: Brute Berry e precisão</summary><div class=\"adj-rows\">" +
+          state.mons.map(function (m, i) {
+            return "<div class=\"pmon adj-row\" data-id=\"" + m.id + "\"><span class=\"pr-name\">" + nm(i) + "</span>" +
+              "<label class=\"adj-chk\"><input type=\"checkbox\" data-f=\"brute\"" + (m.brute ? " checked" : "") + " />Brute Berry já no dano</label>" +
+              "<label class=\"adj-tr\">Treino<input class=\"in num\" data-f=\"train\" inputmode=\"decimal\" value=\"" + fmt(m.train) + "\" /></label>" +
+              "<label class=\"adj-chk\"><input type=\"checkbox\" data-f=\"berry\"" + (m.berry ? " checked" : "") + " />Focus Berry +" + BERRY + "</label></div>";
+          }).join("") + "</div></details>";
+        pc.innerHTML = roleCard + skillCards + adj;
+        const d = pc.querySelector(".pc-adj");
+        if (d) d.addEventListener("toggle", function () { PARADJ_OPEN = d.open; });
+      }
+      // resultado do 1.5× par (a configuração é desenhada por buildParCfg)
+      function paintPar() {
+        const pout = document.getElementById("par-out");
+        document.getElementById("rot-out").innerHTML = "";
+        const nm = function (pi) { return shortName(state.mons[pi]); };
         const res = rotResult();
-        if (!res) { pout.innerHTML = "<div class=\"box neutral\">Complete os passos 1 e 2 para ver as 4 rotações.</div>"; return; }
+        if (!res) { pout.innerHTML = "<div class=\"box neutral\">Marque 2 Offtank FULL, 2 PARCIAIS e 2 DMG FULL para ver as 4 rotações.</div>"; return; }
         const r = RUNES[state.rune];
         const t = totals();
         const off = official(state.rune, t);
@@ -2622,9 +2713,9 @@
           const seqA = g.est ? [] : parSeq(pk.A, pk.pa, false);
           const cmd = seqA.length ? comboCmd(seqA) : "";
           let noteA;
-          if (g.est) noteA = "<div class=\"pr-note warn\">Falta anotar as skills do " + nm(g.p) + " (passo 4): por enquanto é estimativa.</div>";
-          else if (!g.hasStun) noteA = "<div class=\"pr-note warn\">Marque o ⚡ Stun do " + nm(g.p) + " (passo 4).</div>";
-          else if (buffMissing(state.mons[g.p])) noteA = "<div class=\"pr-note warn\">" + nm(g.p) + ": falta o dano antes e depois do buff da " + buffMissing(state.mons[g.p]) + " (passo 4). Sem isso a conta não soma o buff.</div>";
+          if (g.est) noteA = "<div class=\"pr-note warn\">Falta anotar as skills do " + nm(g.p) + " (tabela acima): por enquanto é estimativa.</div>";
+          else if (!g.hasStun) noteA = "<div class=\"pr-note warn\">Marque o ⚡ Stun do " + nm(g.p) + " (tabela acima).</div>";
+          else if (buffMissing(state.mons[g.p])) noteA = "<div class=\"pr-note warn\">" + nm(g.p) + ": falta o dano antes e depois do buff da " + buffMissing(state.mons[g.p]) + " (tabela acima). Sem isso a conta não soma o buff.</div>";
           else noteA = cmd ? "<button type=\"button\" class=\"pr-cmd\" data-cmd=\"" + esc(cmd) + "\"><code>" + esc(cmd) + "</code><span class=\"rl-cp\">Copiar</span></button>"
             : "<div class=\"pr-note\">Não usa skill aqui: só lura.</div>";
           const head = function (ro, i) { return "<div class=\"pr-h\"><b>Rotação " + (i + 1) + "</b><span class=\"pr-tot\">" + fmt(ro.tot) + " " + hzB(ro.tot) + "</span></div>"; };
@@ -2677,13 +2768,9 @@
 
       function paintSkillSums() {
         state.mons.forEach(function (m) {
-          const n = document.querySelector("[data-sksum=\"" + m.id + "\"]");
-          if (!n) return;
-          const sum = m.skills.reduce(function (a, x) { return a + (x.t === "buff" ? 0 : x.d || 0); }, 0);
-          const cnt = m.skills.filter(function (x) { return x.d > 0 || x.t === "buff"; }).length;
-          const f = skillFactor(m);
-          const used = m.skills.reduce(function (a, x) { return a + (x.d > 0 ? Math.round(x.d * f) : 0); }, 0);
-          n.textContent = cnt ? "soma " + fmt(sum) + (Math.abs(f - 1) > 1e-9 ? " → conta " + fmt(used) + " (×" + fmt(Math.round(f * 1000) / 1000) + ")" : "") + " · " + cnt + " skill" + (cnt > 1 ? "s" : "") : "nenhuma ainda";
+          document.querySelectorAll("[data-skfoot=\"" + m.id + "\"]").forEach(function (n) { n.innerHTML = skFootHtml(m); });
+          const bk = buffIdx(m);
+          document.querySelectorAll("input[data-skbd^=\"" + m.id + ":\"]").forEach(function (n) { n.classList.toggle("miss", !(bk >= 0 && m.skills[bk].bd > 0)); });
         });
       }
 
@@ -2873,6 +2960,7 @@
       function onCards(type, fn) {
         el.teams.addEventListener(type, fn);
         el.cand.addEventListener(type, fn);
+        document.getElementById("par-cfg").addEventListener(type, fn);
       }
 
       onCards("input", function (ev) {
@@ -2888,7 +2976,7 @@
         }
         const f = ev.target.getAttribute("data-f");
         if (f !== "name" && f !== "now" && f !== "after" && f !== "train") return;
-        const m = findMon(ev.target.closest(".mon").getAttribute("data-id"));
+        const m = findMon(ev.target.closest(".mon, .pmon").getAttribute("data-id"));
         if (!m) return;
         if (f === "name") {
           m.name = ev.target.value;
@@ -2917,7 +3005,7 @@
         }
         const f = ev.target.getAttribute("data-f");
         if (f !== "now" && f !== "after" && f !== "train") return;
-        const m = findMon(ev.target.closest(".mon").getAttribute("data-id"));
+        const m = findMon(ev.target.closest(".mon, .pmon").getAttribute("data-id"));
         if (!m) return;
         ev.target.classList.remove("invalid");
         ev.target.value = ((f === "after" && m.after == null) || (m.id === "cand" && f === "now" && !m.now)) ? "" : fmt(m[f]);
@@ -2930,7 +3018,7 @@
 
       onCards("change", function (ev) {
         const f = ev.target.getAttribute("data-f");
-        const cardEl = ev.target.closest(".mon");
+        const cardEl = ev.target.closest(".mon, .pmon");
         if (!cardEl) return;
         const m = findMon(cardEl.getAttribute("data-id"));
         if (!m) return;
@@ -2968,7 +3056,7 @@
       onCards("click", function (ev) {
         const mc = ev.target.closest("[data-mult]");
         if (mc) {
-          const cm = mc.closest(".mon");
+          const cm = mc.closest(".mon, .pmon");
           const mm = cm && monById(cm.getAttribute("data-id"));
           if (!mm) return;
           mm.mult = Number(mc.getAttribute("data-mult"));
@@ -2979,13 +3067,13 @@
       });
       onCards("input", function (ev) {
         if (ev.target.getAttribute("data-f") !== "mult") return;
-        const mm = monById(ev.target.closest(".mon").getAttribute("data-id"));
+        const mm = monById(ev.target.closest(".mon, .pmon").getAttribute("data-id"));
         if (!mm) return;
         const v = parseNum(ev.target.value.replace(/^×|x/i, ""));
         if (!Number.isFinite(v) || v <= 0 || v > 10) { ev.target.classList.add("invalid"); return; }
         ev.target.classList.remove("invalid");
         mm.mult = v;
-        ev.target.closest(".mon").querySelectorAll("[data-mult]").forEach(function (b) {
+        ev.target.closest(".mon, .pmon").querySelectorAll("[data-mult]").forEach(function (b) {
           const on = Number(b.getAttribute("data-mult")) === v;
           b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on));
         });
@@ -2994,7 +3082,7 @@
       });
       onCards("focusout", function (ev) {
         if (ev.target.getAttribute("data-f") !== "mult") return;
-        const mm = monById(ev.target.closest(".mon").getAttribute("data-id"));
+        const mm = monById(ev.target.closest(".mon, .pmon").getAttribute("data-id"));
         if (!mm) return;
         ev.target.classList.remove("invalid");
         ev.target.value = fmt(multNum(mm.mult));
@@ -3002,7 +3090,7 @@
       onCards("click", function (ev) {
         const b = ev.target.closest("[data-star]");
         if (!b) return;
-        const cardEl = b.closest(".mon");
+        const cardEl = b.closest(".mon, .pmon");
         const m = cardEl && monById(cardEl.getAttribute("data-id"));
         if (!m) return;
         const n = Number(b.getAttribute("data-star"));
@@ -3414,241 +3502,125 @@
       }
       let paintTimer = null;
       function paintSoon() { clearTimeout(paintTimer); paintTimer = setTimeout(paint, 120); }
-      el.teams.addEventListener("input", function (ev) {
+      // campos da tabela de skills: nos cards do 1.5× e na configuração do 1.5× par
+      const parCfgEl = document.getElementById("par-cfg");
+      function onSk(type, fn) { el.teams.addEventListener(type, fn); parCfgEl.addEventListener(type, fn); }
+      onSk("input", function (ev) {
         const a = skRef("data-sk", ev.target);
-        if (!a) return;
+        if (a) {
+          const raw = ev.target.value.trim();
+          const sk = a.m.skills[a.k];
+          if (raw === "") { sk.d = null; ev.target.classList.remove("invalid"); }
+          else {
+            const v = parseNum(raw);
+            if (!Number.isFinite(v)) { ev.target.classList.add("invalid"); return; }
+            ev.target.classList.remove("invalid");
+            sk.d = v;
+          }
+          save();
+          paintSoon();
+          return;
+        }
+        const b = skRef("data-skbd", ev.target);
+        if (!b) return;
+        const bs = b.m.skills[b.k];
         const raw = ev.target.value.trim();
-        const sk = a.m.skills[a.k];
-        if (raw === "") { sk.d = null; ev.target.classList.remove("invalid"); }
+        if (raw === "") { bs.bd = null; ev.target.classList.remove("invalid"); }
         else {
           const v = parseNum(raw);
           if (!Number.isFinite(v)) { ev.target.classList.add("invalid"); return; }
           ev.target.classList.remove("invalid");
-          sk.d = v;
+          bs.bd = v;
         }
-        syncSkillVis(a.m);
+        ev.target.classList.toggle("miss", !(bs.bd > 0));
         save();
         paintSoon();
       });
-      el.teams.addEventListener("keydown", function (ev) {
+      onSk("keydown", function (ev) {
         if (ev.key !== "Enter" || !ev.target.hasAttribute("data-sk")) return;
         ev.preventDefault();
-        const a = skRef("data-sk", ev.target);
-        const card = ev.target.closest(".mon");
-        let next = null;
-        const t = a.k < 8 ? card.querySelector(".sk[data-ski=\"" + (a.k + 1) + "\"]") : null;
-        if (t && (ev.target.value.trim() || !t.classList.contains("sk-hid"))) {
-          next = revealSkill(a.m, a.k + 1);
-        }
-        if (!next) {
-          const cards = Array.prototype.slice.call(el.teams.querySelectorAll(".mon"));
-          const nc = cards[cards.indexOf(card) + 1];
-          if (nc) next = nc.querySelector(".sk:not(.sk-hid) input[data-sk]");
-        }
-        if (next) next.focus();
+        const all = Array.prototype.slice.call(document.querySelectorAll("input[data-sk]:not(:disabled)"));
+        const nx = all[all.indexOf(ev.target) + 1];
+        if (nx) nx.focus();
       });
-      el.teams.addEventListener("paste", function (ev) {
+      onSk("paste", function (ev) {
         const a = skRef("data-sk", ev.target);
         if (!a) return;
         const txt = (ev.clipboardData || window.clipboardData).getData("text") || "";
         const nums = txt.split(/[\s;|\/]+|,\s+/).map(function (x) { return parseNum(x); }).filter(function (v) { return Number.isFinite(v) && v > 0; });
         if (nums.length < 2) return;
         ev.preventDefault();
-        let at = a.k;
+        let at = a.k, last = a.k;
         nums.forEach(function (v) {
           while (at < 9 && a.m.skills[at].t === "buff") at++; // buff não tem dano: pula
-          if (at < 9) a.m.skills[at++].d = v;
+          if (at < 9) { last = at; a.m.skills[at++].d = v; }
         });
         save();
         buildRoster();
         paint();
-        const last = Math.min(8, a.k + nums.length);
-        const f = el.teams.querySelector("[data-sk=\"" + a.m.id + ":" + last + "\"]");
+        const f = document.querySelector("[data-sk=\"" + a.m.id + ":" + last + "\"]");
         if (f) f.focus();
       });
-      el.teams.addEventListener("click", function (ev) {
-        const del = ev.target.closest("[data-skdel]");
-        if (del) {
-          const pr = del.getAttribute("data-skdel").split(":");
-          const m = findMon(pr[0]);
-          if (!m) return;
-          const k = Number(pr[1]);
-          m.skills[k] = { d: null, t: "n", bp: null, bt: null, bd: null };
-          m.skills.forEach(function (x) { if (x.t === "buff" && x.bt === k) { x.bt = null; x.bd = null; } });
-          SKREV[m.id] = 0; // volta a mostrar só as preenchidas + a próxima
-          save();
-          buildRoster();
-          paint();
-          const vis = skillVis(m);
-          const f = el.teams.querySelector("[data-sk=\"" + m.id + ":" + Math.min(k, vis - 1) + "\"]");
-          if (f) f.focus();
-          return;
-        }
-        const bp = ev.target.closest("[data-bpick]"), bc = ev.target.closest("[data-bcancel]"), bs = ev.target.closest("[data-bset]");
-        if (bp || bc || bs) {
-          if (bp) { const q = bp.getAttribute("data-bpick").split(":"); BUFFPICK = { id: q[0], k: Number(q[1]) }; }
-          else if (bc) BUFFPICK = null;
-          else {
-            const q = bs.getAttribute("data-bset").split(":");
-            const mm = findMon(q[0]);
-            if (mm) setBuffTarget(mm, Number(q[1]), Number(q[2]));
-            BUFFPICK = null;
-          }
-          save();
-          buildRoster();
-          paint();
-          return;
-        }
-        const mo = ev.target.closest("[data-skmore]");
-        if (mo) {
-          const m = findMon(mo.getAttribute("data-skmore"));
-          const card = mo.closest(".mon");
-          if (m && card) revealSkill(m, card.querySelectorAll(".sk[data-ski]:not(.sk-hid)").length);
-          return;
-        }
-        const b = ev.target.closest("[data-sktb]");
+      onSk("click", function (ev) {
+        const b = ev.target.closest("[data-stt]");
         if (!b) return;
-        const pr = b.getAttribute("data-sktb").split(":");
-        const m = findMon(pr[0]);
+        const q = b.getAttribute("data-stt").split(":");
+        const m = findMon(q[0]);
         if (!m) return;
-        const sk = m.skills[Number(pr[1])];
-        sk.t = sk.t === pr[2] ? "n" : pr[2];
-        if (sk.t === "buff") sk.d = null; // buff não dá dano
-        if (sk.t === "buff" && buffTarget(m, Number(pr[1])) < 0) BUFFPICK = { id: m.id, k: Number(pr[1]) };
-        else if (BUFFPICK && BUFFPICK.id === m.id && BUFFPICK.k === Number(pr[1])) BUFFPICK = null;
+        const k = Number(q[1]), t = q[2], sk = m.skills[k];
+        if (sk.t === t) return;
+        if (t === "buff") {
+          // só 1 Buff por pokémon: o anterior volta a ser dano
+          m.skills.forEach(function (x, j) { if (j !== k && x.t === "buff") { x.t = "n"; x.bt = null; x.bd = null; } });
+          sk.bt = null; sk.bd = null;
+        } else if (sk.t === "buff") { sk.bt = null; sk.bd = null; }
+        sk.t = t;
         save();
         buildRoster();
         paint();
-        const back = el.teams.querySelector("[data-sktb=\"" + b.getAttribute("data-sktb") + "\"]");
+        const back = document.querySelector("[data-stt=\"" + b.getAttribute("data-stt") + "\"]");
         if (back) back.focus();
       });
-      function setBuffTarget(m, j, k) {
-        if (j === k || !m.skills[j] || !m.skills[k] || m.skills[k].t === "buff") return;
-        if (m.skills[j].bt !== k) m.skills[j].bd = null; // o dano com buff era da outra skill
-        m.skills[j].bt = k;
-      }
-      // arrastar o "▲ buffa a M…" até outra skill (mouse)
-      el.teams.addEventListener("dragstart", function (ev) {
-        const c = ev.target.closest && ev.target.closest("[data-bdrag]");
-        if (!c) return;
-        ev.dataTransfer.setData("text/plain", c.getAttribute("data-bdrag"));
-        ev.dataTransfer.effectAllowed = "move";
-      });
-      el.teams.addEventListener("dragover", function (ev) {
-        const row = ev.target.closest && ev.target.closest("[data-skrow]");
-        if (!row || row.classList.contains("t-buff")) return;
-        ev.preventDefault();
-        el.teams.querySelectorAll(".sk.drop-on").forEach(function (x) { if (x !== row) x.classList.remove("drop-on"); });
-        row.classList.add("drop-on");
-      });
-      el.teams.addEventListener("dragleave", function (ev) {
-        const row = ev.target.closest && ev.target.closest("[data-skrow]");
-        if (row && !row.contains(ev.relatedTarget)) row.classList.remove("drop-on");
-      });
-      el.teams.addEventListener("drop", function (ev) {
-        const row = ev.target.closest && ev.target.closest("[data-skrow]");
-        const src = ev.dataTransfer.getData("text/plain");
-        if (!row || !src) return;
-        ev.preventDefault();
-        const a = src.split(":"), b = row.getAttribute("data-skrow").split(":");
-        const m = findMon(a[0]);
-        if (!m || a[0] !== b[0]) { row.classList.remove("drop-on"); return; }
-        setBuffTarget(m, Number(a[1]), Number(b[1]));
-        BUFFPICK = null;
+      onSk("change", function (ev) {
+        const r = ev.target.closest("[data-strb]");
+        if (!r) return;
+        const q = r.getAttribute("data-strb").split(":");
+        const m = findMon(q[0]);
+        if (!m) return;
+        const bs = m.skills[Number(q[1])], k = Number(q[2]);
+        if (bs.bt !== k) bs.bd = null; // o "depois" era de outra skill
+        bs.bt = k;
         save();
         buildRoster();
         paint();
+        const back = document.querySelector("[data-strb=\"" + r.getAttribute("data-strb") + "\"]");
+        if (back) back.focus();
       });
-      document.addEventListener("keydown", function (ev) {
-        if (ev.key === "Escape" && BUFFPICK) { BUFFPICK = null; buildRoster(); paint(); }
-      });
-      el.teams.addEventListener("focusout", function (ev) {
-        const a = skRef("data-sk", ev.target) || skRef("data-skb", ev.target);
-        if (!a) return;
-        const sk = a.m.skills[a.k];
-        const v = ev.target.hasAttribute("data-skb") ? sk.bp : sk.d;
+      onSk("focusout", function (ev) {
+        const a = skRef("data-sk", ev.target), b = skRef("data-skbd", ev.target);
+        if (!a && !b) return;
+        const v = a ? a.m.skills[a.k].d : b.m.skills[b.k].bd;
         ev.target.classList.remove("invalid");
         ev.target.value = v ? fmt(v) : "";
       });
-      el.teams.addEventListener("focusin", function (ev) {
+      onSk("focusin", function (ev) {
         if (ev.target.hasAttribute("data-sk") || ev.target.hasAttribute("data-skbd")) ev.target.select();
       });
-      el.teams.addEventListener("change", function (ev) {
-        const b = skRef("data-skbt", ev.target);
-        if (b) { b.m.skills[b.k].bt = Number(ev.target.value); save(); buildRoster(); paint(); return; }
-        const a = skRef("data-skt", ev.target);
-        if (!a) return;
-        a.m.skills[a.k].t = ev.target.value;
+      // papéis do 1.5× par
+      parCfgEl.addEventListener("click", function (ev) {
+        const b = ev.target.closest("[data-prole]");
+        if (!b || b.disabled) return;
+        const q = b.getAttribute("data-prole").split(":");
+        const roles = parRoles(), i = Number(q[0]);
+        roles[i] = roles[i] === q[1] ? "" : q[1];
+        ROTCACHE = null;
         save();
         buildRoster();
         paint();
-        const back = document.querySelector("[data-skt=\"" + a.m.id + ":" + a.k + "\"]");
+        const back = document.querySelector("[data-prole=\"" + b.getAttribute("data-prole") + "\"]");
         if (back) back.focus();
       });
-      el.teams.addEventListener("input", function (ev) {
-        const a = skRef("data-skbd", ev.target);
-        if (!a) return;
-        const sk = a.m.skills[a.k];
-        const raw = ev.target.value.trim();
-        if (raw === "") { sk.bd = null; ev.target.classList.remove("invalid"); }
-        else {
-          const v = parseNum(raw);
-          if (!Number.isFinite(v)) { ev.target.classList.add("invalid"); return; }
-          ev.target.classList.remove("invalid");
-          sk.bd = v;
-        }
-        if (!sk.bt && sk.bt !== 0) sk.bt = buffTarget(a.m, a.k) >= 0 ? buffTarget(a.m, a.k) : null;
-        const lab = document.querySelector("[data-skbp=\"" + a.m.id + ":" + a.k + "\"]");
-        if (lab) lab.textContent = buffLabel(a.m, a.k);
-        const rv = ev.target.closest(".sk-recv");
-        if (rv) {
-          const tg = buffTarget(a.m, a.k);
-          const ok = sk.bd > 0 && tg >= 0 && a.m.skills[tg].d > 0;
-          rv.classList.toggle("miss", !ok);
-          const rq = rv.querySelector(".sk-req");
-          if (rq) rq.hidden = ok;
-        }
-        save();
-        paintSoon();
-      });
-      el.teams.addEventListener("focusout", function (ev) {
-        const a = skRef("data-skbd", ev.target);
-        if (!a) return;
-        const sk = a.m.skills[a.k];
-        ev.target.classList.remove("invalid");
-        ev.target.value = sk.bd ? fmt(sk.bd) : "";
-      });
-      document.getElementById("rot-out").addEventListener("change", function (ev) {
-        const fi = ev.target.closest("input[data-pfull]");
-        if (fi) {
-          const v = parseNum(fi.value);
-          const m = state.mons[Number(fi.getAttribute("data-pfull"))];
-          if (!m || !Number.isFinite(v)) { fi.classList.add("invalid"); return; }
-          m.now = v;
-          save();
-          buildRoster();
-          paint();
-          return;
-        }
-      });
       document.getElementById("rot-out").addEventListener("click", function (ev) {
-        const tb = ev.target.closest("[data-ptk]"), pb = ev.target.closest("[data-ppa]");
-        if (tb || pb) {
-          const c = parCfg();
-          if (tb) {
-            const i = Number(tb.getAttribute("data-ptk")), at = c.tk.indexOf(i);
-            if (at >= 0) { c.tk.splice(at, 1); const ap = c.pa.indexOf(i); if (ap >= 0) c.pa.splice(ap, 1); }
-            else if (c.tk.length < 4) c.tk.push(i);
-          } else {
-            const i = Number(pb.getAttribute("data-ppa")), at = c.pa.indexOf(i);
-            if (at >= 0) c.pa.splice(at, 1); else if (c.pa.length < 2) c.pa.push(i);
-          }
-          ROTCACHE = null;
-          save();
-          buildRoster();
-          paint();
-          return;
-        }
         const b = ev.target.closest("[data-cmd]") || ev.target.closest("#copy-all");
         if (!b) return;
         const txt = b.getAttribute("data-cmd") || b.getAttribute("data-all");
