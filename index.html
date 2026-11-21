@@ -627,6 +627,41 @@
     .par-only { display: none; }
     body.fmt-par .par-only { display: block; }
     body.fmt-par .par-hide, body.fmt-par .role15 { display: none !important; }
+    .par-how { margin: 0 0 12px; font-size: 0.88rem; line-height: 1.55; max-width: 110ch; }
+    .par-top { display: flex; align-items: center; gap: 8px 18px; flex-wrap: wrap; margin-bottom: 12px; padding: 12px 14px; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--sunken); }
+    .pt-big { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1; }
+    .pt-txt { font-size: 0.86rem; line-height: 1.5; color: var(--muted); }
+    .pt-txt b { color: var(--text); }
+    .pr-grid { display: flex; flex-direction: column; gap: 12px; }
+    .pr-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .pr { border: 1px solid var(--line-strong); border-radius: 12px; padding: 12px; background: var(--sunken); display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+    .pr.bad { border-color: #F87171; }
+    .pr-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+    .pr-h b { font-size: 0.95rem; }
+    .pr-tot { font-family: var(--font-num, monospace); font-size: 1.15rem; font-weight: 700; }
+    .pr-ok { color: var(--ok); font-size: 0.9rem; }
+    .pr-no { color: #FCA5A5; font-size: 0.8rem; font-weight: 700; }
+    .pr-row { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto 130px; gap: 8px; align-items: center; }
+    .pr-n { width: 22px; height: 22px; border-radius: 50%; background: var(--line-strong); color: var(--muted); font-size: 0.72rem; font-weight: 800; display: grid; place-items: center; }
+    .pr-sel { min-height: 38px; min-width: 0; }
+    .pr-fix { font-weight: 700; padding-left: 4px; }
+    .pr-dmg { min-height: 38px; text-align: right; width: 100%; }
+    .pr-d { text-align: right; font-family: var(--font-num, monospace); font-weight: 700; padding-right: 8px; }
+    .pr-sub { grid-column: 2 / -1; font-size: 0.72rem; color: var(--muted); text-align: right; }
+    .pr-note { font-size: 0.78rem; color: var(--muted); padding-left: 30px; }
+    .pr-note.warn { color: #FCD34D; }
+    .pr-cmd { margin-left: 30px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; border: 1px solid var(--gold); border-radius: 10px; background: rgba(244, 208, 63, .07); color: var(--text); cursor: pointer; font: inherit; text-align: left; }
+    .pr-cmd code { font-family: var(--font-num, monospace); font-size: 0.86rem; }
+    .pr-cmd .rl-cp { font-size: 0.75rem; font-weight: 700; color: var(--gold); white-space: nowrap; }
+    .pr-cmd.copied { border-color: var(--ok); }
+    .pr-cmd.copied .rl-cp { color: var(--ok); }
+    .pr-cmd:focus-visible { outline: 2px solid var(--ring, #93C5FD); outline-offset: 2px; }
+    @media (max-width: 760px) {
+      .pr-pair { grid-template-columns: 1fr; }
+      .pr-row { grid-template-columns: 22px minmax(0, 1fr) auto; }
+      .pr-row .pr-dmg, .pr-row .pr-d { grid-column: 2 / -1; }
+      .pr-dmg { font-size: 16px; }
+    }
     .par-cfg { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0 0 12px; }
     .par-g { border: 1px solid var(--line-strong); border-radius: 10px; padding: 10px; background: var(--sunken); }
     .par-g h4 { margin: 0 0 8px; font-size: 0.8rem; color: var(--gold); }
@@ -639,6 +674,7 @@
     .par-line .pl-top { display: flex; justify-content: space-between; gap: 6px; align-items: baseline; }
     .par-line .pl-d { font-variant-numeric: tabular-nums; font-weight: 700; }
     .par-line .pl-sub { margin-top: 4px; font-size: 0.74rem; color: var(--muted); }
+    .par-sug { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
     .par-sug { margin: 10px 0; padding: 10px 12px; border: 1px solid var(--gold); border-radius: 10px; background: rgba(244, 208, 63, .06); font-size: 0.85rem; }
     .par-sug ol { margin: 6px 0; padding-left: 20px; }
     @media (max-width: 640px) { .par-cfg { grid-template-columns: 1fr; } .par-sl { grid-template-columns: 1fr; } }
@@ -812,12 +848,8 @@
             <span class="hint" id="rotPctHelp">quanto cada rotação precisa matar</span></div>
           <label class="chk"><input type="checkbox" id="rotDet" />Mostrar raridade, stars e held nos cards</label>
         </div>
-        <div class="dev-note" role="note"><span class="dev-tag">Em desenvolvimento</span><span>O formato 1.5× ainda está sendo ajustado e pode ter erros. Sugestões ou problemas? Fale no Discord com <b class="dev-user">Otavio5885</b>.</span></div>
-        <ol class="rot-steps par-only">
-          <li><b>Monte os pares</b> abaixo. Cada par são 2 rotações: o <b>FULL</b> da 1ª abre com ⚡ stun e solta o combo inteiro; o <b>PARCIAL</b> lura, usa só as skills que faltam para fechar a 1ª e guarda o ⚡ stun para abrir a 2ª, onde soltam o resto junto com o outro <b>FULL</b>.</li>
-          <li><b>FULL:</b> só precisa do dano do combo completo (campo no card). <b>PARCIAL:</b> anote o dano de cada skill e marque o ⚡ Stun.</li>
-          <li>A calculadora escolhe as skills do PARCIAL que fecham a 1ª rotação com o menor dano possível; o resto vai para a 2ª.</li>
-        </ol>
+        <div class="dev-note par-hide" role="note"><span class="dev-tag">Em desenvolvimento</span><span>O formato 1.5× ainda está sendo ajustado e pode ter erros. Sugestões ou problemas? Fale no Discord com <b class="dev-user">Otavio5885</b>.</span></div>
+        <p class="par-how par-only">4 rotações de 2 pokémon. Escolha os pokémon em cada rotação e digite o dano do combo dos <b>FULL</b>. No <b>PARCIAL</b>, anote o dano de cada skill no card dele (abaixo) e marque o ⚡ Stun: a calculadora diz quais skills ele usa na 1ª rotação (com o comando para copiar); na 2ª ele abre com o ⚡ e usa todo o restante.</p>
         <ol class="rot-steps par-hide">
           <li><b>Anote</b> o dano de cada skill nos cards abaixo. Enter vai para a próxima; dá para colar vários números de uma vez.</li>
           <li>Marque <b>⚡ Stun</b>, <b>🔇 Silence</b> e <b>▲ Buff</b>. No buff, escolha a skill que ele aumenta e anote quanto ela passa a dar.</li>
@@ -1389,9 +1421,8 @@
           return "<div class=\"mon m15" + (testActive(m) ? " testing" : "") + "\" data-id=\"" + m.id + "\">" +
             "<div class=\"slot-row\"><div class=\"" + sl.cls + "\">" + sl.text + "</div></div>" + top +
             "<label class=\"fld role15\">Papel<select class=\"in\" data-f=\"role\">" + roleOpts(m.role) + "</select></label>" +
-            (isPar() ? "<div class=\"mon-fields\"><label class=\"fld\">Dano do combo completo (usado quando é FULL)<input class=\"in num\" data-f=\"now\" inputmode=\"decimal\" value=\"" + fmt(m.now) + "\" /></label></div>" : "") +
             (testActive(m) ? "<p class=\"m15-test\">Teste de star/held ativo: o dano das skills está ajustado por ele (marque “Mostrar papel, raridade, stars e held” para ver).</p>" : "") +
-            skillsHtml(m) + multBox +
+            (isPar() && !parIsPartial(idx) ? "" : skillsHtml(m)) + multBox +
             bruteRow +
             "<div class=\"prec-row\">" +
               "<label class=\"fld\">Precisão treino (pts)<input class=\"in num\" data-f=\"train\" inputmode=\"decimal\" value=\"" + fmt(m.train) + "\" /></label>" +
@@ -2342,6 +2373,8 @@
         { g: 1, txt: "Rot 3→4 · PARCIAL (guarda o ⚡)", short: "PARCIAL", cls: "parc" },
         { g: 1, txt: "Rot 4 · FULL", short: "FULL", cls: "full" }
       ];
+      // PARCIAL = 2º pokémon de cada par (rot 1→2 e rot 3→4): só ele precisa das skills
+      function parIsPartial(idx) { const k = parS().indexOf(idx); return k === 1 || k === 4; }
       function parSlotInfo(idx) {
         const k = parS().indexOf(idx);
         return { text: k >= 0 ? PAR_SLOT[k].txt : "Pokémon " + (idx + 1), cls: "slot" + (k >= 0 && PAR_SLOT[k].cls === "full" ? " dmg" : "") };
@@ -2406,13 +2439,14 @@
         g.best = best;
         g.maximin = best ? Math.min(best.rotA, best.rotB) : 0;
         g.hz = best ? hzOf(g.maximin) : -1;
-        // n = dano que cada rotação precisa: rotA fecha com o MENOR dano possível; o resto vai para rotB
+        // n = dano que cada rotação precisa: rotA fecha com o MENOR número de skills; o resto vai para rotB
         g.pick = function (n) {
           if (n == null) return best;
           let b = null;
           g.opts.forEach(function (x) {
             if (x.rotA < n || x.rotB < n) return;
-            if (!b || x.dA < b.dA || (x.dA === b.dA && x.A.length < b.A.length)) b = x;
+            // menos skills na 1ª rotação (comando curto); empate: o menor dano, que deixa mais para a 2ª
+            if (!b || x.A.length < b.A.length || (x.A.length === b.A.length && x.dA < b.dA)) b = x;
           });
           return b || best;
         };
@@ -2443,6 +2477,7 @@
       }
       // comando do FULL: todas as skills anotadas (stun primeiro); sem skills, não dá para montar
       function fullSeq(pi) {
+        if (isPar()) return []; // FULL solta o combo completo: sem skills nem comando
         const sk = monSkills(state.mons[pi], pi);
         return parSeq(sk, pokeDamage(sk), true);
       }
@@ -2496,87 +2531,81 @@
       function paintPar() {
         const out = document.getElementById("rot-out");
         const res = rotResult();
+        if (!res) { out.innerHTML = ""; return; }
         const s = parS();
         const r = RUNES[state.rune];
         const t = totals();
         const off = official(state.rune, t);
-        const nm = function (pi) { return shortName(state.mons[pi]); };
-        const opts = function (k) {
-          return state.mons.map(function (m, i) { return "<option value=\"" + i + "\"" + (s[k] === i ? " selected" : "") + ">" + shortName(m) + "</option>"; }).join("");
-        };
-        const cfg = "<div class=\"par-cfg\">" + [0, 1].map(function (g) {
-          return "<div class=\"par-g\"><h4>Rotações " + (g * 2 + 1) + " e " + (g * 2 + 2) + "</h4>" + [0, 1, 2].map(function (j) {
-            const k = g * 3 + j;
-            return "<label class=\"par-sl\"><span>" + PAR_SLOT[k].txt + "</span><select class=\"in\" data-pslot=\"" + k + "\">" + opts(k) + "</select></label>";
-          }).join("") + "</div>";
-        }).join("") + "</div>";
-        if (!res) { out.innerHTML = cfg; return; }
         const ev = res.ev;
+        const nm = function (pi) { return shortName(state.mons[pi]); };
+        const hzNow = Math.max(off, 0);
+        const nNow = need(hzNow, state.rune);
         const nx = off + 1 < state.table.length ? off + 1 : -1;
-        const nxNeed = nx >= 0 ? need(nx, state.rune) : 0;
-        const L = [];
-        if (state.rot.pct !== 100) L.push("<p class=\"hint\">Meta por rotação: " + state.rot.pct + "% do dano do Hazard.</p>");
-        L.push("<p>Cada rotação precisa de <strong>" + fmt(Math.ceil(res.n)) + "</strong> no " + hzTxt(Math.max(ev.hd, 0)) + " (Runa " + r.id + "). A 1ª rotação de cada par fecha com o menor dano possível do PARCIAL; o resto vai para a 2ª.</p>");
-        if (ev.hd < 0) L.push("<p class=\"st-no\">Nem o Hazard 0 fecha nas 4 rotações com essa montagem.</p>");
-        [ev.A, ev.B].forEach(function (g) {
-          if (g.est) L.push("<p class=\"warnt\">" + nm(g.p) + " (PARCIAL) ainda não tem skills anotadas: a conta usa o combo completo dele (" + fmt(Math.round(g.P)) + ") dividido de forma ideal. Anote as skills e marque o ⚡ Stun para saber exatamente quais usar.</p>");
-          else {
-            if (!g.hasStun) L.push("<p class=\"warnt\">" + nm(g.p) + " (PARCIAL) não tem ⚡ Stun marcado: marque a skill de stun dele, que fica para abrir a rotação seguinte.</p>");
-            const full = monDmg(state.mons[g.p]);
-            if (full > 0 && Math.abs(g.P - full) / full > 0.03) L.push("<p class=\"hint\">" + nm(g.p) + ": soma das skills " + fmt(g.P) + " ≠ combo completo do card " + fmt(full) + ". A conta usa as skills.</p>");
-          }
-        });
-        if (nx >= 0 && ev.hd < nx && ev.hd >= 0) {
-          const lim = ev.A.hz <= ev.B.hz ? ev.A : ev.B;
-          L.push("<p>Próximo: " + hzTxt(nx) + " exige " + reqK(nx, state.rune) + "k em cada rotação. O par " + nm(lim.o) + " / " + nm(lim.p) + " / " + nm(lim.d) +
-            " chega no máximo a " + fmt(Math.round(lim.maximin)) + " na rotação mais fraca (falta " + kfmt(Math.max(0, nxNeed - lim.maximin)) + ").</p>");
+        const sel = function (k) {
+          return "<select class=\"in pr-sel\" data-pslot=\"" + k + "\" aria-label=\"" + PAR_SLOT[k].txt + "\">" + state.mons.map(function (m, i) {
+            return "<option value=\"" + i + "\"" + (s[k] === i ? " selected" : "") + ">" + shortName(m) + "</option>";
+          }).join("") + "</select>";
+        };
+        const fullRow = function (k, g) {
+          const pi = s[k], d = k % 3 === 0 ? g.fo : g.fd;
+          return "<div class=\"pr-row\"><span class=\"pr-n\">" + (k % 3 === 0 ? 1 : 2) + "</span>" + sel(k) +
+            "<span class=\"par-tag full\">FULL</span>" +
+            "<input class=\"in num pr-dmg\" data-pfull=\"" + pi + "\" inputmode=\"decimal\" value=\"" + (state.mons[pi].now > 0 ? fmt(state.mons[pi].now) : "") + "\" placeholder=\"dano do combo\" aria-label=\"Dano do combo de " + nm(pi) + "\" />" +
+            (d !== state.mons[pi].now && d > 0 ? "<span class=\"pr-sub\">conta " + fmt(d) + " (teste)</span>" : "") + "</div>";
+        };
+        const ok = function (v) {
+          return v + 1e-9 >= nNow ? "<span class=\"pr-ok\">✓</span>" : "<span class=\"pr-no\">✗ falta " + kfmt(nNow - v) + "</span>";
+        };
+        const pairs = [ev.A, ev.B].map(function (g, gi) {
+          const pk = res.picks[gi], ra = res.rots[gi * 2], rb = res.rots[gi * 2 + 1];
+          const kO = gi * 3, kP = kO + 1, kD = kO + 2;
+          const seqA = g.est ? [] : parSeq(pk.A, pk.pa, false);
+          const cmd = seqA.length ? comboCmd(seqA) : "";
+          let partA;
+          if (g.est) partA = "<div class=\"pr-note warn\">Anote as skills do " + nm(g.p) + " no card dele (abaixo) e marque o ⚡ Stun. Ele precisa dar ~" + kfmt(pk.dA) + " aqui.</div>";
+          else if (!g.hasStun) partA = "<div class=\"pr-note warn\">Marque o ⚡ Stun do " + nm(g.p) + " no card dele: ele fica para abrir a rotação " + (gi * 2 + 2) + ".</div>";
+          else partA = cmd
+            ? "<button type=\"button\" class=\"pr-cmd\" data-cmd=\"" + esc(cmd) + "\"><code>" + esc(cmd) + "</code><span class=\"rl-cp\">Copiar</span></button>"
+            : "<div class=\"pr-note\">Não precisa de skill: só lura.</div>";
+          const rotA = "<div class=\"pr" + (ra.tot + 1e-9 < nNow ? " bad" : "") + "\"><div class=\"pr-h\"><b>Rotação " + (gi * 2 + 1) + "</b><span class=\"pr-tot\">" + fmt(ra.tot) + " " + ok(ra.tot) + "</span></div>" +
+            fullRow(kO, g) +
+            "<div class=\"pr-row\"><span class=\"pr-n\">2</span>" + sel(kP) + "<span class=\"par-tag parc\">PARCIAL</span><span class=\"pr-d\">" + (g.est ? "~" : "") + fmt(pk.dA) + "</span></div>" +
+            partA + "</div>";
+          const rotB = "<div class=\"pr" + (rb.tot + 1e-9 < nNow ? " bad" : "") + "\"><div class=\"pr-h\"><b>Rotação " + (gi * 2 + 2) + "</b><span class=\"pr-tot\">" + fmt(rb.tot) + " " + ok(rb.tot) + "</span></div>" +
+            "<div class=\"pr-row\"><span class=\"pr-n\">1</span><span class=\"pr-fix\">" + nm(g.p) + "</span><span class=\"par-tag parc\">PARCIAL</span><span class=\"pr-d\">" + (g.est ? "~" : "") + fmt(pk.dB) + "</span></div>" +
+            "<div class=\"pr-note\">Abre com o ⚡ e usa todo o restante" + (!g.est && pk.B.length ? " (" + pk.B.map(function (x) { return "M" + (x.k + 1); }).join(", ") + ")" : "") + ".</div>" +
+            fullRow(kD, g) + "</div>";
+          return "<div class=\"pr-pair\">" + rotA + rotB + "</div>";
+        }).join("");
+        // resumo
+        let top = "<div class=\"par-top\"><div class=\"pt-big\" style=\"color:" + r.color + "\">" + (off < 0 ? "Abaixo do Hazard 0" : hzTxt(off)) + "</div>" +
+          "<div class=\"pt-txt\">Runa " + r.id + " · cada rotação precisa de <b>" + fmt(Math.ceil(nNow)) + "</b>";
+        if (nx >= 0) {
+          const lim = ev.A.maximin <= ev.B.maximin ? ev.A : ev.B;
+          top += "<br>" + hzTxt(nx) + " pede " + reqK(nx, state.rune) + "k: o par " + nm(lim.o) + " / " + nm(lim.p) + " / " + nm(lim.d) + " chega a " + kfmt(lim.maximin) + (lim.maximin < need(nx, state.rune) ? " (falta " + kfmt(need(nx, state.rune) - lim.maximin) + ")" : "");
         }
         const pCap = precCap(state.mons);
-        if (pCap < ev.hd) L.push("<p class=\"st-no\">A precisão segura em " + hzTxt(pCap) + " (veja a seção de precisão).</p>");
-        const line = function (pi, tag, cls, d, seq, sub) {
-          const cmd = seq.length ? comboCmd(seq) : "";
-          const toks = seq.map(function (x) { return "<span class=\"rk" + (x.cc ? " cc" : "") + (x.buff ? " bf" : "") + "\">M" + (x.k + 1) + (x.cc ? (x.sil ? " 🔇" : " ⚡") : "") + (x.buff ? " ▲" : "") + "</span>"; }).join("");
-          const inner = "<span class=\"pl-top\"><span><b>" + nm(pi) + "</b><span class=\"par-tag " + cls + "\">" + tag + "</span></span><span class=\"pl-d\">" + fmt(Math.round(d)) + "</span></span>" +
-            (toks ? "<span class=\"rl-toks\">" + toks + "</span>" : "") + (sub ? "<div class=\"pl-sub\">" + sub + "</div>" : "") + (cmd ? "<code class=\"rl-cmd\">" + esc(cmd) + "</code>" : "");
-          return cmd ? "<button type=\"button\" class=\"rl rl-copy par-line\" data-cmd=\"" + esc(cmd) + "\" title=\"Copiar comando\">" + inner + "</button>" : "<div class=\"par-line\">" + inner + "</div>";
-        };
-        const cards = [];
-        [ev.A, ev.B].forEach(function (g, gi) {
-          const pk = res.picks[gi];
-          const ra = res.rots[gi * 2], rb = res.rots[gi * 2 + 1];
-          const subA = g.est ? "precisa de ~" + fmt(pk.dA) + " dele (estimativa)" : pk.A.length ? "lura e usa só estas; o ⚡ fica para a próxima" : "não precisa usar nada: só lura";
-          const subB = g.est ? "~" + fmt(pk.dB) + " restantes (estimativa)" : "abre com o ⚡ e solta o resto";
-          const card = function (ro, idx, l1, l2) {
-            const h = hzOf(ro.tot);
-            return "<div class=\"rc" + (ro.tot === res.min ? " weak" : "") + (ro.noStun ? " notank" : "") + "\"><div class=\"rc-h\"><span>Rotação " + (idx + 1) + "</span><span class=\"rc-cc\">⚡ stun</span></div>" +
-              (ro.noStun ? "<div class=\"rc-tk\">⚠ sem ⚡ stun do PARCIAL para abrir</div>" : "") +
-              "<div class=\"rc-d\">" + fmt(ro.tot) + "</div><div class=\"rc-hz\" style=\"color:" + r.color + "\">" + hzTxt(h) + "</div>" +
-              (idx % 2 === 1 && nx >= 0 && ro.tot < nxNeed ? "<div class=\"rc-f\">falta " + kfmt(nxNeed - ro.tot) + " p/ Hazard " + nx + "</div>" : "") + l1 + l2 + "</div>";
-          };
-          const fseqO = res.rots[gi * 2].seqs[0].seq, fseqD = res.rots[gi * 2 + 1].seqs[1].seq;
-          cards.push(card(ra, gi * 2, line(g.o, "FULL", "full", g.fo, fseqO, fseqO.length ? "abre com o ⚡ e solta tudo" : "abre com o ⚡ e solta o combo completo"),
-            line(g.p, "PARCIAL", "parc", pk.dA, g.est ? [] : parSeq(pk.A, pk.pa, false), subA)));
-          cards.push(card(rb, gi * 2 + 1, line(g.p, "PARCIAL", "parc", pk.dB, g.est ? [] : parSeq(pk.B, pk.pb, true), subB),
-            line(g.d, "FULL", "full", g.fd, fseqD, "combo completo")));
-        });
+        if (pCap < ev.hd) top += "<br><span class=\"pr-no\">A precisão segura em " + hzTxt(pCap) + ".</span>";
+        if (state.rot.pct !== 100) top += "<br>Meta: " + state.rot.pct + "% do dano do Hazard.";
+        top += "</div></div>";
         let sug = "";
         const sg = parSuggest();
         if (sg) {
           const b = sg.best, c = sg.cur;
-          const desc = function (e) {
-            return [0, 3].map(function (k) { return "<li>Rot " + (k ? "3–4" : "1–2") + ": <b>" + nm(e.s[k]) + "</b> FULL + <b>" + nm(e.s[k + 1]) + "</b> PARCIAL + <b>" + nm(e.s[k + 2]) + "</b> FULL</li>"; }).join("");
-          };
-          sug = "<div class=\"par-sug\"><strong>Montagem melhor encontrada</strong> (mesmos 4 que seguram e mesmos 2 de dano):<ol>" + desc(b) + "</ol>" +
-            (b.hd > c.hd ? "Sobe de " + hzTxt(c.hd) + " para <b>" + hzTxt(b.hd) + "</b>. " : "O Hazard não muda (" + hzTxt(b.hd) + "), mas a rotação mais fraca sobe de " + fmt(Math.round(c.mm)) + " para <b>" + fmt(Math.round(b.mm)) + "</b> (+" + kfmt(b.mm - c.mm) + " de folga). ") +
-            ((b.A.est || b.B.est) ? "<span class=\"hint\">Estimativa: falta anotar skills de algum PARCIAL.</span> " : "") +
-            "<button type=\"button\" class=\"btn\" data-par-apply=\"" + b.s.join(",") + "\">Usar esta montagem</button></div>";
+          const desc = function (k) { return nm(b.s[k]) + " + " + nm(b.s[k + 1]) + " → " + nm(b.s[k + 1]) + " + " + nm(b.s[k + 2]); };
+          sug = "<div class=\"par-sug\"><div><b>Ordem melhor:</b> " + desc(0) + " · " + desc(3) + "<br><span class=\"pr-sub\">" +
+            (b.hd > c.hd ? "sobe para " + hzTxt(b.hd) : "mesmo Hazard, +" + kfmt(b.mm - c.mm) + " de folga na rotação mais fraca") + ((b.A.est || b.B.est) ? " · estimativa" : "") + "</span></div>" +
+            "<button type=\"button\" class=\"btn\" data-par-apply=\"" + b.s.join(",") + "\">Usar</button></div>";
         }
-        const all = [];
-        res.rots.forEach(function (ro, i) { ro.seqs.forEach(function (sq) { if (sq.seq.length) all.push("Rot " + (i + 1) + " " + (state.mons[sq.p].name || "") + ": " + comboCmd(sq.seq)); }); });
-        const allBox = all.length ? "<div class=\"rot-all\"><div class=\"rot-all-h\"><strong>Comandos</strong><button type=\"button\" class=\"btn\" id=\"copy-all\" data-all=\"" + esc(all.join("\n")) + "\">Copiar todos</button></div><pre>" + esc(all.join("\n")) + "</pre></div>" : "";
+        [ev.A, ev.B].forEach(function (g) {
+          const full = monDmg(state.mons[g.p]);
+          if (!g.est && full > 0 && Math.abs(g.P - full) / full > 0.03) sug += "<p class=\"hint\">" + nm(g.p) + ": a soma das skills (" + fmt(g.P) + ") não bate com o dano do combo dele (" + fmt(full) + "). A conta usa as skills.</p>";
+        });
         const stt = document.getElementById("rot-sticky-txt");
-        if (stt) stt.innerHTML = "<b style=\"color:" + r.color + "\">" + hzTxt(off) + "</b> · rotação mais fraca <b>" + kfmt(res.min) + "</b>" + (nx >= 0 && res.min < nxNeed ? " · faltam " + kfmt(nxNeed - res.min) + " p/ Hazard " + nx : "");
-        out.innerHTML = cfg + "<div class=\"rot-det\">" + L.join("") + "</div>" + sug + "<div class=\"rot-cards\">" + cards.join("") + "</div>" + allBox;
+        if (stt) stt.innerHTML = "<b style=\"color:" + r.color + "\">" + hzTxt(off) + "</b> · rotação mais fraca <b>" + kfmt(res.min) + "</b>";
+        const ae = document.activeElement, keep = ae && ae.getAttribute && ae.getAttribute("data-pfull");
+        out.innerHTML = top + sug + "<div class=\"pr-grid\">" + pairs + "</div>";
+        if (keep) { const n = out.querySelector("[data-pfull=\"" + keep + "\"]"); if (n) { n.focus(); n.select(); } }
       }
       let ROTCACHE = null, ROTKEY = "", ROTMEMO = null;
       function rotResult() {
@@ -3476,6 +3505,17 @@
         ev.target.value = sk.bd ? fmt(sk.bd) : "";
       });
       document.getElementById("rot-out").addEventListener("change", function (ev) {
+        const fi = ev.target.closest("input[data-pfull]");
+        if (fi) {
+          const v = parseNum(fi.value);
+          const m = state.mons[Number(fi.getAttribute("data-pfull"))];
+          if (!m || !Number.isFinite(v)) { fi.classList.add("invalid"); return; }
+          m.now = v;
+          save();
+          buildRoster();
+          paint();
+          return;
+        }
         const sel = ev.target.closest("select[data-pslot]");
         if (!sel) return;
         parSetSlot(Number(sel.getAttribute("data-pslot")), Number(sel.value));
