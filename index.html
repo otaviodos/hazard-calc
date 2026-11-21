@@ -485,7 +485,7 @@
 
       /* Barra de ferramentas da seção 2 em grade */
       section.card > .head > .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
-      .tools > .fmt-switch, .tools > .seg, .tools > .chk { grid-column: 1 / -1; }
+      .tools > .fmt-switch, .tools > .seg, .tools > .chk, .tools > .fmt-seg, .tools > .dmg-medal { grid-column: 1 / -1; }
       .fmt-switch { justify-content: center; }
       .tools > .seg { display: grid; grid-template-columns: 1fr 1fr; }
       .tools > .seg label { justify-content: center; }
@@ -623,6 +623,11 @@
     .teams-grid.f15 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     body.fmt-15 .mon { cursor: default; }
     .rot-panel { margin-bottom: 14px; }
+    .dmg-medal { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; color: var(--gold); padding: 4px 6px 4px 10px; border: 1px solid var(--line-strong); border-radius: 10px; }
+    .dmg-medal .in { width: 64px; min-height: 32px; text-align: right; }
+    .dmg-medal span { color: var(--muted); }
+    .eff-medal { font-size: 0.75rem; color: var(--gold); margin-top: 2px; }
+    @media (max-width: 760px) { .dmg-medal { width: 100%; justify-content: space-between; } .fmt-seg { width: 100%; min-width: 0; } }
     /* ===== 1.5× par (full + parcial) ===== */
     .par-only { display: none; }
     body.fmt-par .par-only { display: block; }
@@ -969,6 +974,8 @@
             <button type="button" role="radio" data-fmt="1.5">1.5×<small>rotações por skill</small></button>
             <button type="button" role="radio" data-fmt="1.5p">1.5× par<small>full + parcial</small></button>
           </div>
+          <label class="dmg-medal" title="Simula uma medalha de dano: soma essa % ao dano de todos os pokémon (o dano que você anotou é sem ela)">▲ Medalha de dano
+            <input class="in num" id="dmgMedalIn" inputmode="decimal" aria-label="Medalha de dano, em %" /><span>%</span></label>
           <button type="button" class="btn" id="toggle-cand" aria-pressed="false" aria-controls="cand-col">+ Testar Pokémon novo</button>
           <label class="chk"><input type="checkbox" id="useTests" />Considerar testes (stars e held)</label>
           <button type="button" class="btn" id="clear-tests">Limpar testes</button>
@@ -1203,7 +1210,7 @@
       function freshMons() {
         return clone(DEFAULT_MONS).map(function (m, i) { m.id = "m" + (i + 1); m.t2 = m.team; m.t3 = i < 3 ? 0 : 1; return m; });
       }
-      const state = { rune: 5, basis: "agora", format: "2x2x2", teamPct: [0, 0, 0], useTests: true, showCand: false, rot: { n: 5, maxP: 2, pct: 100, det: false }, medal: 2.5, base: 560, step: 3, mons: freshMons(), cand: freshCand(), table: clone(DEFAULT_TABLE), par: null };
+      const state = { rune: 5, basis: "agora", format: "2x2x2", teamPct: [0, 0, 0], useTests: true, showCand: false, rot: { n: 5, maxP: 2, pct: 100, det: false }, medal: 2.5, dmgMedal: 0, base: 560, step: 3, mons: freshMons(), cand: freshCand(), table: clone(DEFAULT_TABLE), par: null };
 
       const el = {
         runes: document.getElementById("runes"),
@@ -1237,6 +1244,7 @@
           else if (d.par && okI(d.par.s) && d.par.s.length === 6) state.par = { role: fromTk([d.par.s[0], d.par.s[1], d.par.s[3], d.par.s[4]], [d.par.s[1], d.par.s[4]]) };
           if (typeof d.showCand === "boolean") state.showCand = d.showCand;
           state.medal = precNum(d.medal, state.medal);
+          state.dmgMedal = Number.isFinite(Number(d.dmgMedal)) && Number(d.dmgMedal) >= 0 && Number(d.dmgMedal) <= 200 ? Number(d.dmgMedal) : 0;
           if (Array.isArray(d.teamPct) && d.teamPct.length === 3) {
             state.teamPct = d.teamPct.map(function (v) { v = Number(v); return Number.isFinite(v) && v >= 0 && v <= 1000 ? v : 0; });
           }
@@ -1330,9 +1338,11 @@
         return Math.round(d * testRatio(m));
       }
       // página Efetividade: aplica o multiplicador do pokémon
+      // Medalha de dano (teste): +X% no dano de todos os pokémon
+      function medalF() { return 1 + (state.dmgMedal > 0 ? state.dmgMedal : 0) / 100; }
       function monDmg(m) {
-        const n = neutralDmg(m);
-        return isEff() ? Math.round(n * multNum(m.mult)) : n;
+        const n = neutralDmg(m) * medalF();
+        return Math.round(isEff() ? n * multNum(m.mult) : n);
       }
       function multTxt(v) { return "×" + Number(v).toLocaleString("pt-BR", { maximumFractionDigits: 2 }); }
       function effHtml(m) {
@@ -1351,8 +1361,11 @@
         } else {
           html = (isEff() ? "neutro " : "dano usado ") + "<strong>" + fmt(base) + "</strong>";
         }
+        if (state.dmgMedal > 0) {
+          html += "<div class=\"eff-medal\">+ medalha de dano " + fmt(state.dmgMedal) + "% = <strong>" + fmt(Math.round(nd * medalF())) + "</strong></div>";
+        }
         if (isEff()) {
-          html += "<div class=\"eff-mult\">" + fmt(nd) + " " + multTxt(multNum(m.mult)) + " = <strong>" + fmt(monDmg(m)) + "</strong></div>";
+          html += "<div class=\"eff-mult\">" + fmt(Math.round(nd * medalF())) + " " + multTxt(multNum(m.mult)) + " = <strong>" + fmt(monDmg(m)) + "</strong></div>";
         }
         return { cls: cls, html: html };
       }
@@ -2217,7 +2230,7 @@
       }
       // fator do card: efetividade (aba Efetividade) e testes de star/held aplicados ao dano das skills
       function skillFactor(m) {
-        let f = isEff() ? multNum(m.mult) : 1;
+        let f = (isEff() ? multNum(m.mult) : 1) * medalF();
         if (testActive(m)) f *= testRatio(m);
         return f;
       }
@@ -2965,6 +2978,7 @@
         document.getElementById("stepIn").value = fmt(state.step);
         document.getElementById("maxHzIn").value = String(state.table.length - 1);
         document.getElementById("medalIn").value = fmt(state.medal);
+        document.getElementById("dmgMedalIn").value = fmt(state.dmgMedal);
       }
 
       el.runes.addEventListener("click", function (ev) {
@@ -3185,6 +3199,7 @@
         state.format = "2x2x2";
         state.useTests = true;
         state.medal = 2.5;
+        state.dmgMedal = 0;
         state.base = 560;
         state.step = 3;
         state.rot = { n: 5, maxP: 2, pct: 100, det: false };
@@ -3286,6 +3301,7 @@
         inp.addEventListener("focus", function () { inp.select(); });
       }
       bindNum("medalIn", function (v) { state.medal = v; }, function () { return fmt(state.medal); });
+      bindNum("dmgMedalIn", function (v) { state.dmgMedal = v == null ? 0 : Math.min(200, v); }, function () { return fmt(state.dmgMedal); }, true);
 
       function setShowCand(v) {
         state.showCand = v;
