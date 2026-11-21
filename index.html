@@ -730,6 +730,11 @@
     .sk-recv { margin-top: 6px; padding-left: 38px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 0.78rem; color: #C4B5FD; font-weight: 700; }
     .sk-recv label { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-weight: 600; }
     .sk-recv .in { width: 110px; min-height: 30px; padding: 2px 6px; }
+    .sk-ba { color: var(--muted); font-weight: 600; }
+    .sk-ba b { color: var(--text); font-variant-numeric: tabular-nums; }
+    .sk-recv.miss .in { border-color: #F87171; }
+    .sk-req { flex-basis: 100%; color: #FCA5A5; font-weight: 700; }
+    .sk-in:disabled { opacity: .55; cursor: not-allowed; }
     .rl-copy { display: flex; flex-direction: column; align-items: stretch; gap: 4px; width: 100%; text-align: left; margin-top: 6px; padding: 8px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--panel); color: inherit; font: inherit; cursor: pointer; transition: border-color .18s, background-color .18s; }
     .rl-copy:hover { border-color: var(--gold); }
     .rl-copy:focus-visible { outline: 2px solid var(--ring, #93C5FD); outline-offset: 2px; }
@@ -1529,6 +1534,16 @@
           "<button type=\"button\" class=\"sk-bx\" data-bpick=\"" + m.id + ":" + k + "\">trocar</button></div>";
       }
       // linha da skill que recebe o buff (e o botão para escolher quando um buff está esperando)
+      // primeira skill buffada sem o dano antes/depois ("M7"), ou ""
+      function buffMissing(m) {
+        let out = "";
+        m.skills.forEach(function (x, j) {
+          if (out || x.t !== "buff") return;
+          const tg = buffTarget(m, j);
+          if (tg >= 0 && (!(x.bd > 0) || !(m.skills[tg].d > 0))) out = "M" + (tg + 1);
+        });
+        return out;
+      }
       function buffRecvHtml(m, k) {
         if (m.skills[k].t === "buff") return "";
         if (BUFFPICK && BUFFPICK.id === m.id && BUFFPICK.k !== k) {
@@ -1537,9 +1552,12 @@
         }
         const from = m.skills.findIndex(function (x, j) { return x.t === "buff" && buffTarget(m, j) === k; });
         if (from < 0) return "";
-        const b = m.skills[from];
-        return "<div class=\"sk-recv\"><span>▲ buffada pela M" + (from + 1) + "</span>" +
-          "<label>dano com buff<input class=\"in num\" data-skbd=\"" + m.id + ":" + from + "\" inputmode=\"decimal\" placeholder=\"opcional\" aria-label=\"Dano da M" + (k + 1) + " com o buff\" value=\"" + (b.bd ? fmt(b.bd) : "") + "\" /></label></div>";
+        const b = m.skills[from], cur = m.skills[k];
+        const miss = !(b.bd > 0) || !(cur.d > 0);
+        return "<div class=\"sk-recv" + (miss ? " miss" : "") + "\"><span>▲ buffada pela M" + (from + 1) + "</span>" +
+          "<span class=\"sk-ba\">antes <b>" + (cur.d > 0 ? fmt(cur.d) : "anote acima") + "</b></span>" +
+          "<label>depois<input class=\"in num\" data-skbd=\"" + m.id + ":" + from + "\" inputmode=\"decimal\" placeholder=\"obrigatório\" aria-label=\"Dano da M" + (k + 1) + " depois do buff\" value=\"" + (b.bd ? fmt(b.bd) : "") + "\" /></label>" +
+          (miss ? "<span class=\"sk-req\">anote o dano antes e depois do buff</span>" : "") + "</div>";
       }
 
       // quantas skills mostrar: as preenchidas + a próxima vazia
@@ -1561,7 +1579,7 @@
           const recv = buffRecvHtml(m, k);
           return "<div class=\"sk t-" + tp + (recv ? " recv" : "") + (k >= vis ? " sk-hid" : "") + "\" data-ski=\"" + k + "\" data-skrow=\"" + m.id + ":" + k + "\">" +
             "<div class=\"sk-row\"><label class=\"sk-l\" for=\"" + id + "\">M" + (k + 1) + "</label>" +
-            "<input class=\"in num sk-in\" id=\"" + id + "\" data-sk=\"" + m.id + ":" + k + "\" inputmode=\"decimal\" enterkeyhint=\"next\" placeholder=\"dano\" value=\"" + (sk.d ? fmt(sk.d) : "") + "\" />" +
+            "<input class=\"in num sk-in\" id=\"" + id + "\" data-sk=\"" + m.id + ":" + k + "\" inputmode=\"decimal\" enterkeyhint=\"next\" placeholder=\"" + (tp === "buff" ? "buff: sem dano" : "dano") + "\" value=\"" + (sk.d && tp !== "buff" ? fmt(sk.d) : "") + "\"" + (tp === "buff" ? " disabled" : "") + " />" +
             "<span class=\"sk-tg\">" + tb("cc", "⚡<span class=\"tbl\"> Stun</span>", "stun") + tb("sil", "🔇<span class=\"tbl\"> Silence</span>", "silence") + tb("buff", "▲<span class=\"tbl\"> Buff</span>", "buff") + "</span>" +
             "<button type=\"button\" class=\"sk-del\" data-skdel=\"" + m.id + ":" + k + "\" aria-label=\"Apagar M" + (k + 1) + "\" title=\"Apagar M" + (k + 1) + "\">×</button></div>" +
             (tp === "buff" ? buffTestHtml(m, k) : recv) +
@@ -2140,7 +2158,7 @@
         state.mons.forEach(function (m, pi) {
           const f = skillFactor(m);
           m.skills.forEach(function (sk, k) {
-            const d = sk.d > 0 ? Math.round(sk.d * f) : 0;
+            const d = sk.d > 0 && sk.t !== "buff" ? Math.round(sk.d * f) : 0;
             const isBuff = sk.t === "buff";
             const isCC = sk.t === "cc" || sk.t === "sil";
             const bt = isBuff ? buffTarget(m, k) : -1;
@@ -2441,7 +2459,7 @@
       function monSkills(m, pi) {
         const f = skillFactor(m), out = [];
         m.skills.forEach(function (sk, k) {
-          const d = sk.d > 0 ? Math.round(sk.d * f) : 0;
+          const d = sk.d > 0 && sk.t !== "buff" ? Math.round(sk.d * f) : 0;
           const isBuff = sk.t === "buff";
           const bt = isBuff ? buffTarget(m, k) : -1;
           const bx = isBuff && bt >= 0 && sk.bd > 0 && m.skills[bt].d > 0 && sk.bd > m.skills[bt].d ? Math.round((sk.bd - m.skills[bt].d) * f) : 0;
@@ -2606,6 +2624,7 @@
           let noteA;
           if (g.est) noteA = "<div class=\"pr-note warn\">Falta anotar as skills do " + nm(g.p) + " (passo 4): por enquanto é estimativa.</div>";
           else if (!g.hasStun) noteA = "<div class=\"pr-note warn\">Marque o ⚡ Stun do " + nm(g.p) + " (passo 4).</div>";
+          else if (buffMissing(state.mons[g.p])) noteA = "<div class=\"pr-note warn\">" + nm(g.p) + ": falta o dano antes e depois do buff da " + buffMissing(state.mons[g.p]) + " (passo 4). Sem isso a conta não soma o buff.</div>";
           else noteA = cmd ? "<button type=\"button\" class=\"pr-cmd\" data-cmd=\"" + esc(cmd) + "\"><code>" + esc(cmd) + "</code><span class=\"rl-cp\">Copiar</span></button>"
             : "<div class=\"pr-note\">Não usa skill aqui: só lura.</div>";
           const head = function (ro, i) { return "<div class=\"pr-h\"><b>Rotação " + (i + 1) + "</b><span class=\"pr-tot\">" + fmt(ro.tot) + " " + hzB(ro.tot) + "</span></div>"; };
@@ -2660,7 +2679,7 @@
         state.mons.forEach(function (m) {
           const n = document.querySelector("[data-sksum=\"" + m.id + "\"]");
           if (!n) return;
-          const sum = m.skills.reduce(function (a, x) { return a + (x.d || 0); }, 0);
+          const sum = m.skills.reduce(function (a, x) { return a + (x.t === "buff" ? 0 : x.d || 0); }, 0);
           const cnt = m.skills.filter(function (x) { return x.d > 0 || x.t === "buff"; }).length;
           const f = skillFactor(m);
           const used = m.skills.reduce(function (a, x) { return a + (x.d > 0 ? Math.round(x.d * f) : 0); }, 0);
@@ -3435,7 +3454,11 @@
         const nums = txt.split(/[\s;|\/]+|,\s+/).map(function (x) { return parseNum(x); }).filter(function (v) { return Number.isFinite(v) && v > 0; });
         if (nums.length < 2) return;
         ev.preventDefault();
-        nums.forEach(function (v, i) { if (a.k + i < 9) a.m.skills[a.k + i].d = v; });
+        let at = a.k;
+        nums.forEach(function (v) {
+          while (at < 9 && a.m.skills[at].t === "buff") at++; // buff não tem dano: pula
+          if (at < 9) a.m.skills[at++].d = v;
+        });
         save();
         buildRoster();
         paint();
@@ -3490,6 +3513,7 @@
         if (!m) return;
         const sk = m.skills[Number(pr[1])];
         sk.t = sk.t === pr[2] ? "n" : pr[2];
+        if (sk.t === "buff") sk.d = null; // buff não dá dano
         if (sk.t === "buff" && buffTarget(m, Number(pr[1])) < 0) BUFFPICK = { id: m.id, k: Number(pr[1]) };
         else if (BUFFPICK && BUFFPICK.id === m.id && BUFFPICK.k === Number(pr[1])) BUFFPICK = null;
         save();
@@ -3576,6 +3600,14 @@
         if (!sk.bt && sk.bt !== 0) sk.bt = buffTarget(a.m, a.k) >= 0 ? buffTarget(a.m, a.k) : null;
         const lab = document.querySelector("[data-skbp=\"" + a.m.id + ":" + a.k + "\"]");
         if (lab) lab.textContent = buffLabel(a.m, a.k);
+        const rv = ev.target.closest(".sk-recv");
+        if (rv) {
+          const tg = buffTarget(a.m, a.k);
+          const ok = sk.bd > 0 && tg >= 0 && a.m.skills[tg].d > 0;
+          rv.classList.toggle("miss", !ok);
+          const rq = rv.querySelector(".sk-req");
+          if (rq) rq.hidden = ok;
+        }
         save();
         paintSoon();
       });
