@@ -629,6 +629,8 @@
     body.fmt-par .par-hide, body.fmt-par .role15 { display: none !important; }
     .par-how { margin: 0 0 12px; font-size: 0.88rem; line-height: 1.55; max-width: 110ch; }
     .par-top { display: flex; align-items: center; gap: 8px 18px; flex-wrap: wrap; margin-bottom: 12px; padding: 12px 14px; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--sunken); }
+    .pt-lab { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+    .pr-hz { font-size: 0.8rem; font-weight: 700; margin-left: 4px; }
     .pt-big { font-size: 1.9rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1; }
     .pt-txt { font-size: 0.86rem; line-height: 1.5; color: var(--muted); }
     .pt-txt b { color: var(--text); }
@@ -849,7 +851,7 @@
           <label class="chk"><input type="checkbox" id="rotDet" />Mostrar raridade, stars e held nos cards</label>
         </div>
         <div class="dev-note par-hide" role="note"><span class="dev-tag">Em desenvolvimento</span><span>O formato 1.5× ainda está sendo ajustado e pode ter erros. Sugestões ou problemas? Fale no Discord com <b class="dev-user">Otavio5885</b>.</span></div>
-        <p class="par-how par-only">4 rotações de 2 pokémon. Escolha os pokémon em cada rotação e digite o dano do combo dos <b>FULL</b>. No <b>PARCIAL</b>, anote o dano de cada skill no card dele (abaixo) e marque o ⚡ Stun: a calculadora diz quais skills ele usa na 1ª rotação (com o comando para copiar); na 2ª ele abre com o ⚡ e usa todo o restante.</p>
+        <p class="par-how par-only">4 rotações de 2 pokémon. Escolha os pokémon em cada rotação e digite o dano do combo dos <b>FULL</b>. No <b>PARCIAL</b>, anote o dano de cada skill no card dele (abaixo) e marque o ⚡ Stun: a calculadora divide as skills dele entre as duas rotações do par para as duas ficarem o mais fortes possível e mostra até que Hazard as 4 rotações chegam. Na 1ª ele usa o comando para copiar; na 2ª abre com o ⚡ e usa todo o restante.</p>
         <ol class="rot-steps par-hide">
           <li><b>Anote</b> o dano de cada skill nos cards abaixo. Enter vai para a próxima; dá para colar vários números de uma vez.</li>
           <li>Marque <b>⚡ Stun</b>, <b>🔇 Silence</b> e <b>▲ Buff</b>. No buff, escolha a skill que ele aumenta e anote quanto ela passa a dar.</li>
@@ -2433,8 +2435,8 @@
           const pa = pokeDamage(A), pb = pokeDamage(B);
           const o2 = { A: A, B: B, pa: pa, pb: pb, dA: pa.tot, dB: pb.tot, rotA: fo + pa.tot, rotB: fd + pb.tot, stunB: stunB };
           g.opts.push(o2);
-          const mm = Math.min(o2.rotA, o2.rotB);
-          if (!best || mm > Math.min(best.rotA, best.rotB)) best = o2;
+          const mm = Math.min(o2.rotA, o2.rotB), bm = best ? Math.min(best.rotA, best.rotB) : -1;
+          if (!best || mm > bm || (mm === bm && A.length < best.A.length)) best = o2;
         }
         g.best = best;
         g.maximin = best ? Math.min(best.rotA, best.rotB) : 0;
@@ -2464,7 +2466,7 @@
         const groups = [ev.A, ev.B];
         const rots = [], picks = [];
         groups.forEach(function (g) {
-          const pk = g.pick(n);
+          const pk = g.pick(null); // divisão que deixa a rotação mais fraca do par o mais forte possível
           picks.push(pk);
           const full = function (pi) { return { p: pi, k: -1, d: fullDmg(state.mons[pi]), full: true }; };
           rots.push({ tot: pk.rotA, items: [full(g.o)].concat(pk.A.length ? pk.A : [{ p: g.p, k: -1, d: pk.dA }]), pairs: [], cc: 1, noTank: false, noStun: false,
@@ -2554,7 +2556,8 @@
             (d !== state.mons[pi].now && d > 0 ? "<span class=\"pr-sub\">conta " + fmt(d) + " (teste)</span>" : "") + "</div>";
         };
         const ok = function (v) {
-          return v + 1e-9 >= nNow ? "<span class=\"pr-ok\">✓</span>" : "<span class=\"pr-no\">✗ falta " + kfmt(nNow - v) + "</span>";
+          const h = hzOf(v);
+          return "<span class=\"pr-hz\" style=\"color:" + r.color + "\">" + (h < 0 ? "abaixo do Hz 0" : hzTxt(h)) + "</span>";
         };
         const pairs = [ev.A, ev.B].map(function (g, gi) {
           const pk = res.picks[gi], ra = res.rots[gi * 2], rb = res.rots[gi * 2 + 1];
@@ -2566,37 +2569,27 @@
           else if (!g.hasStun) partA = "<div class=\"pr-note warn\">Marque o ⚡ Stun do " + nm(g.p) + " no card dele: ele fica para abrir a rotação " + (gi * 2 + 2) + ".</div>";
           else partA = cmd
             ? "<button type=\"button\" class=\"pr-cmd\" data-cmd=\"" + esc(cmd) + "\"><code>" + esc(cmd) + "</code><span class=\"rl-cp\">Copiar</span></button>"
-            : "<div class=\"pr-note\">Não precisa de skill: só lura.</div>";
-          const rotA = "<div class=\"pr" + (ra.tot + 1e-9 < nNow ? " bad" : "") + "\"><div class=\"pr-h\"><b>Rotação " + (gi * 2 + 1) + "</b><span class=\"pr-tot\">" + fmt(ra.tot) + " " + ok(ra.tot) + "</span></div>" +
+            : "<div class=\"pr-note\">Não usa skill aqui: só lura (dividir não melhora o par).</div>";
+          const rotA = "<div class=\"pr" + (ra.tot === res.min ? " bad" : "") + "\"><div class=\"pr-h\"><b>Rotação " + (gi * 2 + 1) + "</b><span class=\"pr-tot\">" + fmt(ra.tot) + " " + ok(ra.tot) + "</span></div>" +
             fullRow(kO, g) +
             "<div class=\"pr-row\"><span class=\"pr-n\">2</span>" + sel(kP) + "<span class=\"par-tag parc\">PARCIAL</span><span class=\"pr-d\">" + (g.est ? "~" : "") + fmt(pk.dA) + "</span></div>" +
             partA + "</div>";
-          const rotB = "<div class=\"pr" + (rb.tot + 1e-9 < nNow ? " bad" : "") + "\"><div class=\"pr-h\"><b>Rotação " + (gi * 2 + 2) + "</b><span class=\"pr-tot\">" + fmt(rb.tot) + " " + ok(rb.tot) + "</span></div>" +
+          const rotB = "<div class=\"pr" + (rb.tot === res.min ? " bad" : "") + "\"><div class=\"pr-h\"><b>Rotação " + (gi * 2 + 2) + "</b><span class=\"pr-tot\">" + fmt(rb.tot) + " " + ok(rb.tot) + "</span></div>" +
             "<div class=\"pr-row\"><span class=\"pr-n\">1</span><span class=\"pr-fix\">" + nm(g.p) + "</span><span class=\"par-tag parc\">PARCIAL</span><span class=\"pr-d\">" + (g.est ? "~" : "") + fmt(pk.dB) + "</span></div>" +
             "<div class=\"pr-note\">Abre com o ⚡ e usa todo o restante" + (!g.est && pk.B.length ? " (" + pk.B.map(function (x) { return "M" + (x.k + 1); }).join(", ") + ")" : "") + ".</div>" +
             fullRow(kD, g) + "</div>";
           return "<div class=\"pr-pair\">" + rotA + rotB + "</div>";
         }).join("");
-        // resumo
-        let top = "<div class=\"par-top\"><div class=\"pt-big\" style=\"color:" + r.color + "\">" + (off < 0 ? "Abaixo do Hazard 0" : hzTxt(off)) + "</div>" +
-          "<div class=\"pt-txt\">Runa " + r.id + " · cada rotação precisa de <b>" + fmt(Math.ceil(nNow)) + "</b>";
-        if (nx >= 0) {
-          const lim = ev.A.maximin <= ev.B.maximin ? ev.A : ev.B;
-          top += "<br>" + hzTxt(nx) + " pede " + reqK(nx, state.rune) + "k: o par " + nm(lim.o) + " / " + nm(lim.p) + " / " + nm(lim.d) + " chega a " + kfmt(lim.maximin) + (lim.maximin < need(nx, state.rune) ? " (falta " + kfmt(need(nx, state.rune) - lim.maximin) + ")" : "");
-        }
+        // resumo: até onde as 4 rotações chegam
+        const wIdx = res.rots.findIndex(function (ro) { return ro.tot === res.min; });
+        let top = "<div class=\"par-top\"><div><div class=\"pt-lab\">Até onde chega</div><div class=\"pt-big\" style=\"color:" + r.color + "\">" + (off < 0 ? "Abaixo do Hazard 0" : hzTxt(off)) + "</div></div>" +
+          "<div class=\"pt-txt\">Runa " + r.id + " · rotação mais fraca: <b>Rotação " + (wIdx + 1) + "</b> com <b>" + fmt(res.min) + "</b>";
+        if (nx >= 0) top += "<br>" + hzTxt(nx) + " pede " + reqK(nx, state.rune) + "k por rotação: falta " + kfmt(Math.max(0, need(nx, state.rune) - res.min)) + " na rotação " + (wIdx + 1) + ".";
         const pCap = precCap(state.mons);
         if (pCap < ev.hd) top += "<br><span class=\"pr-no\">A precisão segura em " + hzTxt(pCap) + ".</span>";
         if (state.rot.pct !== 100) top += "<br>Meta: " + state.rot.pct + "% do dano do Hazard.";
         top += "</div></div>";
         let sug = "";
-        const sg = parSuggest();
-        if (sg) {
-          const b = sg.best, c = sg.cur;
-          const desc = function (k) { return nm(b.s[k]) + " + " + nm(b.s[k + 1]) + " → " + nm(b.s[k + 1]) + " + " + nm(b.s[k + 2]); };
-          sug = "<div class=\"par-sug\"><div><b>Ordem melhor:</b> " + desc(0) + " · " + desc(3) + "<br><span class=\"pr-sub\">" +
-            (b.hd > c.hd ? "sobe para " + hzTxt(b.hd) : "mesmo Hazard, +" + kfmt(b.mm - c.mm) + " de folga na rotação mais fraca") + ((b.A.est || b.B.est) ? " · estimativa" : "") + "</span></div>" +
-            "<button type=\"button\" class=\"btn\" data-par-apply=\"" + b.s.join(",") + "\">Usar</button></div>";
-        }
         [ev.A, ev.B].forEach(function (g) {
           const full = monDmg(state.mons[g.p]);
           if (!g.est && full > 0 && Math.abs(g.P - full) / full > 0.03) sug += "<p class=\"hint\">" + nm(g.p) + ": a soma das skills (" + fmt(g.P) + ") não bate com o dano do combo dele (" + fmt(full) + "). A conta usa as skills.</p>";
