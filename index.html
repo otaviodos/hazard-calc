@@ -2444,7 +2444,7 @@
           g.hz = hzOf(g.maximin);
           return g;
         }
-        g.P = sk.reduce(function (a, x) { return a + x.d; }, 0);
+        g.P = pokeDamage(sk).tot; // soma das skills + o extra do buff na skill buffada
         g.hasStun = sk.some(function (x) { return x.cc; });
         const L = sk.length;
         let best = null;
