@@ -958,7 +958,7 @@
         <h1>Calculadora de Hazard</h1>
         <p class="credit">Criado por <strong>Morthus</strong> · Titan 3 Server</p>
         <p class="visit-stats" id="visit-stats" hidden>
-          <span class="vs-i" title="Pessoas diferentes que já abriram a página (uma vez por navegador)">👁 <b id="vs-total">–</b> visitantes</span>
+          <span class="vs-i" title="Pessoas diferentes que já abriram a página (uma vez por navegador)">👁 <b id="vs-total">–</b> visitantes</span> <span class="vs-sep" aria-hidden="true">·</span>
           <span class="vs-i vs-on" title="Pessoas com a página aberta nos últimos 2 a 4 minutos"><i class="vs-dot" aria-hidden="true"></i><b id="vs-online">–</b> online agora</span>
         </p>
         <div class="data-tools">
@@ -3914,11 +3914,14 @@
         document.getElementById("vs-total").textContent = fmtN(Math.max(v, 1));
         box.hidden = false;
       });
-      let marked = -1;
+      // o intervalo já marcado fica salvo no navegador: F5 ou outra aba não contam de novo
+      const getMarked = function () { try { return Number(localStorage.getItem("hazard-calc:online-b")); } catch (e) { return -1; } };
+      const setMarked = function (b) { try { localStorage.setItem("hazard-calc:online-b", String(b)); } catch (e) { /* sem storage */ } };
       function beat() {
         const b = Math.floor(Date.now() / B);
-        const cur = marked === b ? call("get", "on-" + b) : call("hit", "on-" + b);
-        marked = b;
+        const first = getMarked() !== b;
+        if (first) setMarked(b);
+        const cur = call(first ? "hit" : "get", "on-" + b);
         Promise.all([cur, call("get", "on-" + (b - 1))]).then(function (r) {
           if (r[0] == null && r[1] == null) return;
           document.getElementById("vs-online").textContent = fmtN(Math.max(r[0] || 0, r[1] || 0, 1));
