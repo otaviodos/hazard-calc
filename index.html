@@ -627,6 +627,30 @@
     .dmg-medal .in { width: 64px; min-height: 32px; text-align: right; }
     .dmg-medal span { color: var(--muted); }
     .eff-medal { font-size: 0.75rem; color: var(--gold); margin-top: 2px; }
+    .adj-row.adj-t { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+    .adj-t > .pr-name { flex: 0 0 170px; }
+    .adj-g select.in { width: auto; }
+    .adj-g .stars { display: inline-flex; }
+    .adj-g { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .adj-l { font-size: 0.74rem; color: var(--muted); font-weight: 600; }
+    .adj-g select.in { min-height: 32px; padding: 2px 6px; font-size: 0.8rem; }
+    .adj-g select.diff, .adj-n.diff { border-color: #60A5FA; color: #BFDBFE; }
+    .adj-n { width: 56px; min-height: 32px; text-align: right; }
+    .adj-g .star { min-width: 22px; min-height: 28px; }
+    @media (max-width: 760px) { .adj-t > .pr-name { flex-basis: 100%; } }
+    /* sugestões de melhoria */
+    .upg { margin-top: 14px; border: 1px solid var(--line-strong); border-radius: 12px; padding: 14px; background: var(--sunken); }
+    .upg-h { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px 12px; margin-bottom: 8px; }
+    .upg-h b { font-size: 0.95rem; }
+    .upg-list { display: flex; flex-direction: column; gap: 6px; }
+    .upg-r { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; font-size: 0.85rem; }
+    .upg-r.top { border-color: var(--gold); background: rgba(244, 208, 63, .06); }
+    .upg-what b { color: var(--text); }
+    .upg-what small { display: block; color: var(--muted); font-size: 0.74rem; }
+    .upg-gain { font-family: var(--font-num, monospace); font-weight: 700; color: var(--ok); text-align: right; white-space: nowrap; }
+    .upg-gain .hz-up { display: block; font-size: 0.74rem; color: var(--gold); }
+    .upg-tests { margin-top: 8px; font-size: 0.8rem; color: #BFDBFE; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    @media (max-width: 760px) { .upg-r { grid-template-columns: 1fr auto; } .upg-r .btn { grid-column: 1 / -1; } }
     @media (max-width: 760px) { .dmg-medal { width: 100%; justify-content: space-between; } .fmt-seg { width: 100%; min-width: 0; } }
     /* ===== 1.5× par (full + parcial) ===== */
     .par-only { display: none; }
@@ -976,6 +1000,8 @@
           </div>
           <label class="dmg-medal" title="Simula uma medalha de dano: soma essa % ao dano de todos os pokémon (o dano que você anotou é sem ela)">▲ Medalha de dano
             <input class="in num" id="dmgMedalIn" inputmode="decimal" aria-label="Medalha de dano, em %" /><span>%</span></label>
+          <label class="dmg-medal" title="Quanto de dano cada +1 de Boost dá (se não souber o exato, use um chute)">Boost
+            <input class="in num" id="boostPctIn" inputmode="decimal" aria-label="% de dano por +1 de Boost" /><span>% por +1</span></label>
           <button type="button" class="btn" id="toggle-cand" aria-pressed="false" aria-controls="cand-col">+ Testar Pokémon novo</button>
           <label class="chk"><input type="checkbox" id="useTests" />Considerar testes (stars e held)</label>
           <button type="button" class="btn" id="clear-tests">Limpar testes</button>
@@ -1024,6 +1050,7 @@
       </div>
       <div id="suggest"></div>
       <div id="par-out" class="par-only"></div>
+      <div id="upgrades"></div>
       <div class="rot-sticky" id="rot-sticky" hidden aria-live="polite">
         <span class="rs-txt" id="rot-sticky-txt"></span>
         <button type="button" class="btn" id="rot-sticky-go">Ver rotações ↑</button>
@@ -1198,6 +1225,8 @@
           heldTest: num(c.heldTest, 7),
           brute: c.brute === true,
           bruteTest: typeof c.bruteTest === "boolean" && c.bruteTest !== (c.brute === true) ? c.bruteTest : null,
+          boost: Number.isInteger(c.boost) && c.boost >= 0 ? c.boost : 0,
+          boostTest: Number.isInteger(c.boostTest) && c.boostTest >= 0 && c.boostTest !== c.boost ? c.boostTest : null,
           team: -1,
           now: Number.isFinite(Number(c.now)) && Number(c.now) > 0 ? Number(c.now) : 0,
           after: (c.after == null || c.after === "" || !Number.isFinite(Number(c.after))) ? null : Number(c.after),
@@ -1210,7 +1239,7 @@
       function freshMons() {
         return clone(DEFAULT_MONS).map(function (m, i) { m.id = "m" + (i + 1); m.t2 = m.team; m.t3 = i < 3 ? 0 : 1; return m; });
       }
-      const state = { rune: 5, basis: "agora", format: "2x2x2", teamPct: [0, 0, 0], useTests: true, showCand: false, rot: { n: 5, maxP: 2, pct: 100, det: false }, medal: 2.5, dmgMedal: 0, base: 560, step: 3, mons: freshMons(), cand: freshCand(), table: clone(DEFAULT_TABLE), par: null };
+      const state = { rune: 5, basis: "agora", format: "2x2x2", teamPct: [0, 0, 0], useTests: true, showCand: false, rot: { n: 5, maxP: 2, pct: 100, det: false }, medal: 2.5, dmgMedal: 0, boostPct: 1, base: 560, step: 3, mons: freshMons(), cand: freshCand(), table: clone(DEFAULT_TABLE), par: null };
 
       const el = {
         runes: document.getElementById("runes"),
@@ -1244,6 +1273,7 @@
           else if (d.par && okI(d.par.s) && d.par.s.length === 6) state.par = { role: fromTk([d.par.s[0], d.par.s[1], d.par.s[3], d.par.s[4]], [d.par.s[1], d.par.s[4]]) };
           if (typeof d.showCand === "boolean") state.showCand = d.showCand;
           state.medal = precNum(d.medal, state.medal);
+          if (Number.isFinite(Number(d.boostPct)) && Number(d.boostPct) >= 0 && Number(d.boostPct) <= 100) state.boostPct = Number(d.boostPct);
           state.dmgMedal = Number.isFinite(Number(d.dmgMedal)) && Number(d.dmgMedal) >= 0 && Number(d.dmgMedal) <= 200 ? Number(d.dmgMedal) : 0;
           if (Array.isArray(d.teamPct) && d.teamPct.length === 3) {
             state.teamPct = d.teamPct.map(function (v) { v = Number(v); return Number.isFinite(v) && v >= 0 && v <= 1000 ? v : 0; });
@@ -1262,6 +1292,8 @@
                 heldTest: Number.isInteger(m.heldTest) && m.heldTest >= 0 && m.heldTest <= 7 ? m.heldTest : null,
                 brute: m.brute === true,
                 bruteTest: typeof m.bruteTest === "boolean" && m.bruteTest !== (m.brute === true) ? m.bruteTest : null,
+                boost: Number.isInteger(m.boost) && m.boost >= 0 && m.boost <= 999 ? m.boost : 0,
+                boostTest: Number.isInteger(m.boostTest) && m.boostTest >= 0 && m.boostTest <= 999 && m.boostTest !== m.boost ? m.boostTest : null,
                 t2: [0, 1, 2].indexOf(m.t2) >= 0 ? m.t2 : ([0, 1, 2].indexOf(m.team) >= 0 && d.format !== "3x3" ? m.team : Math.floor(i / 2)),
                 t3: [0, 1].indexOf(m.t3) >= 0 ? m.t3 : (i < 3 ? 0 : 1),
                 now: Number.isFinite(Number(m.now)) ? Number(m.now) : 0,
@@ -1327,10 +1359,12 @@
       function tStars(m) { return m.test == null ? m.stars : m.test; }
       function tHeld(m) { return m.heldTest == null ? m.held : m.heldTest; }
       function tBrute(m) { return m.bruteTest == null ? !!m.brute : m.bruteTest; }
-      function testActive(m) { return state.useTests && (tStars(m) !== m.stars || tHeld(m) !== m.held || tBrute(m) !== !!m.brute); }
+      function tBoost(m) { return m.boostTest == null ? (m.boost || 0) : m.boostTest; }
+      function testActive(m) { return state.useTests && (tStars(m) !== m.stars || tHeld(m) !== m.held || tBrute(m) !== !!m.brute || tBoost(m) !== (m.boost || 0)); }
       // Brute Berry: +5% somado aos bônus de star e held
-      function bonus(m, stars, held, brute) { return 1 + stars * tierOf(m.tier).pct / 100 + HELDS[held] / 100 + (brute ? BRUTE : 0) / 100; }
-      function testRatio(m) { return bonus(m, tStars(m), tHeld(m), tBrute(m)) / bonus(m, m.stars, m.held, !!m.brute); }
+      // Boost: +1 = state.boostPct % de dano, somado aos bônus de star, held e Brute Berry
+      function bonus(m, stars, held, brute, boost) { return 1 + stars * tierOf(m.tier).pct / 100 + HELDS[held] / 100 + (brute ? BRUTE : 0) / 100 + (boost || 0) * (state.boostPct || 0) / 100; }
+      function testRatio(m) { return bonus(m, tStars(m), tHeld(m), tBrute(m), tBoost(m)) / bonus(m, m.stars, m.held, !!m.brute, m.boost || 0); }
       // dano no Dummy Neutro (com testes de star/held, se houver)
       function neutralDmg(m) {
         const d = eff(m);
@@ -1356,6 +1390,7 @@
           if (tStars(m) !== m.stars) parts.push(m.stars + "★ → " + tStars(m) + "★");
           if (tBrute(m) !== !!m.brute) parts.push(tBrute(m) ? "+ Brute Berry" : "sem Brute Berry");
           if (tHeld(m) !== m.held) parts.push("ATK " + m.held + " → ATK " + tHeld(m));
+          if (tBoost(m) !== (m.boost || 0)) parts.push("Boost +" + (m.boost || 0) + " → +" + tBoost(m));
           cls = "eff test";
           html = "teste " + parts.join(" · ") + " · <strong>" + fmt(nd) + "</strong> (" + (dl >= 0 ? "+" : "") + fmt(dl) + ")";
         } else {
@@ -1549,7 +1584,7 @@
           "<div class=\"held-row\">" +
             "<label class=\"fld\">Held atual<select class=\"in\" data-f=\"held\">" + heldOpts(m.held) + "</select></label>" +
             "<label class=\"fld test\">Held teste<select class=\"in" + (tHeld(m) !== m.held ? " diff" : "") + "\" data-f=\"heldTest\">" + heldOpts(tHeld(m)) + "</select></label>" +
-          "</div>" + bruteRow +
+          "</div>" + boostRowHtml(m) + bruteRow +
           (isEff() ? "<div class=\"mult-box\"><div class=\"mult-head\"><span>Efetividade (multiplicador)</span>" +
             "<label class=\"mult-in\">×<input class=\"in num\" data-f=\"mult\" inputmode=\"decimal\" value=\"" + fmt(multNum(m.mult)) + "\" aria-label=\"Multiplicador de efetividade\" /></label></div>" +
             "<div class=\"mult-chips\" role=\"group\" aria-label=\"Multiplicador de efetividade\">" + MULTS.map(function (v) {
@@ -1596,7 +1631,7 @@
               "<div class=\"mon-fields\">" +
                 "<label class=\"fld\">Raridade<select class=\"in\" data-f=\"tier\">" + tierOpts(m.tier) + "</select></label>" +
               "</div>" +
-              "<div class=\"stars-box\">" + starsRows + heldRow +
+              "<div class=\"stars-box\">" + starsRows + heldRow + boostRowHtml(m) +
                 "<p class=\"m15-note\">No 1.5× a conta usa o dano das skills acima. Star, held e Brute Berry <b>atuais</b> já estão dentro do que você anotou e não mudam nada; só a diferença para o <b>teste</b> muda o dano das skills. O \"Dano\" total do pokémon vale para o 2×2×2 e o 3×3.</p></div>" +
             "</div>" +
             "</div>";
@@ -1613,6 +1648,11 @@
           "</div>";
       }
 
+      function boostRowHtml(m) {
+        return "<div class=\"held-row\">" +
+          "<label class=\"fld\">Boost atual<input class=\"in num\" data-f=\"boost\" inputmode=\"numeric\" value=\"" + (m.boost || 0) + "\" aria-label=\"Boost atual\" /></label>" +
+          "<label class=\"fld test\">Boost teste<input class=\"in num" + (tBoost(m) !== (m.boost || 0) ? " diff" : "") + "\" data-f=\"boostTest\" inputmode=\"numeric\" placeholder=\"igual\" value=\"" + (m.boostTest == null ? "" : m.boostTest) + "\" aria-label=\"Boost para testar\" /></label></div>";
+      }
       function buildCand() {
         el.cand.innerHTML = cardHtml(state.cand, 0, true);
       }
@@ -2711,9 +2751,21 @@
               "<p class=\"pc-sub\">Marque o ⚡ Stun (ele abre a 2ª rotação). Se tiver ▲ Buff, assinale a skill que recebe e anote o dano depois do buff.</p>" + skillTableHtml(m) + "</div>";
           }).join("") + "</div>"
           : "";
-        const adj = "<details class=\"pc-adj\"" + (PARADJ_OPEN ? " open" : "") + "><summary>Ajustes: Brute Berry e precisão</summary><div class=\"adj-rows\">" +
+        const heldSel = function (f, cur, diff) {
+          return "<select class=\"in" + (diff ? " diff" : "") + "\" data-f=\"" + f + "\">" + HELDS.map(function (v, k) { return "<option value=\"" + k + "\"" + (cur === k ? " selected" : "") + ">" + (k === 0 ? "Sem Held" : "ATK " + k) + "</option>"; }).join("") + "</select>";
+        };
+        const starBtns = function (m, kind, level) {
+          let h = "";
+          for (let n = 1; n <= 5; n++) h += "<button type=\"button\" class=\"star" + (n <= level ? " on" : "") + "\" data-star=\"" + n + "\" data-kind=\"" + kind + "\" aria-label=\"" + (kind === "test" ? "Teste" : "Atual") + ": " + n + " star\">" + (n <= level ? "★" : "☆") + "</button>";
+          return "<span class=\"stars\">" + h + "</span>";
+        };
+        const adj = "<details class=\"pc-adj\"" + (PARADJ_OPEN ? " open" : "") + "><summary>Testes e ajustes: estrelas, held, Boost, Brute Berry e precisão</summary>" +
+          "<p class=\"pc-sub\">“Atual” é o que já está no dano anotado. “Teste” simula a mudança: o dano de todas as rotações se ajusta.</p><div class=\"adj-rows\">" +
           state.mons.map(function (m, i) {
-            return "<div class=\"pmon adj-row\" data-id=\"" + m.id + "\"><span class=\"pr-name\">" + nm(i) + "</span>" +
+            return "<div class=\"pmon adj-row adj-t\" data-id=\"" + m.id + "\"><span class=\"pr-name\">" + nm(i) + (testActive(m) ? " <span class=\"par-tag parc\">TESTE</span>" : "") + "</span>" +
+              "<span class=\"adj-g\"><span class=\"adj-l\">★ atual</span>" + starBtns(m, "cur", m.stars) + "<span class=\"adj-l\">teste</span>" + starBtns(m, "test", tStars(m)) + "</span>" +
+              "<span class=\"adj-g\"><span class=\"adj-l\">Held</span>" + heldSel("held", m.held, false) + "<span class=\"adj-l\">teste</span>" + heldSel("heldTest", tHeld(m), tHeld(m) !== m.held) + "</span>" +
+              "<span class=\"adj-g\"><span class=\"adj-l\">Boost +</span><input class=\"in num adj-n\" data-f=\"boost\" inputmode=\"numeric\" value=\"" + (m.boost || 0) + "\" /><span class=\"adj-l\">teste +</span><input class=\"in num adj-n" + (tBoost(m) !== (m.boost || 0) ? " diff" : "") + "\" data-f=\"boostTest\" inputmode=\"numeric\" placeholder=\"igual\" value=\"" + (m.boostTest == null ? "" : m.boostTest) + "\" /></span>" +
               "<label class=\"adj-chk\"><input type=\"checkbox\" data-f=\"brute\"" + (m.brute ? " checked" : "") + " />Brute Berry já no dano</label>" +
               "<label class=\"adj-tr\">Treino<input class=\"in num\" data-f=\"train\" inputmode=\"decimal\" value=\"" + fmt(m.train) + "\" /></label>" +
               "<label class=\"adj-chk\"><input type=\"checkbox\" data-f=\"berry\"" + (m.berry ? " checked" : "") + " />Focus Berry +" + BERRY + "</label></div>";
@@ -2770,6 +2822,65 @@
         const stt = document.getElementById("rot-sticky-txt");
         if (stt) stt.innerHTML = "<b style=\"color:" + r.color + "\">" + hzTxt(off) + "</b> · rotação mais fraca <b>" + kfmt(res.min) + "</b>";
         pout.innerHTML = "<h3 class=\"par-rh\">Resultado: as 4 rotações</h3>" + top + warn + "<div class=\"pr-grid\">" + cards + "</div>";
+      }
+      // ===== Sugestões de melhoria: o que mais sobe o dano do time/rotação mais fraca =====
+      let UPGKEY = "", UPGMEMO = null;
+      function upgEval() {
+        ROTCACHE = null;
+        const t = totals();
+        return { off: official(state.rune, t), dmg: dmgHz(state.rune, t), min: Math.min.apply(null, t) };
+      }
+      function upgOptions(m) {
+        const o = [];
+        if (tStars(m) < 5) o.push({ k: "star", txt: "★ " + tStars(m) + " → " + (tStars(m) + 1), sub: "+" + tierOf(m.tier).pct + "% (" + tierOf(m.tier).name + ")", set: function () { m.test = tStars(m) + 1; } });
+        if (tHeld(m) < 7) o.push({ k: "held", txt: (tHeld(m) ? "ATK " + tHeld(m) : "Sem Held") + " → ATK " + (tHeld(m) + 1), sub: "+" + (HELDS[tHeld(m) + 1] - HELDS[tHeld(m)]) + "%", set: function () { m.heldTest = tHeld(m) + 1; } });
+        if (!tBrute(m)) o.push({ k: "brute", txt: "Brute Berry", sub: "+" + BRUTE + "%", set: function () { m.bruteTest = true; } });
+        if (state.boostPct > 0) o.push({ k: "boost", txt: "Boost +" + tBoost(m) + " → +" + (tBoost(m) + 5), sub: "+5 de Boost (" + fmt(5 * state.boostPct) + "%)", set: function () { m.boostTest = tBoost(m) + 5; } });
+        return o;
+      }
+      function upgList() {
+        if (!(state.format === "2x2x2" || state.format === "3x3" || isPar())) return null;
+        const key = JSON.stringify([state.mons, state.rune, state.format, state.base, state.step, state.rot.pct, state.medal, state.dmgMedal, state.boostPct, state.par, state.teamPct, state.basis, state.useTests, state.table.length, location.hash]);
+        if (key === UPGKEY && UPGMEMO) return UPGMEMO;
+        const savedUse = state.useTests;
+        state.useTests = true; // a simulação soma o teste aos testes que você já tem
+        const base = upgEval();
+        const out = [];
+        state.mons.forEach(function (m, i) {
+          upgOptions(m).forEach(function (op) {
+            const snap = [m.test, m.heldTest, m.bruteTest, m.boostTest];
+            op.set();
+            const r = upgEval();
+            m.test = snap[0]; m.heldTest = snap[1]; m.bruteTest = snap[2]; m.boostTest = snap[3];
+            if (r.min > base.min + 0.5) out.push({ i: i, op: op, gain: r.min - base.min, off: r.off, dmg: r.dmg });
+          });
+        });
+        state.useTests = savedUse;
+        ROTCACHE = null;
+        out.sort(function (a, b) { return (b.off - a.off) || (b.gain - a.gain); });
+        UPGKEY = key;
+        UPGMEMO = { base: base, list: out.slice(0, 8) };
+        return UPGMEMO;
+      }
+      function paintUpgrades() {
+        const box = document.getElementById("upgrades");
+        if (!box) return;
+        const U = upgList();
+        if (!U) { box.innerHTML = ""; return; }
+        const lim = isPar() ? "rotação mais fraca" : "time mais fraco", doLim = (isPar() ? "da " : "do ") + lim;
+        const tested = state.mons.filter(testActive);
+        const tests = tested.length
+          ? "<div class=\"upg-tests\">Testes ativos: " + tested.map(function (m) { return shortName(m); }).join(", ") + " <button type=\"button\" class=\"btn\" data-upg-clear>Limpar testes</button></div>"
+          : (!state.useTests ? "<div class=\"upg-tests\">“Considerar testes” está desligado: ao testar, ele é ligado.</div>" : "");
+        const rows = U.list.length ? U.list.map(function (u, n) {
+          const m = state.mons[u.i];
+          const hz = u.off > U.base.off ? "<span class=\"hz-up\">" + hzTxt(U.base.off) + " → " + hzTxt(u.off) + "</span>" : "";
+          return "<div class=\"upg-r" + (n === 0 ? " top" : "") + "\"><span class=\"upg-what\"><b>" + shortName(m) + "</b> · " + u.op.txt + "<small>" + u.op.sub + "</small></span>" +
+            "<span class=\"upg-gain\">+" + kfmt(u.gain) + " na " + lim + hz + "</span>" +
+            "<button type=\"button\" class=\"btn\" data-upg=\"" + u.i + ":" + u.op.k + "\">Testar</button></div>";
+        }).join("") : "<p class=\"pc-sub\">Nenhuma melhoria de star, held, Brute Berry ou Boost sobe o dano " + doLim + " agora.</p>";
+        box.innerHTML = "<div class=\"upg\"><div class=\"upg-h\"><b>Melhorias sugeridas</b><span class=\"pc-sub\">O que mais sobe o dano " + doLim + " (" + (isPar() ? "é ela" : "é ele") + " que segura o Hazard), uma mudança por vez.</span></div>" +
+          "<div class=\"upg-list\">" + rows + "</div>" + tests + "</div>";
       }
       let ROTCACHE = null, ROTKEY = "", ROTMEMO = null;
       function rotResult() {
@@ -2916,6 +3027,7 @@
         paintPrec();
         paintResumo(t, off);
         paintRot();
+        paintUpgrades();
       }
 
       function paintModel() {
@@ -2979,6 +3091,7 @@
         document.getElementById("maxHzIn").value = String(state.table.length - 1);
         document.getElementById("medalIn").value = fmt(state.medal);
         document.getElementById("dmgMedalIn").value = fmt(state.dmgMedal);
+        document.getElementById("boostPctIn").value = fmt(state.boostPct);
       }
 
       el.runes.addEventListener("click", function (ev) {
@@ -3043,6 +3156,25 @@
         ev.target.value = ((f === "after" && m.after == null) || (m.id === "cand" && f === "now" && !m.now)) ? "" : fmt(m[f]);
       });
 
+      onCards("input", function (ev) {
+        const f = ev.target.getAttribute("data-f");
+        if (f !== "boost" && f !== "boostTest") return;
+        const m = findMon(ev.target.closest(".mon, .pmon").getAttribute("data-id"));
+        if (!m) return;
+        const raw = ev.target.value.replace(/^\+/, "").trim();
+        if (f === "boostTest" && raw === "") { m.boostTest = null; ev.target.classList.remove("invalid"); save(); paintSoon(); return; }
+        const v = Number(raw);
+        if (!Number.isInteger(v) || v < 0 || v > 999) { ev.target.classList.add("invalid"); return; }
+        ev.target.classList.remove("invalid");
+        if (f === "boost") { m.boost = v; if (m.boostTest === v) m.boostTest = null; }
+        else m.boostTest = v === (m.boost || 0) ? null : v;
+        save();
+        paintSoon();
+      });
+      onCards("change", function (ev) {
+        const f = ev.target.getAttribute("data-f");
+        if (f === "boost" || f === "boostTest") { buildRoster(); paint(); }
+      });
       onCards("focusin", function (ev) {
         const f = ev.target.getAttribute("data-f");
         if (f === "now" || f === "after" || f === "train" || ev.target.getAttribute("data-tpct") !== null) ev.target.select();
@@ -3200,6 +3332,7 @@
         state.useTests = true;
         state.medal = 2.5;
         state.dmgMedal = 0;
+        state.boostPct = 1;
         state.base = 560;
         state.step = 3;
         state.rot = { n: 5, maxP: 2, pct: 100, det: false };
@@ -3301,6 +3434,7 @@
         inp.addEventListener("focus", function () { inp.select(); });
       }
       bindNum("medalIn", function (v) { state.medal = v; }, function () { return fmt(state.medal); });
+      bindNum("boostPctIn", function (v) { state.boostPct = v == null ? 0 : Math.min(100, v); }, function () { return fmt(state.boostPct); }, true);
       bindNum("dmgMedalIn", function (v) { state.dmgMedal = v == null ? 0 : Math.min(200, v); }, function () { return fmt(state.dmgMedal); }, true);
 
       function setShowCand(v) {
@@ -3318,8 +3452,25 @@
         buildRoster();
         paint();
       });
+      document.getElementById("upgrades").addEventListener("click", function (ev) {
+        const c = ev.target.closest("[data-upg-clear]");
+        if (c) { clearTests(); save(); syncControls(); buildRoster(); paint(); return; }
+        const b = ev.target.closest("[data-upg]");
+        if (!b) return;
+        const q = b.getAttribute("data-upg").split(":");
+        const m = state.mons[Number(q[0])];
+        const op = m && upgOptions(m).find(function (o) { return o.k === q[1]; });
+        if (!op) return;
+        op.set();
+        state.useTests = true;
+        save();
+        syncControls();
+        buildRoster();
+        paint();
+      });
+      function clearTests() { state.mons.concat([state.cand]).forEach(function (m) { m.test = null; m.heldTest = null; m.bruteTest = null; m.boostTest = null; }); }
       document.getElementById("clear-tests").addEventListener("click", function () {
-        state.mons.concat([state.cand]).forEach(function (m) { m.test = null; m.heldTest = null; m.bruteTest = null; });
+        clearTests();
         save();
         buildRoster();
         paint();
