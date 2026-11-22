@@ -3906,12 +3906,14 @@
           .catch(function () { return null; });
       };
       const fmtN = function (n) { return Number(n).toLocaleString("pt-BR"); };
+      let TOTAL = 0;
       let seen = false;
       try { seen = localStorage.getItem("hazard-calc:visited") === "1"; } catch (e) { /* sem storage */ }
       call(seen ? "get" : "hit", "visitors").then(function (v) {
         if (v == null) return;
         if (!seen) { try { localStorage.setItem("hazard-calc:visited", "1"); } catch (e) { /* sem storage */ } }
-        document.getElementById("vs-total").textContent = fmtN(Math.max(v, 1));
+        TOTAL = Math.max(v, 1);
+        document.getElementById("vs-total").textContent = fmtN(TOTAL);
         box.hidden = false;
       });
       // o intervalo já marcado fica salvo no navegador: F5 ou outra aba não contam de novo
@@ -3924,11 +3926,13 @@
         const cur = call(first ? "hit" : "get", "on-" + b);
         Promise.all([cur, call("get", "on-" + (b - 1))]).then(function (r) {
           if (r[0] == null && r[1] == null) return;
-          document.getElementById("vs-online").textContent = fmtN(Math.max(r[0] || 0, r[1] || 0, 1));
+          let n = Math.max(r[0] || 0, r[1] || 0, 1);
+          if (TOTAL > 0) n = Math.min(n, TOTAL); // nunca mais online do que visitantes
+          document.getElementById("vs-online").textContent = fmtN(n);
           box.hidden = false;
         });
       }
-      beat();
+      setTimeout(beat, 400); // depois do total, para o limite valer já na primeira vez
       setInterval(beat, 30000);
     })();
   </script>
