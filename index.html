@@ -626,6 +626,10 @@
     .dmg-medal { display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; color: var(--gold); padding: 4px 6px 4px 10px; border: 1px solid var(--line-strong); border-radius: 10px; }
     .dmg-medal .in { width: 64px; min-height: 32px; text-align: right; }
     .dmg-medal span { color: var(--muted); }
+    .visit-stats { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 4px 0 0; font-size: 0.8rem; color: var(--muted); }
+    .visit-stats[hidden] { display: none; }
+    .vs-i b { color: var(--text); font-variant-numeric: tabular-nums; }
+    .vs-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); margin-right: 6px; box-shadow: 0 0 0 3px rgba(110, 231, 183, .2); vertical-align: 1px; }
     .eff-medal { font-size: 0.75rem; color: var(--gold); margin-top: 2px; }
     .adj-row.adj-t { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; padding: 10px 0; border-bottom: 1px solid var(--line); }
     .adj-t > .pr-name { flex: 0 0 170px; }
@@ -953,6 +957,10 @@
       <div>
         <h1>Calculadora de Hazard</h1>
         <p class="credit">Criado por <strong>Morthus</strong> · Titan 3 Server</p>
+        <p class="visit-stats" id="visit-stats" hidden>
+          <span class="vs-i" title="Pessoas diferentes que já abriram a página (uma vez por navegador)">👁 <b id="vs-total">–</b> visitantes</span>
+          <span class="vs-i vs-on" title="Pessoas com a página aberta nos últimos 2 a 4 minutos"><i class="vs-dot" aria-hidden="true"></i><b id="vs-online">–</b> online agora</span>
+        </p>
         <div class="data-tools">
           <button type="button" class="btn" id="export-btn">Exportar dados</button>
           <button type="button" class="btn" id="import-btn">Importar dados</button>
@@ -3880,6 +3888,45 @@
       buildRoster();
       buildTable();
       paint();
+    })();
+  </script>
+  <script>
+    // Contadores (serviço gratuito Abacus: https://abacus.jasoncameron.dev)
+    // Visitantes: conta 1 vez por navegador. Online: cada página aberta marca presença a cada 2 minutos;
+    // "online agora" = quem marcou presença no intervalo atual ou no anterior.
+    (function () {
+      "use strict";
+      const box = document.getElementById("visit-stats");
+      if (!box || location.protocol === "file:" || !window.fetch) return;
+      const API = "https://abacus.jasoncameron.dev", NS = "otaviodos-hazard-calc", B = 120000;
+      const call = function (op, key) {
+        return fetch(API + "/" + op + "/" + NS + "/" + key)
+          .then(function (r) { return r.status === 404 ? { value: 0 } : r.ok ? r.json() : null; })
+          .then(function (j) { return j && Number.isFinite(j.value) ? j.value : null; })
+          .catch(function () { return null; });
+      };
+      const fmtN = function (n) { return Number(n).toLocaleString("pt-BR"); };
+      let seen = false;
+      try { seen = localStorage.getItem("hazard-calc:visited") === "1"; } catch (e) { /* sem storage */ }
+      call(seen ? "get" : "hit", "visitors").then(function (v) {
+        if (v == null) return;
+        if (!seen) { try { localStorage.setItem("hazard-calc:visited", "1"); } catch (e) { /* sem storage */ } }
+        document.getElementById("vs-total").textContent = fmtN(Math.max(v, 1));
+        box.hidden = false;
+      });
+      let marked = -1;
+      function beat() {
+        const b = Math.floor(Date.now() / B);
+        const cur = marked === b ? call("get", "on-" + b) : call("hit", "on-" + b);
+        marked = b;
+        Promise.all([cur, call("get", "on-" + (b - 1))]).then(function (r) {
+          if (r[0] == null && r[1] == null) return;
+          document.getElementById("vs-online").textContent = fmtN(Math.max(r[0] || 0, r[1] || 0, 1));
+          box.hidden = false;
+        });
+      }
+      beat();
+      setInterval(beat, 30000);
     })();
   </script>
 </body>
