@@ -630,6 +630,7 @@
     .visit-stats[hidden] { display: none; }
     .vs-i b { color: var(--text); font-variant-numeric: tabular-nums; }
     .vs-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); margin-right: 6px; box-shadow: 0 0 0 3px rgba(110, 231, 183, .2); vertical-align: 1px; }
+    td.sc { text-align: center; font-family: var(--font-num, monospace); font-weight: 700; color: #F9A8D4; white-space: nowrap; }
     .eff-medal { font-size: 0.75rem; color: var(--gold); margin-top: 2px; }
     .adj-row.adj-t { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; padding: 10px 0; border-bottom: 1px solid var(--line); }
     .adj-t > .pr-name { flex: 0 0 170px; }
@@ -1153,7 +1154,7 @@
         [815, 795, 779, 763, 748, 733, 60],
         [845, 825, 807, 791, 775, 760, 65]
       ];
-      const MIN_HZ = DEFAULT_TABLE.length - 1, MAX_HZ = 100;
+      const MIN_HZ = DEFAULT_TABLE.length - 1, MAX_HZ = 25;
       // Muda o Hazard máximo da tabela. O dano das linhas novas vem da fórmula (base, % por Hazard e Runa);
       // a precisão continua no mesmo passo das duas últimas linhas (+5 pts por Hazard no padrão) e segue editável.
       function setMaxHz(n) {
@@ -1315,7 +1316,7 @@
           }
           state.mons.forEach(function (m) { m.team = m[teamKey()]; });
           if (d.cand) state.cand = normCand(d.cand);
-          if (Array.isArray(d.table) && d.table.length >= 18 && d.table.length <= 101 && d.table.every(function (r) {
+          if (Array.isArray(d.table) && d.table.length >= 18 && d.table.length <= 26 && d.table.every(function (r) {
             return Array.isArray(r) && r.length === 7 && r.every(function (v) { return Number.isFinite(v); });
           })) state.table = d.table;
           if (state.table[0][1] === 540) state.table[0][1] = 549; // valor lido errado: o cursor cobria o último dígito
@@ -1772,13 +1773,13 @@
         const head = "<thead><tr><th>Hazard</th>" + RUNES.map(function (r) {
           return "<th data-c=\"" + r.id + "\" style=\"--c:" + r.color + "\"><span class=\"gem\"></span>Runa " + r.id +
             "<div class=\"hz-b\">" + r.bonus + "</div></th>";
-        }).join("") + "<th>Precisão<div class=\"hz-b\">pontos</div></th><th>Precisão<div class=\"hz-b\">%</div></th><th>Sua precisão<div class=\"hz-b\">pontos (menor dos 6)</div></th></tr></thead>";
+        }).join("") + "<th>Precisão<div class=\"hz-b\">pontos</div></th><th>Precisão<div class=\"hz-b\">%</div></th><th>Sua precisão<div class=\"hz-b\">pontos (menor dos 6)</div></th><th title=\"Shiny Charm: +2% por nível de Hazard\">Shiny Charm<div class=\"hz-b\">+2% por Hazard</div></th></tr></thead>";
         const body = state.table.map(function (row, i) {
           return "<tr data-i=\"" + i + "\"><td class=\"hn\">" + i + "</td>" + row.map(function (v, c) {
             const label = c < 6 ? "Hazard " + i + ", Runa " + c : "Hazard " + i + ", precisão";
             return "<td data-c=\"" + c + "\"><input class=\"cell\" data-i=\"" + i + "\" data-c=\"" + c +
               "\" inputmode=\"numeric\" aria-label=\"" + label + "\" value=\"" + (c < 6 ? v + "k" : v) + "\" /><span class=\"who\"></span></td>";
-          }).join("") + "<td class=\"pp\" data-pp=\"" + i + "\"></td><td class=\"pv\" data-pv=\"" + i + "\"></td></tr>";
+          }).join("") + "<td class=\"pp\" data-pp=\"" + i + "\"></td><td class=\"pv\" data-pv=\"" + i + "\"></td><td class=\"sc\">+" + (i * 2) + "%</td></tr>";
         }).join("");
         el.table.innerHTML = head + "<tbody>" + body + "</tbody>";
       }
