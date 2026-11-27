@@ -646,29 +646,6 @@
     .adj-n { width: 56px; min-height: 32px; text-align: right; }
     .adj-g .star { min-width: 22px; min-height: 28px; }
     @media (max-width: 760px) { .adj-t > .pr-name { flex-basis: 100%; } }
-    /* sugestões de melhoria */
-    .upg { margin-top: 14px; border: 1px solid var(--line-strong); border-radius: 12px; padding: 14px; background: var(--sunken); }
-    .upg-h { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px 12px; margin-bottom: 8px; }
-    .upg-h b { font-size: 0.95rem; }
-    .upg > summary { cursor: pointer; list-style: none; }
-    .upg > summary::-webkit-details-marker { display: none; }
-    .upg:not([open]) > summary { margin-bottom: 0; }
-    .upg:not([open]) .upg-desc, .upg[open] .upg-best { display: none; }
-    .upg-best { color: var(--text); }
-    .upg-tg { margin-left: auto; font-size: 0.8rem; font-weight: 600; color: var(--muted); white-space: nowrap; }
-    .upg-tg::after { content: "Ocultar ▴"; }
-    .upg:not([open]) .upg-tg::after { content: "Mostrar ▾"; }
-    .upg > summary:hover .upg-tg { color: var(--text); }
-    .upg > summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; border-radius: 6px; }
-    .upg-list { display: flex; flex-direction: column; gap: 6px; }
-    .upg-r { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; font-size: 0.85rem; }
-    .upg-r.top { border-color: var(--gold); background: rgba(244, 208, 63, .06); }
-    .upg-what b { color: var(--text); }
-    .upg-what small { display: block; color: var(--muted); font-size: 0.74rem; }
-    .upg-gain { font-family: var(--font-num, monospace); font-weight: 700; color: var(--ok); text-align: right; white-space: nowrap; }
-    .upg-gain .hz-up { display: block; font-size: 0.74rem; color: var(--gold); }
-    .upg-tests { margin-top: 8px; font-size: 0.8rem; color: #BFDBFE; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    @media (max-width: 760px) { .upg-r { grid-template-columns: 1fr auto; } .upg-r .btn { grid-column: 1 / -1; } }
     @media (max-width: 760px) { .dmg-medal { width: 100%; justify-content: space-between; } .fmt-seg { width: 100%; min-width: 0; } }
     /* ===== 1.5× par (full + parcial) ===== */
     .par-only { display: none; }
@@ -1072,7 +1049,6 @@
       </div>
       <div id="suggest"></div>
       <div id="par-out" class="par-only"></div>
-      <div id="upgrades"></div>
       <div class="rot-sticky" id="rot-sticky" hidden aria-live="polite">
         <span class="rs-txt" id="rot-sticky-txt"></span>
         <button type="button" class="btn" id="rot-sticky-go">Ver rotações ↑</button>
@@ -2847,70 +2823,6 @@
         if (stt) stt.innerHTML = "<b style=\"color:" + r.color + "\">" + hzTxt(off) + "</b> · rotação mais fraca <b>" + kfmt(res.min) + "</b>";
         pout.innerHTML = "<h3 class=\"par-rh\">Resultado: as 4 rotações</h3>" + top + warn + "<div class=\"pr-grid\">" + cards + "</div>";
       }
-      // ===== Sugestões de melhoria: o que mais sobe o dano do time/rotação mais fraca =====
-      let UPGKEY = "", UPGMEMO = null;
-      function upgEval() {
-        ROTCACHE = null;
-        const t = totals();
-        return { off: official(state.rune, t), dmg: dmgHz(state.rune, t), min: Math.min.apply(null, t) };
-      }
-      function upgOptions(m) {
-        const o = [];
-        if (tStars(m) < 5) o.push({ k: "star", txt: "★ " + tStars(m) + " → " + (tStars(m) + 1), sub: "+" + tierOf(m.tier).pct + "% (" + tierOf(m.tier).name + ")", set: function () { m.test = tStars(m) + 1; } });
-        if (tHeld(m) < 7) o.push({ k: "held", txt: (tHeld(m) ? "ATK " + tHeld(m) : "Sem Held") + " → ATK " + (tHeld(m) + 1), sub: "+" + (HELDS[tHeld(m) + 1] - HELDS[tHeld(m)]) + "%", set: function () { m.heldTest = tHeld(m) + 1; } });
-        if (!tBrute(m)) o.push({ k: "brute", txt: "Brute Berry", sub: "+" + BRUTE + "%", set: function () { m.bruteTest = true; } });
-        if (state.boostPct > 0) o.push({ k: "boost", txt: "Boost +" + tBoost(m) + " → +" + (tBoost(m) + 5), sub: "+5 de Boost (" + fmt(5 * state.boostPct) + "%)", set: function () { m.boostTest = tBoost(m) + 5; } });
-        return o;
-      }
-      function upgList() {
-        if (!(state.format === "2x2x2" || state.format === "3x3" || isPar())) return null;
-        const key = JSON.stringify([state.mons, state.rune, state.format, state.base, state.step, state.rot.pct, state.medal, state.dmgMedal, state.boostPct, state.par, state.teamPct, state.basis, state.useTests, state.table.length, location.hash]);
-        if (key === UPGKEY && UPGMEMO) return UPGMEMO;
-        const savedUse = state.useTests;
-        state.useTests = true; // a simulação soma o teste aos testes que você já tem
-        const base = upgEval();
-        const out = [];
-        state.mons.forEach(function (m, i) {
-          upgOptions(m).forEach(function (op) {
-            const snap = [m.test, m.heldTest, m.bruteTest, m.boostTest];
-            op.set();
-            const r = upgEval();
-            m.test = snap[0]; m.heldTest = snap[1]; m.bruteTest = snap[2]; m.boostTest = snap[3];
-            if (r.min > base.min + 0.5) out.push({ i: i, op: op, gain: r.min - base.min, off: r.off, dmg: r.dmg });
-          });
-        });
-        state.useTests = savedUse;
-        ROTCACHE = null;
-        out.sort(function (a, b) { return (b.off - a.off) || (b.gain - a.gain); });
-        UPGKEY = key;
-        UPGMEMO = { base: base, list: out.slice(0, 8) };
-        return UPGMEMO;
-      }
-      // Melhorias sugeridas: dá para ocultar; cada navegador lembra a escolha
-      let UPG_OPEN = true;
-      try { if (localStorage.getItem("hazard-calc:fold:upg") === "0") UPG_OPEN = false; } catch (e) { /* sem storage */ }
-      function paintUpgrades() {
-        const box = document.getElementById("upgrades");
-        if (!box) return;
-        const U = upgList();
-        if (!U) { box.innerHTML = ""; return; }
-        const lim = isPar() ? "rotação mais fraca" : "time mais fraco", doLim = (isPar() ? "da " : "do ") + lim;
-        const tested = state.mons.filter(testActive);
-        const tests = tested.length
-          ? "<div class=\"upg-tests\">Testes ativos: " + tested.map(function (m) { return shortName(m); }).join(", ") + " <button type=\"button\" class=\"btn\" data-upg-clear>Limpar testes</button></div>"
-          : (!state.useTests ? "<div class=\"upg-tests\">“Considerar testes” está desligado: ao testar, ele é ligado.</div>" : "");
-        const rows = U.list.length ? U.list.map(function (u, n) {
-          const m = state.mons[u.i];
-          const hz = u.off > U.base.off ? "<span class=\"hz-up\">" + hzTxt(U.base.off) + " → " + hzTxt(u.off) + "</span>" : "";
-          return "<div class=\"upg-r" + (n === 0 ? " top" : "") + "\"><span class=\"upg-what\"><b>" + shortName(m) + "</b> · " + u.op.txt + "<small>" + u.op.sub + "</small></span>" +
-            "<span class=\"upg-gain\">+" + kfmt(u.gain) + (isPar() ? " na " : " no ") + lim + hz + "</span>" +
-            "<button type=\"button\" class=\"btn\" data-upg=\"" + u.i + ":" + u.op.k + "\">Testar</button></div>";
-        }).join("") : "<p class=\"pc-sub\">Nenhuma melhoria de star, held, Brute Berry ou Boost sobe o dano " + doLim + " agora.</p>";
-        const b0 = U.list[0];
-        const best = b0 ? "melhor agora: " + shortName(state.mons[b0.i]) + " · " + b0.op.txt + " (+" + kfmt(b0.gain) + ")" : "nada sobe o dano agora";
-        box.innerHTML = "<details class=\"upg\"" + (UPG_OPEN ? " open" : "") + "><summary class=\"upg-h\"><b>Melhorias sugeridas</b><span class=\"pc-sub upg-desc\">O que mais sobe o dano " + doLim + " (" + (isPar() ? "é ela" : "é ele") + " que segura o Hazard), uma mudança por vez.</span><span class=\"pc-sub upg-best\">" + best + "</span><span class=\"upg-tg\" aria-hidden=\"true\"></span></summary>" +
-          "<div class=\"upg-list\">" + rows + "</div>" + tests + "</details>";
-      }
       let ROTCACHE = null, ROTKEY = "", ROTMEMO = null;
       function rotResult() {
         if (!is15()) return null;
@@ -3056,7 +2968,6 @@
         paintPrec();
         paintResumo(t, off);
         paintRot();
-        paintUpgrades();
       }
 
       function paintModel() {
@@ -3478,27 +3389,6 @@
       document.getElementById("useTests").addEventListener("change", function (ev) {
         state.useTests = ev.target.checked;
         save();
-        buildRoster();
-        paint();
-      });
-      document.getElementById("upgrades").addEventListener("toggle", function (ev) {
-        if (!ev.target.classList || !ev.target.classList.contains("upg") || !ev.target.isConnected) return;
-        UPG_OPEN = ev.target.open;
-        try { localStorage.setItem("hazard-calc:fold:upg", UPG_OPEN ? "1" : "0"); } catch (e) { /* sem storage */ }
-      }, true);
-      document.getElementById("upgrades").addEventListener("click", function (ev) {
-        const c = ev.target.closest("[data-upg-clear]");
-        if (c) { clearTests(); save(); syncControls(); buildRoster(); paint(); return; }
-        const b = ev.target.closest("[data-upg]");
-        if (!b) return;
-        const q = b.getAttribute("data-upg").split(":");
-        const m = state.mons[Number(q[0])];
-        const op = m && upgOptions(m).find(function (o) { return o.k === q[1]; });
-        if (!op) return;
-        op.set();
-        state.useTests = true;
-        save();
-        syncControls();
         buildRoster();
         paint();
       });
