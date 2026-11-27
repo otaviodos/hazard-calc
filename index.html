@@ -499,7 +499,7 @@
       .star { min-width: 30px; min-height: 30px; font-size: 1.55rem; }
 
       /* Tabela de precisão: só o que muda por pokémon (treino/Berry já estão no card, medalha é igual para todos) */
-      .pt th:nth-child(2), .pt td:nth-child(2), .pt th:nth-child(3), .pt td:nth-child(3), .pt th:nth-child(4), .pt td:nth-child(4) { display: none; }
+      .pt th:nth-child(2), .pt td:nth-child(2), .pt th:nth-child(3), .pt td:nth-child(3), .pt th:nth-child(4), .pt td:nth-child(4), .pt th:nth-child(5), .pt td:nth-child(5) { display: none; }
       .pt th, .pt td { padding: 8px 6px; }
 
       /* Barra do modelo: um grupo por linha */
@@ -1058,11 +1058,13 @@
     <section class="card">
       <div class="head">
         <h2>3. Precisão dos seus pokémon</h2>
-        <p class="hint">Treino e Berry ficam no card de cada pokémon. Cada um precisa ter sozinho a precisão do Hazard. 1 ponto = 0,2%.</p>
+        <p class="hint">Treino e Berry ficam no card de cada pokémon. Cada um precisa ter sozinho a precisão do Hazard. 1 ponto = 0,2%. O Tier é a última conta: soma uma % da precisão de cada um, já com treino, Berry e medalha (5% de 30 = +1,5).</p>
       </div>
       <div class="prec-bar">
         <div class="mgroup"><label class="mlabel" for="medalIn">Medalhas (todos)</label>
           <input class="in num small" id="medalIn" inputmode="decimal" /><span class="mlabel">%</span><span class="eq" id="medalEq"></span></div>
+        <div class="mgroup"><label class="mlabel" for="tierPrecIn">Tier (todos)</label>
+          <input class="in num small" id="tierPrecIn" inputmode="decimal" placeholder="0" /><span class="mlabel">% da precisão</span><span class="eq" id="tierEq"></span></div>
       </div>
       <div class="table-wrap"><table class="pt" id="pt"></table></div>
       <div class="prec-sum" id="precSum"></div>
@@ -1237,7 +1239,7 @@
       function freshMons() {
         return clone(DEFAULT_MONS).map(function (m, i) { m.id = "m" + (i + 1); m.t2 = m.team; m.t3 = i < 3 ? 0 : 1; return m; });
       }
-      const state = { rune: 5, basis: "agora", format: "2x2x2", teamPct: [0, 0, 0], useTests: true, showCand: false, rot: { n: 5, maxP: 2, pct: 100, det: false }, medal: 2.5, dmgMedal: 0, boostPct: 1, base: 560, step: 3, mons: freshMons(), cand: freshCand(), table: clone(DEFAULT_TABLE), par: null };
+      const state = { rune: 5, basis: "agora", format: "2x2x2", teamPct: [0, 0, 0], useTests: true, showCand: false, rot: { n: 5, maxP: 2, pct: 100, det: false }, medal: 2.5, tierPrec: 0, dmgMedal: 0, boostPct: 1, base: 560, step: 3, mons: freshMons(), cand: freshCand(), table: clone(DEFAULT_TABLE), par: null };
 
       const el = {
         runes: document.getElementById("runes"),
@@ -1271,6 +1273,7 @@
           else if (d.par && okI(d.par.s) && d.par.s.length === 6) state.par = { role: fromTk([d.par.s[0], d.par.s[1], d.par.s[3], d.par.s[4]], [d.par.s[1], d.par.s[4]]) };
           if (typeof d.showCand === "boolean") state.showCand = d.showCand;
           state.medal = precNum(d.medal, state.medal);
+          state.tierPrec = Number.isFinite(Number(d.tierPrec)) && Number(d.tierPrec) >= 0 && Number(d.tierPrec) <= 100 ? Number(d.tierPrec) : 0;
           if (Number.isFinite(Number(d.boostPct)) && Number(d.boostPct) >= 0 && Number(d.boostPct) <= 100) state.boostPct = Number(d.boostPct);
           state.dmgMedal = Number.isFinite(Number(d.dmgMedal)) && Number(d.dmgMedal) >= 0 && Number(d.dmgMedal) <= 200 ? Number(d.dmgMedal) : 0;
           if (Array.isArray(d.teamPct) && d.teamPct.length === 3) {
@@ -1425,8 +1428,18 @@
       const BERRY = 25;
       const BRUTE = 5; // Brute Berry: +5% de dano
       const PT_PCT = 0.2;
-      function precOf(m) {
+      // Tier: a última conta da precisão, uma % sobre treino + Berry + medalha (5% de 30 = +1,5 pts)
+      function precBase(m) {
         return m.train + (m.berry ? BERRY : 0) + state.medal / PT_PCT;
+      }
+      function tierMult() {
+        return 1 + state.tierPrec / 100;
+      }
+      function tierPts(m) {
+        return precBase(m) * state.tierPrec / 100;
+      }
+      function precOf(m) {
+        return precBase(m) * tierMult();
       }
       function precMin(list) {
         return list.length ? Math.min.apply(null, list.map(precOf)) : Infinity;
@@ -2117,12 +2130,12 @@
       }
 
       function buildPrec() {
-        el.pt.innerHTML = "<thead><tr><th>Pokémon</th><th>Treino</th><th>Berry</th><th>Medalhas</th><th>Total</th><th>%</th><th>Dá até</th></tr></thead><tbody>" +
+        el.pt.innerHTML = "<thead><tr><th>Pokémon</th><th>Treino</th><th>Berry</th><th>Medalhas</th><th>Tier</th><th>Total</th><th>%</th><th>Dá até</th></tr></thead><tbody>" +
           precRows().map(function (x) {
             const m = x.m;
             return "<tr data-id=\"" + m.id + "\"" + (m.id === "cand" ? " class=\"cand-row\"" : "") + ">" +
               "<td><span data-pn></span><span class=\"who-t\">" + x.team + "</span></td>" +
-              "<td data-ptr></td><td data-pbe></td><td data-pmed></td>" +
+              "<td data-ptr></td><td data-pbe></td><td data-pmed></td><td data-pti></td>" +
               "<td class=\"tot\" data-ptot></td><td data-ppct></td><td data-pst></td></tr>";
           }).join("") + "</tbody>";
       }
@@ -2132,6 +2145,8 @@
         if ((el.pt.querySelector("tr[data-id=\"cand\"]") != null) !== hasCand) buildPrec();
         const medalPts = state.medal / PT_PCT;
         document.getElementById("medalEq").textContent = "= " + fmt(medalPts) + " pts";
+        const tp = state.mons.map(tierPts), tLo = Math.min.apply(null, tp), tHi = Math.max.apply(null, tp);
+        document.getElementById("tierEq").textContent = state.tierPrec > 0 ? "= +" + fmt(tLo) + (tHi > tLo + 1e-9 ? " a +" + fmt(tHi) : "") + " pts" : "";
         const dH = dmgHz(state.rune, totals());
         el.pt.querySelectorAll("tbody tr").forEach(function (tr) {
           const m = findMon(tr.getAttribute("data-id"));
@@ -2142,6 +2157,7 @@
           tr.querySelector("[data-ptr]").textContent = fmt(m.train);
           tr.querySelector("[data-pbe]").textContent = m.berry ? "+" + BERRY : "—";
           tr.querySelector("[data-pmed]").textContent = fmt(medalPts);
+          tr.querySelector("[data-pti]").textContent = tierPts(m) > 0 ? "+" + fmt(tierPts(m)) : "—";
           tr.querySelector("[data-ptot]").textContent = fmt(p);
           tr.querySelector("[data-ppct]").textContent = fmt(p * PT_PCT) + "%";
           const st = tr.querySelector("[data-pst]");
@@ -2161,7 +2177,7 @@
           const short = six.filter(function (m) { return precOf(m) + 1e-9 < req; });
           L.push("<p>Hazard " + (cap + 1) + " exige <strong>" + fmt(req) + " pts (" + fmt(req * PT_PCT) + "%)</strong> em cada um: faltam " +
             short.map(function (m) { return esc(m.name || "sem nome") + " " + fmt(req - precOf(m)); }).join(", ") + ".</p>");
-          const viaBerry = short.filter(function (m) { return !m.berry && precOf(m) + BERRY + 1e-9 >= req; });
+          const viaBerry = short.filter(function (m) { return !m.berry && precOf(m) + BERRY * tierMult() + 1e-9 >= req; });
           if (viaBerry.length) L.push("<p>Só com a Berry chegam: " + viaBerry.map(function (m) { return esc(m.name || "sem nome"); }).join(", ") + ".</p>");
         }
         el.precSum.innerHTML = L.join("");
@@ -2172,7 +2188,7 @@
           const capM = precCap([m]);
           n.className = "prec-out " + (capM < dH ? "st-no" : "st-ok");
           n.textContent = "= " + fmt(p) + " pts (" + fmt(p * PT_PCT) + "%) · dá até " + hzTxt(capM);
-          n.title = "Treino " + fmt(m.train) + " + Berry " + (m.berry ? BERRY : 0) + " + medalhas " + fmt(state.medal / PT_PCT) + " pts. Vermelho: a precisão dele segura o Hazard que o dano permite.";
+          n.title = "Treino " + fmt(m.train) + " + Berry " + (m.berry ? BERRY : 0) + " + medalhas " + fmt(state.medal / PT_PCT) + (state.tierPrec > 0 ? " + Tier " + fmt(tierPts(m)) + " (" + fmt(state.tierPrec) + "% de " + fmt(precBase(m)) + ")" : "") + " pts. Vermelho: a precisão dele segura o Hazard que o dano permite.";
         });
       }
 
@@ -2183,7 +2199,7 @@
         const pCap = precCap(state.mons);
         const weak = Math.min.apply(null, t);
         const wi = t.indexOf(weak);
-        document.getElementById("resumo-hint").textContent = (isEff() ? "Efetividade · " : "Superefetivo · ") + (isPar() ? "1.5× par · 4 rotações" : is15() ? "1.5× · " + NT() + " rotações" : is3() ? "3×3" : "2×2×2") + " · Runa " + r.id + " (" + r.bonus + ") · medalhas " + fmt(state.medal) + "% · dano " + (state.basis === "depois" ? "Depois" : "Agora") + (state.useTests ? " · com testes" : "");
+        document.getElementById("resumo-hint").textContent = (isEff() ? "Efetividade · " : "Superefetivo · ") + (isPar() ? "1.5× par · 4 rotações" : is15() ? "1.5× · " + NT() + " rotações" : is3() ? "3×3" : "2×2×2") + " · Runa " + r.id + " (" + r.bonus + ") · medalhas " + fmt(state.medal) + "%" + (state.tierPrec > 0 ? " · Tier " + fmt(state.tierPrec) + "%" : "") + " · dano " + (state.basis === "depois" ? "Depois" : "Agora") + (state.useTests ? " · com testes" : "");
 
         const teamCards = TEAMS().map(function (i) {
           const mem = groupMembers(i);
@@ -2239,8 +2255,8 @@
               const ptsTxt = same && shortM.length === 6
                 ? fmt(defs[0]) + " pts em cada um dos 6"
                 : shortM.map(function (m, k) { return esc((m.name || "?").replace(/^Shiny\s+/i, "")) + " " + fmt(defs[k]); }).join(", ") + " pts";
-              const medalAdd = maxDef * PT_PCT;
-              const berryOk = shortM.every(function (m) { return !m.berry && precOf(m) + BERRY + 1e-9 >= reqP; });
+              const medalAdd = maxDef / tierMult() * PT_PCT;
+              const berryOk = shortM.every(function (m) { return !m.berry && precOf(m) + BERRY * tierMult() + 1e-9 >= reqP; });
               precLine = "<span><span class=\"nx-no\">falta " + ptsTxt + "</span>" +
                 "<br><span class=\"nx-alt\">ou <b>+" + fmt(medalAdd) + "% em medalha</b> (" + fmt(state.medal) + "% → " + fmt(state.medal + medalAdd) + "%)</span>" +
                 (berryOk ? "<br><span class=\"nx-alt\">ou <b>Berry</b> em quem falta</span>" : "") + "</span>";
@@ -3030,6 +3046,7 @@
         document.getElementById("stepIn").value = fmt(state.step);
         document.getElementById("maxHzIn").value = String(state.table.length - 1);
         document.getElementById("medalIn").value = fmt(state.medal);
+        document.getElementById("tierPrecIn").value = fmt(state.tierPrec);
         document.getElementById("dmgMedalIn").value = fmt(state.dmgMedal);
         document.getElementById("boostPctIn").value = fmt(state.boostPct);
       }
@@ -3271,6 +3288,7 @@
         state.format = "2x2x2";
         state.useTests = true;
         state.medal = 2.5;
+        state.tierPrec = 0;
         state.dmgMedal = 0;
         state.boostPct = 1;
         state.base = 560;
@@ -3374,6 +3392,7 @@
         inp.addEventListener("focus", function () { inp.select(); });
       }
       bindNum("medalIn", function (v) { state.medal = v; }, function () { return fmt(state.medal); });
+      bindNum("tierPrecIn", function (v) { state.tierPrec = v == null ? 0 : Math.min(100, v); }, function () { return fmt(state.tierPrec); }, true);
       bindNum("boostPctIn", function (v) { state.boostPct = v == null ? 0 : Math.min(100, v); }, function () { return fmt(state.boostPct); }, true);
       bindNum("dmgMedalIn", function (v) { state.dmgMedal = v == null ? 0 : Math.min(200, v); }, function () { return fmt(state.dmgMedal); }, true);
 
