@@ -165,7 +165,6 @@
     .mlabel { font-size: var(--fs-1); color: var(--muted); font-weight: 600; }
     .in.small { width: 84px; }
     input.cell[readonly] { cursor: default; }
-    #model-note { margin-bottom: 14px; }
     .berry { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-2); font-weight: 600; color: var(--text); background: var(--sunken); border: 1px solid var(--line-strong); border-radius: var(--r-2); padding: 7px 10px; cursor: pointer; white-space: nowrap; }
     .berry input { width: 16px; height: 16px; accent-color: var(--gold); cursor: pointer; }
     .berry:has(input:checked) { border-color: var(--gold); color: var(--gold); }
@@ -181,6 +180,19 @@
     .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 12px; font-size: var(--fs-1); color: var(--muted); }
     .legend i { display: inline-block; width: 11px; height: 11px; border-radius: var(--r-1); margin-right: 6px; vertical-align: -1px; }
     .foot { margin-top: 10px; }
+    /* ===== Tabela de Hazard: leitura por padrão, edição sob demanda ===== */
+    .tbl-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 12px; }
+    .tbl-tools .hint { margin: 0; }
+    #tblEdit[aria-pressed="true"] { background: var(--gold); border-color: var(--gold); color: var(--on-gold); }
+    #tbl-sec:not(.editing) .tbl-edit-only { display: none; }
+    .tbl-edit-only { margin-bottom: 14px; padding: 12px 14px; border: 1px dashed var(--line-strong); border-radius: var(--r-2); }
+    .tbl-edit-only > .hint { margin: 8px 0 0; }
+    .tbl-reset { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+    #tbl-sec.editing input.cell[data-c="6"] { background: var(--sunken); box-shadow: inset 0 0 0 1px var(--line-strong); border-radius: var(--r-1); cursor: text; }
+    #tbl-sec.editing input.cell[data-c="6"]:focus { box-shadow: inset 0 0 0 2px var(--ring); }
+    .hz tr.grp th { padding: 8px 4px 2px; border-bottom: 0; font-size: var(--fs-1); color: var(--text-2); }
+    .hz tr.grp th.g { border-bottom: 1px solid var(--line); }
+    .hz tr.grp th[rowspan] { border-bottom: 1px solid var(--line-strong); vertical-align: bottom; }
     @media (max-width: 900px) {
       .teams-grid, .teams-grid.f3 { grid-template-columns: 1fr; }
       .zone { min-height: 110px; }
@@ -295,7 +307,8 @@
       /* Barra do modelo: um grupo por linha */ .model-bar { gap: 10px; }
       .mgroup { width: 100%; }
       .head .tools .btn { flex: 1; }
-      /* Tabela de Hazard: só a coluna da sua Runa + precisão */ table.hz { min-width: 0; }
+      /* Tabela de Hazard: só a coluna da sua Runa + precisão; bônus com rolagem lateral e o Hazard fixo à esquerda */ table.hz { min-width: 560px; table-layout: auto; }
+      .hz td.hn, .hz tr.grp th[rowspan]:first-child { position: sticky; left: 0; z-index: 1; background: var(--panel); }
       .hz th[data-c]:not(.sel), .hz td[data-c]:not(.col-sel):not([data-c="6"]) { display: none; }
       .hz th, .hz td { font-size: var(--fs-2); }
       .legend { flex-direction: column; gap: 6px; }
@@ -798,13 +811,14 @@
       <div id="upgrades"></div>
     </details>
 
-    <section class="card">
-      <div class="head">
-        <h2>Tabela de Hazard</h2>
-        <div class="tools">
-          <button type="button" class="btn" id="reset-all">Restaurar tudo</button>
-        </div>
+    <details class="card fold" id="tbl-sec" data-fold="tbl">
+      <summary><span class="fold-t">Tabela de Hazard</span><span class="fold-s" id="tbl-top"></span></summary>
+      <div class="tbl-body">
+      <div class="tbl-tools">
+        <button type="button" class="btn" id="tblEdit" aria-pressed="false">Editar tabela</button>
+        <p class="hint" id="model-note"></p>
       </div>
+      <div class="tbl-edit-only">
       <div class="model-bar">
         <div class="mgroup" id="g-base"><span class="mlabel">Dano necessário sem Hazard</span>
           <div class="seg" role="radiogroup" aria-label="Base">
@@ -824,7 +838,9 @@
           <button type="button" class="btn" id="maxHzInc" aria-label="Aumentar o Hazard máximo">+</button>
         </div>
       </div>
-      <p class="hint" id="model-note"></p>
+      <p class="hint">Clique numa célula de precisão (pontos) para mudar o valor daquele Hazard.</p>
+      <div class="tbl-reset"><button type="button" class="btn" id="reset-all">Restaurar tudo</button><span class="hint">volta nomes, danos, times e tabela ao padrão</span></div>
+      </div>
       <div class="table-wrap"><table class="hz" id="hz"></table></div>
       <div class="legend">
         <span><i style="background:var(--rc, #f0a04b)"></i>Maior Hazard que todos os times fazem</span>
@@ -832,8 +848,9 @@
         <span><i style="background:rgba(240,160,75,0.35)"></i>Só alguns times fazem (letras)</span>
         <span>Hazard riscado: algum pokémon não tem a precisão.</span>
       </div>
-      <p class="hint foot">Precisão em pontos (1 ponto = 0,2%), editável. Em "Hazard máximo" você aumenta a tabela além do 17: o dano segue a fórmula e a precisão continua subindo no mesmo passo das últimas linhas. Cada um dos 6 pokémon precisa ter a precisão do Hazard; o Hazard oficial já considera isso.</p>
-    </section>
+      <p class="hint foot">Precisão em pontos (1 ponto = 0,2%). Cada um dos 6 pokémon precisa ter a precisão do Hazard, e o Hazard da barra já considera isso. Acima do 17 o dano segue a fórmula e a precisão sobe no mesmo passo das últimas linhas.</p>
+      </div>
+    </details>
     <details class="card fold" id="adj-sec" data-fold="adj">
       <summary><span class="fold-t">Ajustes</span><span class="fold-s" id="adj-top"></span></summary>
       <div class="adj-grid">
@@ -1535,10 +1552,10 @@
       // bônus por nível de Hazard (Experiência +5%, Loot +0,5%, Shiny Charm +2%)
       function pctTxt(v) { return (Math.round(v * 10) / 10).toLocaleString("pt-BR") + "%"; }
       function buildTable() {
-        const head = "<thead><tr><th>Hazard</th>" + RUNES.map(function (r) {
+        const head = "<thead><tr class=\"grp\"><th rowspan=\"2\">Hazard</th><th colspan=\"6\" class=\"g\" id=\"hz-g-rune\">Dano necessário por Runa</th><th colspan=\"2\" class=\"g\">Precisão exigida</th><th rowspan=\"2\">Sua precisão<div class=\"hz-b\">menor dos 6, em pontos</div></th><th colspan=\"3\" class=\"g bn\">Bônus do Hazard</th></tr><tr>" + RUNES.map(function (r) {
           return "<th data-c=\"" + r.id + "\" style=\"--c:" + r.color + "\"><span class=\"gem\"></span>Runa " + r.id +
             "<div class=\"hz-b\">" + r.bonus + "</div></th>";
-        }).join("") + "<th>Precisão<div class=\"hz-b\">pontos</div></th><th>Precisão<div class=\"hz-b\">%</div></th><th>Sua precisão<div class=\"hz-b\">pontos (menor dos 6)</div></th><th class=\"bn\" title=\"Experiência: +5% por nível de Hazard\">Experiência<div class=\"hz-b\">+5% por Hazard</div></th><th class=\"bn\" title=\"Loot: +0,5% por nível de Hazard\">Loot<div class=\"hz-b\">+0,5% por Hazard</div></th><th class=\"bn\" title=\"Shiny Charm: +2% por nível de Hazard\">Shiny Charm<div class=\"hz-b\">+2% por Hazard</div></th></tr></thead>";
+        }).join("") + "<th>pontos</th><th>%</th><th class=\"bn\" title=\"Experiência: +5% por nível de Hazard\">Experiência<div class=\"hz-b\">+5% por Hazard</div></th><th class=\"bn\" title=\"Loot: +0,5% por nível de Hazard\">Loot<div class=\"hz-b\">+0,5% por Hazard</div></th><th class=\"bn\" title=\"Shiny Charm: +2% por nível de Hazard\">Shiny Charm<div class=\"hz-b\">+2% por Hazard</div></th></tr></thead>";
         const body = state.table.map(function (row, i) {
           return "<tr data-i=\"" + i + "\"><td class=\"hn\">" + i + "</td>" + row.map(function (v, c) {
             const label = c < 6 ? "Hazard " + i + ", Runa " + c : "Hazard " + i + ", precisão";
@@ -1621,7 +1638,26 @@
         document.getElementById("rb-why").innerHTML = L.join(" ");
       }
 
+      // no celular só aparece a coluna da sua Runa: o título do grupo cobre 1 coluna
+      const PHONE = window.matchMedia ? window.matchMedia("(max-width: 640px)") : { matches: false };
+      function fitTableHead() {
+        const g = document.getElementById("hz-g-rune");
+        if (!g) return;
+        g.colSpan = PHONE.matches ? 1 : 6;
+        g.textContent = PHONE.matches ? "Dano" : "Dano necessário por Runa";
+      }
+      let TBL_EDIT = false;
+      function setTblEdit(on) {
+        TBL_EDIT = on;
+        const sec = document.getElementById("tbl-sec");
+        sec.classList.toggle("editing", on);
+        const b = document.getElementById("tblEdit");
+        b.setAttribute("aria-pressed", String(on));
+        b.textContent = on ? "Concluir edição" : "Editar tabela";
+        paint();
+      }
       function paintTable(t, off) {
+        fitTableHead();
         const r = state.rune;
         const color = RUNES[r].color;
         el.table.style.setProperty("--rc", color);
@@ -1648,7 +1684,11 @@
             who.textContent = tag;
             if (c < 6) {
               inp.readOnly = true;
+              inp.tabIndex = -1;
               if (document.activeElement !== inp) inp.value = reqK(i, c) + "k";
+            } else {
+              inp.readOnly = !TBL_EDIT;
+              inp.tabIndex = TBL_EDIT ? 0 : -1;
             }
           });
           const hn = tr.querySelector("td.hn");
@@ -2681,6 +2721,8 @@
       }
       // resumo de "Ajustes" quando ele está fechado
       function paintFolds() {
+        const tt = document.getElementById("tbl-top");
+        if (tt) tt.textContent = "base " + fmt(state.base) + "k · sobe " + fmt(state.step) + "% por Hazard · até o Hazard " + (state.table.length - 1);
         const a = document.getElementById("adj-top");
         if (a) a.textContent = "medalha de dano " + fmt(state.dmgMedal) + "% · precisão " + fmt(state.medal) + "% · Boost " + fmt(state.boostPct) + "% por +1" + (is15() ? " · meta " + state.rot.pct + "%" : "");
       }
@@ -3021,6 +3063,8 @@
         buildTable();
         paint();
       }
+      document.getElementById("tblEdit").addEventListener("click", function () { setTblEdit(!TBL_EDIT); });
+      if (PHONE.addEventListener) PHONE.addEventListener("change", fitTableHead);
       document.getElementById("reset-all").addEventListener("click", function () {
         if (!confirm("Restaurar nomes, danos, times e tabela para o padrão?")) return;
         resetState();
