@@ -8,8 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;600;800&display=swap" rel="stylesheet" />
   <style>
-    /* ===== Tokens (um sistema só) ===== */
-    :root {
+    /* ===== Tokens (um sistema só) ===== */ :root {
       /* superfícies */
       --bg: #020617; --panel: #0E1223; --sunken: #070B18; --raise: #131A2E;
       --line: #1E293B; --line-strong: #334155; --line-hover: #475569;
@@ -78,17 +77,6 @@
     .in:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(91, 141, 239, 0.22); }
     .in.invalid { border-color: var(--bad); box-shadow: 0 0 0 3px rgba(255, 122, 107, 0.2); }
     .in.num { text-align: right; font-variant-numeric: tabular-nums; }
-    .runes { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
-    .rune {
-      display: grid; grid-template-columns: auto 1fr; column-gap: 10px; align-items: center; text-align: left;
-      background: var(--sunken); border: 1px solid var(--line); border-radius: var(--r-2); padding: 10px 12px; cursor: pointer;
-    }
-    .rune:hover { border-color: var(--rc); }
-    .rune .gem { grid-row: 1 / span 3; width: 22px; height: 22px; background: var(--rc); transform: rotate(45deg) scale(0.72); border-radius: var(--r-1); }
-    .rune .rn { font-weight: 600; font-size: var(--fs-2); }
-    .rune .rb { color: var(--muted); font-size: var(--fs-1); }
-    .rune .rh { font-size: var(--fs-2); font-weight: 600; color: var(--rc); }
-    .rune.on { border-color: var(--rc); background: color-mix(in srgb, var(--rc) 14%, var(--sunken)); box-shadow: inset 0 0 0 1px var(--rc); }
     .teams-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: start; }
     .teams-grid.f3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -183,14 +171,6 @@
     .box.neutral { background: var(--sunken); border: 1px solid var(--line); color: var(--muted); }
     .box.warn { background: rgba(240, 160, 75, 0.1); border: 1px solid rgba(240, 160, 75, 0.4); color: var(--warn-2); }
     .box .btn { margin-top: 8px; }
-    .sum { display: grid; grid-template-columns: auto 1fr; gap: 6px 22px; align-items: center; margin-bottom: 14px; }
-    .sum .big { font-size: var(--fs-6); font-weight: 800; line-height: 1; color: var(--rc); }
-    .sum .k { color: var(--muted); font-size: var(--fs-2); margin-bottom: 4px; }
-    .sum .det p { margin: 2px 0; font-size: var(--fs-2); }
-    .sum .warnt { color: var(--warn); font-weight: 600; }
-    .chips { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; }
-    .chip { font-size: var(--fs-2); padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line-strong); font-variant-numeric: tabular-nums; }
-    .chip.weak { border-color: rgba(255, 122, 107, 0.6); color: var(--bad-2); }
     .table-wrap { overflow-x: auto; }
     table.hz { width: 100%; min-width: 760px; border-collapse: collapse; table-layout: fixed; font-size: var(--fs-2); }
     .hz th { padding: 9px 4px; border-bottom: 1px solid var(--line-strong); color: var(--muted); font-size: var(--fs-1); font-weight: 600; text-align: center; }
@@ -218,7 +198,6 @@
     input.cell:focus { background: rgba(91, 141, 239, 0.22); color: var(--text) !important; }
     .model-bar { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; margin-bottom: 8px; }
     .mgroup { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
-    .mgroup.off { opacity: 0.4; pointer-events: none; }
     .mlabel { font-size: var(--fs-1); color: var(--muted); font-weight: 600; }
     .in.small { width: 84px; }
     input.cell[readonly] { cursor: default; }
@@ -263,7 +242,6 @@
       .cand-body { grid-template-columns: 1fr; }
       .zone { min-height: 110px; }
     }
-    
     body { font-family: var(--font-ui); line-height: 1.5; font-size: var(--fs-3); -webkit-font-smoothing: antialiased; }
     .wrap { padding: 28px 0 72px; }
     header.top { margin-bottom: 24px; }
@@ -274,9 +252,8 @@
     section.card { padding: 20px 22px 22px; margin-bottom: 20px; border-color: var(--line); }
     .head { margin-bottom: 14px; }
     /* números: monoespaçada tabular para leitura rápida e alinhada */ .in.num, input.cell, .ttot, .pt td:not(:first-child), .hz td, .eff strong, .tbonus .in { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
-    .prec-out, .chip, .prec-bar .eq, .opt-lines { font-variant-numeric: tabular-nums; }
+    .prec-out, .prec-bar .eq, .opt-lines { font-variant-numeric: tabular-nums; }
     .ttot { font-size: var(--fs-4); font-weight: 600; }
-    .sum .big { font-size: var(--fs-6); letter-spacing: -0.03em; }
     /* texto mínimo de 12px */ .slot, .slab, .fld, .hz th .hz-b, .tweak, .tcount, .pt th, .pt .who-t, .who, .hz td.pv, .legend, .mon.drop-swap::after, .slot-row .tsel, .cand-col .btn.small-x, .mlabel, .eff, .prec-out { font-size: var(--fs-1); }
     .who { min-height: 0.8rem; letter-spacing: 0.02em; }
     .slot, .slab { }
@@ -299,7 +276,7 @@
     .berry:hover { border-color: var(--muted); }
     .pt input[type=checkbox], .chk input, .berry input { width: 18px; height: 18px; }
     .chk { min-height: 34px; color: var(--text-2); }
-    .btn, .seg label, .rune, .mon, .in, .star, .berry, .chip, input.cell, .team {
+    .btn, .seg label, .mon, .in, .star, .berry, input.cell, .team {
       transition: background-color .18s var(--ease), border-color .18s var(--ease), color .18s var(--ease), box-shadow .18s var(--ease), opacity .18s var(--ease);
     }
     /* foco visível em todo controle (teclado) */ :where(button, select, summary, input[type=checkbox], input[type=radio], a):focus-visible {
@@ -308,10 +285,7 @@
     .seg label:has(input:focus-visible) { outline: 2px solid var(--ring); outline-offset: -2px; }
     .star:focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
     input.cell:focus { box-shadow: inset 0 0 0 2px var(--ring); }
-    /* runas: estado selecionado também por texto, não só cor */ .rune { min-height: 64px; padding: 12px 14px; background: var(--sunken); }
-    .rune:hover { background: var(--raise); }
-    .rune.on .rn::after { content: "  ✓ selecionada"; font-size: var(--fs-1); font-weight: 600; color: var(--rc); }
-    /* como usar (recolhível) */ .howto { margin: -4px 0 14px; border: 1px solid var(--line); border-radius: var(--r-2); background: var(--sunken); }
+    /* runas: estado selecionado também por texto, não só cor */ /* como usar (recolhível) */ .howto { margin: -4px 0 14px; border: 1px solid var(--line); border-radius: var(--r-2); background: var(--sunken); }
     .howto > summary { cursor: pointer; list-style: none; padding: 9px 14px; font-size: var(--fs-2); font-weight: 600; color: var(--text-2); display: flex; align-items: center; gap: 8px; }
     .howto > summary::-webkit-details-marker { display: none; }
     .howto > summary::before { content: "▸"; color: var(--muted); transition: transform .18s var(--ease); }
@@ -332,11 +306,7 @@
     /* caixas de status */ .box { border-radius: var(--r-2); padding: 12px 16px; line-height: 1.55; }
     .box.tip { background: rgba(74, 222, 128, .07); border-color: rgba(74, 222, 128, .32); }
     .box.warn { color: var(--warn-2); background: rgba(251, 191, 36, .08); border-color: rgba(251, 191, 36, .35); }
-    /* resumo do Hazard: time mais fraco também por texto */ .chip { padding: 5px 12px; border-color: var(--line-strong); background: var(--sunken); }
-    .chip.weak { border-color: rgba(248, 113, 113, .6); color: var(--bad-2); }
-    .chip.weak::before { content: "▼ "; color: var(--bad); }
-    .sum .det p { font-size: var(--fs-2); line-height: 1.55; }
-    /* tabela de Hazard */ .hz th { padding: 10px 4px; font-size: var(--fs-1); }
+    /* resumo do Hazard: time mais fraco também por texto */ /* tabela de Hazard */ .hz th { padding: 10px 4px; font-size: var(--fs-1); }
     .hz tbody tr:nth-child(even) td:not(.col-sel):not(.best) { background: rgba(148, 163, 184, .035); }
     .hz tbody tr:hover td:not(.best) { background-color: rgba(148, 163, 184, .07); }
     .hz td.no input { opacity: .75; }
@@ -345,19 +315,7 @@
     .pt td { padding: 8px; }
     .pt tbody tr:hover td { background: rgba(148, 163, 184, .05); }
     .legend { gap: 8px 20px; }
-    /* ===== Resumo ===== */ .rs-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-    .rs-card { background: var(--sunken); border: 1px solid var(--line); border-radius: var(--r-2); padding: 14px 12px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
-    .rs-card.weak { border-color: rgba(248, 113, 113, .55); }
-    .rs-card .rs-t { font-weight: 600; font-size: var(--fs-2); display: flex; align-items: center; gap: 8px; }
-    .rs-card .rs-tag { font-size: var(--fs-1); font-weight: 600; color: var(--bad); border: 1px solid rgba(248, 113, 113, .5); border-radius: 999px; padding: 0 8px; }
-    .rs-card .rs-names { font-size: var(--fs-1); color: var(--muted); line-height: 1.4; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .rs-card .rs-names b { color: var(--text); font-weight: 600; }
-    .rs-card .rs-dmg { font-family: var(--font-num); font-size: var(--fs-5); font-weight: 600; letter-spacing: -0.02em; margin-top: 2px; }
-    .rs-card .rs-hz { font-weight: 600; font-size: var(--fs-2); }
-    .rs-card .rs-sub { font-size: var(--fs-1); color: var(--muted); }
-    .rs-card.off { border-color: var(--rc); background: color-mix(in srgb, var(--rc) 10%, var(--sunken)); justify-content: center; }
-    .rs-card.off .rs-big { font-size: var(--fs-6); font-weight: 800; line-height: 1.05; color: var(--rc); letter-spacing: -0.03em; }
-    .rs-next-h { margin: 18px 0 10px; font-size: var(--fs-2); font-weight: 600; color: var(--text-2); text-align: center; letter-spacing: 0.02em; }
+    /* ===== Resumo ===== */
     .rs-next { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
     .nx { background: var(--sunken); border: 1px solid var(--line); border-radius: var(--r-2); padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
     .nx-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
@@ -371,18 +329,12 @@
     .nx-alt b { color: var(--warn); font-weight: 600; }
     .nx-foot { margin-top: auto; padding-top: 6px; border-top: 1px dashed var(--line); font-size: var(--fs-1); font-weight: 600; }
     @media (max-width: 1100px) {
-      .rs-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .rs-next { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 480px) {
-      .rs-row { grid-template-columns: 1fr; }
     }
     @media (max-width: 640px) {
       .wrap { width: calc(100% - 24px); padding-top: 18px; }
       section.card { padding: 16px 14px 18px; }
       h1 { font-size: var(--fs-4); }
-      .sum { grid-template-columns: 1fr; }
-      .sum .big { font-size: var(--fs-6); }
       .tools { width: 100%; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -394,50 +346,29 @@
       .ball::after { width: 10px; height: 10px; }
       .sub { font-size: var(--fs-2); }
       .head { margin-bottom: 10px; }
-      /* sem zoom automático no iPhone ao tocar num campo */
-      .in, select, input.cell, .tbonus .in { font-size: var(--fs-3); }
+      /* sem zoom automático no iPhone ao tocar num campo */ .in, select, input.cell, .tbonus .in { font-size: var(--fs-3); }
       .slot-row .tsel { font-size: var(--fs-3); width: 60px; padding: 2px 2px 2px 10px; }
       /* Resumo: Hazard oficial em cima, times lado a lado */
-      .rs-row { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 8px; }
-      .rs-row:has(> .rs-card.off:nth-child(3)) { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
-      .rs-card { padding: 10px 6px; gap: 2px; }
-      .rs-card.off { grid-column: 1 / -1; order: -1; flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 4px 12px; padding: 10px 12px; }
-      .rs-card.off .rs-big { font-size: var(--fs-5); }
-      .rs-card .rs-t { font-size: var(--fs-2); flex-wrap: wrap; justify-content: center; gap: 4px; }
-      .rs-card .rs-tag { font-size: var(--fs-1); padding: 0 6px; }
-      .rs-card .rs-names { white-space: normal; font-size: var(--fs-1); line-height: 1.3; }
-      .rs-card .rs-dmg { font-size: var(--fs-3); }
-      .rs-card .rs-hz { font-size: var(--fs-2); }
-      .rs-next-h { margin: 14px 0 8px; }
       .rs-next { gap: 8px; }
       .nx { padding: 12px; }
       .nx-line { grid-template-columns: 64px minmax(0, 1fr); }
       /* Runas: 2 por linha, compactas */
-      .runes { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-      .rune { min-height: 56px; padding: 10px; column-gap: 8px; }
-      .rune.on .rn::after { content: " ✓"; }
-      /* Barra de ferramentas da seção 2 em grade */
-      section.card > .head > .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
-      .tools > .fmt-switch, .tools > .seg, .tools > .chk, .tools > .fmt-seg, .tools > .dmg-medal { grid-column: 1 / -1; }
-      .fmt-switch { justify-content: center; }
+      /* Barra de ferramentas da seção 2 em grade */ section.card > .head > .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+      .tools > .seg, .tools > .chk, .tools > .fmt-seg, .tools > .dmg-medal { grid-column: 1 / -1; }
       .tools > .seg { display: grid; grid-template-columns: 1fr 1fr; }
       .tools > .seg label { justify-content: center; }
       .tools > .btn { width: 100%; }
-      /* Cards de pokémon: arrastar pelo ⋮⋮ com alvo maior */
-      .zone { padding: 8px; gap: 8px; }
+      /* Cards de pokémon: arrastar pelo ⋮⋮ com alvo maior */ .zone { padding: 8px; gap: 8px; }
       .mon { padding: 10px; }
       .grip { width: 34px !important; min-height: 40px; display: flex; align-items: center; justify-content: center; font-size: var(--fs-4) !important; letter-spacing: -3px; color: var(--muted); border-radius: var(--r-2); background: var(--sunken); }
       .stars { gap: 2px; }
       .star { min-width: 30px; min-height: 30px; font-size: var(--fs-5); }
-      /* Tabela de precisão: só o que muda por pokémon (treino/Berry já estão no card, medalha é igual para todos) */
-      .pt th:nth-child(2), .pt td:nth-child(2), .pt th:nth-child(3), .pt td:nth-child(3), .pt th:nth-child(4), .pt td:nth-child(4) { display: none; }
+      /* Tabela de precisão: só o que muda por pokémon (treino/Berry já estão no card, medalha é igual para todos) */ .pt th:nth-child(2), .pt td:nth-child(2), .pt th:nth-child(3), .pt td:nth-child(3), .pt th:nth-child(4), .pt td:nth-child(4) { display: none; }
       .pt th, .pt td { padding: 8px 6px; }
-      /* Barra do modelo: um grupo por linha */
-      .model-bar { gap: 10px; }
+      /* Barra do modelo: um grupo por linha */ .model-bar { gap: 10px; }
       .mgroup { width: 100%; }
       .head .tools .btn { flex: 1; }
-      /* Tabela de Hazard: só a coluna da sua Runa + precisão */
-      table.hz { min-width: 0; }
+      /* Tabela de Hazard: só a coluna da sua Runa + precisão */ table.hz { min-width: 0; }
       .hz th[data-c]:not(.sel), .hz td[data-c]:not(.col-sel):not([data-c="6"]) { display: none; }
       .hz th, .hz td { font-size: var(--fs-2); }
       .legend { flex-direction: column; gap: 6px; }
@@ -505,9 +436,6 @@
     .rc-tk { margin: 4px 0; font-size: var(--fs-1); font-weight: 600; color: var(--bad-2); }
     .rl-empty { margin-top: 6px; padding: 6px 8px; border: 1px dashed var(--line); border-radius: var(--r-2); font-size: var(--fs-1); color: var(--muted); display: flex; align-items: center; gap: 8px; }
     .rl-empty .rl-key { background: var(--line-strong); color: var(--muted); }
-    .rot-sticky { position: sticky; bottom: 8px; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 12px; padding: 10px 14px; border: 1px solid var(--gold); border-radius: var(--r-2); background: color-mix(in srgb, var(--gold) 10%, var(--panel)); box-shadow: 0 8px 24px rgba(0, 0, 0, .45); font-size: var(--fs-2); }
-    .rot-sticky[hidden] { display: none; }
-    html.has-sticky { scroll-padding-bottom: 140px; }
     .m15-note { margin: 8px 0 0; font-size: var(--fs-1); line-height: 1.45; color: var(--muted); }
     .m15-test { margin: 0 0 8px; padding: 6px 8px; border: 1px solid rgba(96, 165, 250, .5); border-radius: var(--r-2); font-size: var(--fs-1); color: var(--blue-2); }
     .fmt-seg { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 4px; min-height: 44px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--sunken); min-width: 330px; }
@@ -534,6 +462,57 @@
     td.bn.xp { color: var(--ok-2); }
     td.bn.lt { color: var(--warn-2); }
     td.bn.sc { color: var(--pink); }
+    /* ===== Topo ===== */
+    header.top { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px 24px; margin-bottom: 16px; }
+    .top-id { display: flex; align-items: flex-start; gap: 14px; min-width: 0; }
+    .top-tools { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+    .top-tools .page-nav { margin: 0; }
+    .top-tools .data-tools { margin: 0; justify-content: flex-end; }
+    @media (max-width: 760px) {
+      .top-tools { align-items: stretch; width: 100%; }
+      .top-tools .page-nav { display: grid; grid-template-columns: 1fr 1fr; }
+      .top-tools .page-nav a { justify-content: center; }
+      .top-tools .data-tools { display: grid; grid-template-columns: 1fr 1fr; }
+      .top-tools .data-tools .hint { grid-column: 1 / -1; }
+    }
+    /* ===== Barra de resultado (fixa no topo) ===== */
+    .rbar { position: sticky; top: 0; z-index: 30; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px 20px; margin: 0 0 16px; padding: 10px 16px; border: 1px solid var(--line-strong); border-radius: var(--r-2); background: color-mix(in srgb, var(--panel) 94%, transparent); backdrop-filter: blur(8px); box-shadow: 0 8px 24px rgba(0, 0, 0, .35); }
+    .rb-main { display: flex; align-items: center; gap: 16px; min-width: 0; }
+    .rb-hz { margin: 0; display: flex; align-items: baseline; gap: 8px; white-space: nowrap; }
+    .rb-l { font-size: var(--fs-2); font-weight: 600; color: var(--muted); }
+    #rb-num { font-size: var(--fs-6); font-weight: 800; line-height: 1; letter-spacing: -0.03em; color: var(--text); min-width: 1.2ch; }
+    .rb-why { margin: 0; font-size: var(--fs-2); line-height: 1.45; color: var(--text-2); min-width: 0; max-width: 72ch; }
+    .rb-why b { color: var(--text); }
+    .rb-warn { color: var(--warn-2); }
+    .rb-runes { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+    .rchip { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--sunken); color: var(--text-2); font: inherit; font-size: var(--fs-2); font-weight: 600; cursor: pointer; white-space: nowrap; transition: border-color .15s var(--ease), background-color .15s var(--ease); }
+    .rchip .gem { width: 9px; height: 9px; border-radius: 2px; background: var(--rc); transform: rotate(45deg); }
+    .rchip b { color: var(--text); font-weight: 800; }
+    .rchip:hover { border-color: var(--rc); }
+    .rchip.on { border-color: var(--rc); background: color-mix(in srgb, var(--rc) 18%, var(--sunken)); color: var(--text); box-shadow: inset 0 0 0 1px var(--rc); }
+    .page-nav { display: inline-flex; margin: 8px 0 0; padding: 3px; gap: 2px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--sunken); }
+    .page-nav a { display: inline-flex; align-items: center; min-height: 32px; padding: 4px 14px; border-radius: 999px; color: var(--muted); text-decoration: none; font-size: var(--fs-2); font-weight: 600; }
+    .page-nav a:hover { color: var(--text); }
+    .page-nav a.on { color: var(--on-gold); background: var(--gold); }
+    body.page-efet .page-nav a.on { color: #1A0B33; }
+    .page-note { margin: 0 0 16px; }
+    .sec-h { margin: 20px 0 10px; font-size: var(--fs-3); font-weight: 600; }
+    @media (max-width: 1180px) {
+      .rbar { grid-template-columns: minmax(0, 1fr); }
+      .rb-runes { justify-content: flex-start; }
+    }
+    @media (max-width: 760px) {
+      .rbar { margin: 0 -6px 14px; padding: 8px 10px; gap: 6px; }
+      .rb-main { gap: 10px; align-items: flex-start; }
+      #rb-num { font-size: var(--fs-5); }
+      .rb-hz { flex-direction: column; align-items: flex-start; gap: 0; }
+      .rb-l { font-size: var(--fs-1); }
+      .rb-why { font-size: var(--fs-1); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+      .rb-runes { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -10px; padding: 0 10px 2px; }
+      .rb-runes::-webkit-scrollbar { display: none; }
+      .rchip { min-height: 40px; flex: none; }
+      .page-nav a { min-height: 40px; }
+    }
     .eff-medal { font-size: var(--fs-1); color: var(--gold); margin-top: 2px; }
     .adj-row.adj-t { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; padding: 10px 0; border-bottom: 1px solid var(--line); }
     .adj-t > .pr-name { flex: 0 0 170px; }
@@ -758,9 +737,8 @@
       .rot-cards .rc { scroll-snap-align: start; }
       .rot-bar .in { font-size: var(--fs-3); }
     }
-    /* ===== Alvos de toque: 44px no celular ===== */
-    @media (max-width: 760px) {
-      .btn, .seg label, .in, select, .pr-rb, .st-b, .mchip, .rune, .page-nav a, .fmt-seg button, .bchk, .berry, .chk, summary, .st-rb, .adj-chk, .rl-copy, .pr-cmd { min-height: 44px; }
+    /* ===== Alvos de toque: 44px no celular ===== */ @media (max-width: 760px) {
+      .btn, .seg label, .in, select, .pr-rb, .st-b, .mchip, .page-nav a, .fmt-seg button, .bchk, .berry, .chk, summary, .st-rb, .adj-chk, .rl-copy, .pr-cmd { min-height: 44px; }
       .star { min-width: 44px; min-height: 44px; }
       .st-b { min-width: 44px; }
       .chk input, .adj-chk input, .berry input, .bchk input { width: 20px; height: 20px; }
@@ -772,51 +750,45 @@
 <body>
   <div class="wrap">
     <header class="top">
-      <div class="ball" aria-hidden="true"></div>
-      <div>
-        <h1>Calculadora de Hazard</h1>
-        <p class="credit">Criado por <strong>Morthus</strong> · Titan 3 Server</p>
-        <p class="visit-stats" id="visit-stats" hidden>
-          <span class="vs-i" title="Pessoas diferentes que já abriram a página (uma vez por navegador)">👁 <b id="vs-total">–</b> visitantes</span> <span class="vs-sep" aria-hidden="true">·</span>
-          <span class="vs-i vs-on" title="Pessoas com a página aberta nos últimos 2 a 4 minutos"><i class="vs-dot" aria-hidden="true"></i><b id="vs-online">–</b> online agora</span>
-        </p>
+      <div class="top-id">
+        <div class="ball" aria-hidden="true"></div>
+        <div>
+          <h1>Calculadora de Hazard</h1>
+          <p class="credit">Criado por <strong>Morthus</strong> · Titan 3 Server</p>
+          <p class="visit-stats" id="visit-stats" hidden>
+            <span class="vs-i" title="Pessoas diferentes que já abriram a página (uma vez por navegador)">👁 <b id="vs-total">–</b> visitantes</span> <span class="vs-sep" aria-hidden="true">·</span>
+            <span class="vs-i vs-on" title="Pessoas com a página aberta nos últimos 2 a 4 minutos"><i class="vs-dot" aria-hidden="true"></i><b id="vs-online">–</b> online agora</span>
+          </p>
+        </div>
+      </div>
+      <div class="top-tools">
+        <nav class="page-nav" aria-label="Tipo de dano">
+          <a href="#" data-page="neutro" title="Dano medido no superefetivo">Superefetivo</a>
+          <a href="#efetividade" data-page="efet" title="Dano no Dummy neutro × multiplicador de cada pokémon">Com efetividade</a>
+        </nav>
         <div class="data-tools">
-          <button type="button" class="btn" id="export-btn">Exportar dados</button>
-          <button type="button" class="btn" id="import-btn">Importar dados</button>
+          <button type="button" class="btn" id="export-btn" title="Baixa um arquivo com todos os seus dados">Exportar dados</button>
+          <button type="button" class="btn" id="import-btn" title="Carrega um arquivo exportado antes">Importar dados</button>
           <input type="file" id="import-file" accept="application/json,.json" hidden />
           <span class="hint" id="io-msg" role="status" aria-live="polite"></span>
         </div>
-        <p class="sub">Tudo é editável direto na página: nomes, danos, stars, held, precisão, bônus dos times, um Pokémon novo para testar e a própria tabela. Os dados ficam salvos no seu navegador; use Exportar/Importar para levar para outro aparelho.</p>
       </div>
     </header>
 
-    <nav class="page-nav" aria-label="Páginas">
-      <a href="#" data-page="neutro">Dano Superefetivo<small>testado no superefetivo</small></a>
-      <a href="#efetividade" data-page="efet">Com efetividade<small>multiplicador por pokémon</small></a>
-    </nav>
+    <div class="rbar" id="rbar" role="region" aria-label="Resultado">
+      <div class="rb-main">
+        <p class="rb-hz"><span class="rb-l">Hazard</span><b id="rb-num">–</b></p>
+        <p class="rb-why" id="rb-why" aria-live="polite"></p>
+      </div>
+      <div class="rb-runes" id="runes" role="group" aria-label="Runa: escolha a sua"></div>
+    </div>
     <div class="page-note" id="page-note" hidden>
-      <strong>Página de Efetividade.</strong> Digite o dano medido no <b>Dummy neutro</b> e marque em cada card quanto aquele pokémon bate no alvo (×0,25 até ×2). Os pokémon, danos, stars, held e precisão são os mesmos da página "Dano Superefetivo"; o multiplicador só vale aqui.
+      <strong>Com efetividade.</strong> Digite o dano medido no <b>Dummy neutro</b> e marque em cada pokémon quanto ele bate no alvo (×0,25 até ×2). Pokémon, danos, stars, held e precisão são os mesmos do Superefetivo; o multiplicador só vale aqui.
     </div>
 
-    <section class="card resumo" aria-labelledby="resumo-h">
-      <div class="head">
-        <h2 id="resumo-h">Resumo</h2>
-        <p class="hint" id="resumo-hint"></p>
-      </div>
-      <div id="resumo"></div>
-    </section>
-
     <section class="card">
       <div class="head">
-        <h2>1. Qual Runa você tem?</h2>
-        <p class="hint">O Hazard em cada Runa é o que todos os times fazem juntos com ela. Clique para escolher.</p>
-      </div>
-      <div id="runes" class="runes" role="group" aria-label="Runa"></div>
-    </section>
-
-    <section class="card">
-      <div class="head">
-        <h2 id="teams-h">2. Seus times</h2>
+        <h2 id="teams-h">Montagem: seus times</h2>
         <div class="tools">
           <div class="fmt-seg" id="fmtBox" role="radiogroup" aria-label="Formato">
             <span class="fmt-knob" aria-hidden="true"></span>
@@ -877,16 +849,13 @@
       </div>
       <div id="suggest"></div>
       <div id="par-out" class="par-only"></div>
+      <div id="next"></div>
       <div id="upgrades"></div>
-      <div class="rot-sticky" id="rot-sticky" hidden aria-live="polite">
-        <span class="rs-txt" id="rot-sticky-txt"></span>
-        <button type="button" class="btn" id="rot-sticky-go">Ver rotações ↑</button>
-      </div>
     </section>
 
     <section class="card">
       <div class="head">
-        <h2>3. Precisão dos seus pokémon</h2>
+        <h2>Precisão dos seus pokémon</h2>
         <p class="hint">Treino e Berry ficam no card de cada pokémon. Cada um precisa ter sozinho a precisão do Hazard. 1 ponto = 0,2%.</p>
       </div>
       <div class="prec-bar">
@@ -899,7 +868,7 @@
 
     <section class="card">
       <div class="head">
-        <h2>4. Hazard que você consegue</h2>
+        <h2>Tabela de Hazard</h2>
         <div class="tools">
           <button type="button" class="btn" id="reset-all">Restaurar tudo</button>
         </div>
@@ -924,7 +893,6 @@
         </div>
       </div>
       <p class="hint" id="model-note"></p>
-      <div id="summary"></div>
       <div class="table-wrap"><table class="hz" id="hz"></table></div>
       <div class="legend">
         <span><i style="background:var(--rc, #f0a04b)"></i>Maior Hazard que todos os times fazem</span>
@@ -1074,7 +1042,6 @@
         suggest: document.getElementById("suggest"),
         cand: document.getElementById("cand"),
         candOut: document.getElementById("cand-out"),
-        summary: document.getElementById("summary"),
         table: document.getElementById("hz"),
         pt: document.getElementById("pt"),
         precSum: document.getElementById("precSum")
@@ -1608,9 +1575,8 @@
         el.runes.innerHTML = RUNES.map(function (r) {
           const h = official(r.id, t);
           const on = r.id === state.rune;
-          return "<button type=\"button\" class=\"rune" + (on ? " on" : "") + "\" data-rune=\"" + r.id + "\" style=\"--rc:" + r.color + "\" aria-pressed=\"" + on + "\">" +
-            "<span class=\"gem\"></span><span class=\"rn\">Runa " + r.id + "</span><span class=\"rb\">" + r.bonus + "</span>" +
-            "<span class=\"rh\">" + "Hazard " + Math.max(0, h) + "</span></button>";
+          return "<button type=\"button\" class=\"rchip" + (on ? " on" : "") + "\" data-rune=\"" + r.id + "\" style=\"--rc:" + r.color + "\" aria-pressed=\"" + on + "\" title=\"Runa " + r.id + " (" + r.bonus + "): Hazard " + Math.max(0, h) + "\">" +
+            "<i class=\"gem\" aria-hidden=\"true\"></i>Runa " + r.id + " <b>" + Math.max(0, h) + "</b></button>";
         }).join("");
       }
 
@@ -1650,44 +1616,31 @@
         });
       }
 
-      function paintSummary(t, off) {
+      // Barra de resultado: o Hazard, quem segura e o que falta para o próximo
+      function paintBar(t, off) {
         const r = RUNES[state.rune];
         const weak = Math.min.apply(null, t);
         const wi = t.indexOf(weak);
-        const L = [];
-        let big;
         const dOff = dmgHz(r.id, t);
         const pMin = precMin(state.mons);
-        const pLow = state.mons.filter(function (m) { return precOf(m) === pMin; }).map(function (m) { return esc(m.name || "sem nome"); });
-        if (off >= 0 && off < dOff) {
-          big = "Hazard " + off;
-          L.push("<p class=\"warnt\">Limitado pela <strong>precisão</strong>: pelo dano você faria " + hzTxt(dOff) + ", mas " + pLow.join(", ") + " tem " + fmt(pMin) + " pts (" + fmt(pMin * PT_PCT) + "%).</p>");
+        document.getElementById("rb-num").textContent = off < 0 ? "–" : String(off);
+        const L = [];
+        const issues = arrangementIssues();
+        if (issues.length) L.push("<span class=\"rb-warn\">Divisão que não vale no jogo (" + esc(issues.join("; ")) + "): é só estimativa.</span>");
+        if (off < 0) {
+          L.push(teamLabel(wi) + " (" + fmt(weak) + ") não chega a " + reqK(0, r.id) + "k, o mínimo do Hazard 0.");
+        } else if (off < dOff) {
+          const pLow = state.mons.filter(function (m) { return precOf(m) === pMin; }).map(function (m) { return esc(m.name || "sem nome"); });
+          L.push("Quem segura é a <b>precisão</b>: " + pLow.join(", ") + " com " + fmt(pMin) + " pts (" + fmt(pMin * PT_PCT) + "%). Pelo dano daria " + hzTxt(dOff) + ".");
           const nx = state.table[off + 1] ? state.table[off + 1][6] : null;
-          if (nx != null) L.push("<p>Hazard " + (off + 1) + " exige " + fmt(nx) + " pts (" + fmt(nx * PT_PCT) + "%) em cada pokémon: faltam " + fmt(nx - pMin) + " pts.</p>");
-        } else if (off < 0) {
-          big = "Abaixo do Hazard 0";
-          L.push("<p>O time mais fraco (" + teamLabel(wi) + ", " + fmt(weak) + ") não chega a " + reqK(0, r.id) + "k.</p>");
+          if (nx != null) L.push(hzTxt(off + 1) + " pede " + fmt(nx) + " pts em cada pokémon.");
         } else {
           const slack = weak - need(off, r.id);
-          big = "Hazard " + off;
-          L.push("<p>Limitado pelo <strong>" + teamLabel(wi) + "</strong> (" + namesOf(wi) + ") com " + fmt(weak) + ". Exige " + reqK(off, r.id) + "k, folga de " + kfmt(slack) +
-            (slack < 2000 ? " <span class=\"warnt\">(dentro da margem de erro)</span>" : "") + ".</p>");
-          const pr = state.table[off][6];
-          L.push("<p>Precisão necessária: <strong>" + fmt(pr) + " pts (" + fmt(pr * PT_PCT) + "%)</strong> · a sua menor é " + fmt(pMin) + " pts (" + fmt(pMin * PT_PCT) + "%) <span class=\"" + (pMin >= pr ? "st-ok" : "warnt") + "\">" + (pMin >= pr ? "✓" : "✗") + "</span></p>");
-          if (off + 1 < state.table.length) {
-            L.push("<p>Próximo: Hazard " + (off + 1) + " exige " + reqK(off + 1, r.id) + "k, faltam " + kfmt(need(off + 1, r.id) - weak) + " no " + teamLabel(wi) + ".</p>");
-          } else {
-            L.push("<p>Já é o Hazard máximo da tabela.</p>");
-          }
+          L.push("Quem segura: <b>" + teamLabel(wi) + "</b> com " + fmt(weak) + (slack < 2000 ? " <span class=\"rb-warn\">(folga de " + kfmt(slack) + ", dentro da margem de erro)</span>" : "") + ".");
+          if (off + 1 < state.table.length) L.push(hzTxt(off + 1) + " pede " + reqK(off + 1, r.id) + "k: falta " + kfmt(need(off + 1, r.id) - weak) + ".");
+          else L.push("É o Hazard máximo da tabela.");
         }
-        const chips = t.map(function (v, i) {
-          const h = maxHz(state.rune, v);
-          return "<span class=\"chip" + (i === wi ? " weak" : "") + "\">" + teamLabel(i) + " · " + fmt(v) + " · " + "Hazard " + Math.max(0, h) + "</span>";
-        }).join("");
-        const issues = arrangementIssues();
-        if (issues.length) L.unshift("<p class=\"warnt\">Atenção: sua divisão atual não vale no jogo (" + esc(issues.join("; ")) + "). Esse Hazard é só uma estimativa.</p>");
-        el.summary.innerHTML = "<div class=\"sum\" style=\"--rc:" + r.color + "\"><div><div class=\"k\">Runa " + r.id + " (" + r.bonus + ")</div><div class=\"big\">" + big + "</div></div>" +
-          "<div class=\"det\">" + L.join("") + "</div><div class=\"chips\">" + chips + "</div></div>";
+        document.getElementById("rb-why").innerHTML = L.join(" ");
       }
 
       function paintTable(t, off) {
@@ -2005,49 +1958,19 @@
         });
       }
 
-      function paintResumo(t, off) {
+      // Próximos Hazards: o que falta de dano e de precisão para cada um
+      function paintNext(t, off) {
         const r = RUNES[state.rune];
-        const box = document.getElementById("resumo");
-        const dH = dmgHz(state.rune, t);
-        const pCap = precCap(state.mons);
-        const weak = Math.min.apply(null, t);
-        const wi = t.indexOf(weak);
-        document.getElementById("resumo-hint").textContent = (isEff() ? "Efetividade · " : "Superefetivo · ") + (isPar() ? "1.5× par · 4 rotações" : is15() ? "1.5× · " + NT() + " rotações" : is3() ? "3×3" : "2×2×2") + " · Runa " + r.id + " (" + r.bonus + ") · medalhas " + fmt(state.medal) + "% · dano " + (state.basis === "depois" ? "Depois" : "Agora") + (state.useTests ? " · com testes" : "");
-
-        const teamCards = TEAMS().map(function (i) {
-          const mem = groupMembers(i);
-          const h = mem.length ? Math.min(maxHz(state.rune, t[i]), precCap(mem)) : -1;
-          const names = mem.map(function (m, k) {
-            const n = esc((m.name || "sem nome").replace(/^Shiny\s+/i, ""));
-            return k === 0 ? "<b>" + n + "</b>" : n;
-          }).join(" · ") || "vazio";
-          const isWeak = i === wi && mem.length > 0;
-          return "<div class=\"rs-card" + (isWeak ? " weak" : "") + "\">" +
-            "<div class=\"rs-t\">" + teamLabel(i) + (isWeak ? "<span class=\"rs-tag\">mais fraco</span>" : "") + "</div>" +
-            "<div class=\"rs-names\" title=\"" + esc(mem.map(function (m) { return m.name; }).join(" + ")) + "\">" + names + "</div>" +
-            "<div class=\"rs-dmg\">" + fmt(t[i]) + "</div>" +
-            "<div class=\"rs-hz\" style=\"color:" + r.color + "\">" + hzTxt(h) + "</div>" +
-            "</div>";
-        }).join("");
-
-        let lim;
-        if (off < 0) lim = "nenhum Hazard ainda";
-        else if (pCap < dH) lim = "segurado pela precisão";
-        else lim = "segurado pelo dano do " + teamLabel(wi);
-        const offCard = "<div class=\"rs-card off\" style=\"--rc:" + r.color + "\">" +
-          "<div class=\"rs-sub\">Hazard oficial</div>" +
-          "<div class=\"rs-big\">" + (off < 0 ? "—" : off) + "</div>" +
-          "<div class=\"rs-sub\">" + lim + "</div></div>";
-
+        const box = document.getElementById("next");
         const maxI = state.table.length - 1;
         const from = Math.max(0, off + 1);
         const list = [];
         for (let i = from; i <= Math.min(maxI, from + 2); i++) list.push(i);
         let next;
         if (!list.length) {
-          next = "<p class=\"hint\" style=\"text-align:center\">Você já faz o Hazard máximo da tabela.</p>";
+          next = "";
         } else {
-          next = "<div class=\"rs-next-h\">Próximos Hazards: o que falta</div><div class=\"rs-next\">" + list.map(function (i) {
+          next = "<h3 class=\"sec-h\">Próximos Hazards: o que falta</h3><div class=\"rs-next\">" + list.map(function (i) {
             const reqD = need(i, state.rune);
             const reqP = state.table[i][6];
             const shortT = TEAMS().filter(function (k) { return t[k] < reqD; });
@@ -2084,7 +2007,7 @@
               "<div class=\"nx-foot\">" + foot + "</div></div>";
           }).join("") + "</div>";
         }
-        box.innerHTML = "<div class=\"rs-row\"" + (is3() ? " style=\"grid-template-columns:repeat(3,minmax(0,1fr))\"" : is15() ? " style=\"grid-template-columns:repeat(" + Math.min(NT() + 1, 6) + ",minmax(0,1fr))\"" : "") + ">" + teamCards + offCard + "</div>" + next;
+        box.innerHTML = next;
       }
 
 
@@ -2648,8 +2571,6 @@
           const full = monDmg(state.mons[g.p]);
           if (!g.est && full > 0 && Math.abs(g.P - full) / full > 0.03) warn += "<p class=\"hint\">" + nm(g.p) + ": a soma das skills (" + fmt(g.P) + ") não bate com o dano do combo dele (" + fmt(full) + "). A conta usa as skills.</p>";
         });
-        const stt = document.getElementById("rot-sticky-txt");
-        if (stt) stt.innerHTML = "<b style=\"color:" + r.color + "\">" + hzTxt(off) + "</b> · rotação mais fraca <b>" + kfmt(res.min) + "</b>";
         pout.innerHTML = "<h3 class=\"par-rh\">Resultado: as 4 rotações</h3>" + top + warn + "<div class=\"pr-grid\">" + cards + "</div>";
       }
       // ===== Sugestões de melhoria: o que mais sobe o dano do time/rotação mais fraca =====
@@ -2747,14 +2668,13 @@
 
       function paintRot() {
         if (!isPar()) { const po = document.getElementById("par-out"); if (po) po.innerHTML = ""; }
-        if (isPar() && document.getElementById("rot-out")) { paintSkillSums(); paintPar(); syncSticky(); return; }
+        if (isPar() && document.getElementById("rot-out")) { paintSkillSums(); paintPar(); return; }
         const out = document.getElementById("rot-out");
-        if (!out || !is15()) { const st = document.getElementById("rot-sticky"); if (st) { st.hidden = true; document.documentElement.classList.remove("has-sticky"); } return; }
+        if (!out || !is15()) return;
         paintSkillSums();
         const res = rotResult();
         if (!res) {
           out.innerHTML = "<div class=\"box neutral\">As rotações e os comandos aparecem aqui assim que você anotar o dano das skills nos cards abaixo.</div>";
-          syncSticky();
           return;
         }
         const r = RUNES[state.rune];
@@ -2833,13 +2753,9 @@
         const all = [];
         res.rots.forEach(function (ro, i) { ro.seqs.forEach(function (sq, j) { all.push((i * state.rot.maxP + j + 1) + ": " + comboCmd(sq.seq)); }); });
         const allBox = all.length ? "<div class=\"rot-all\"><div class=\"rot-all-h\"><strong>Atalhos</strong><button type=\"button\" class=\"btn\" id=\"copy-all\" data-all=\"" + esc(all.join("\n")) + "\">Copiar todos</button></div><pre>" + esc(all.join("\n")) + "</pre></div>" : "";
-        const stt = document.getElementById("rot-sticky-txt");
-        if (stt) stt.innerHTML = "<b style=\"color:" + r.color + "\">" + hzTxt(off) + "</b> · rotação mais fraca <b>" + kfmt(res.min) + "</b>" +
-          (nx >= 0 && res.min < nxNeed ? " · faltam " + kfmt(nxNeed - res.min) + " p/ Hazard " + nx : "");
         out.innerHTML = "<div class=\"rot-det\">" + L.join("") + "</div>" +
           "<div class=\"rot-cards\">" + cards + "</div>" + unused + allBox +
           "<p class=\"hint\">Toque no pokémon da rotação para copiar o <code>!autocombo</code>. O número é o atalho: 1 e 2 na rotação 1, 3 e 4 na rotação 2... O OFFTANK vem primeiro: lura e solta o ⚡ stun / 🔇 silence logo no começo do comando, depois o DMG finaliza · ▲ buff: sempre a penúltima, e a skill buffada a última.</p>";
-        syncSticky();
       }
 
       function paint() {
@@ -2848,13 +2764,13 @@
         const off = official(state.rune, t);
         paintRunes(t);
         paintTeams(t);
-        paintSummary(t, off);
+        paintBar(t, off);
         paintModel();
         paintTable(t, off);
         paintSuggest(t);
         paintCand();
         paintPrec();
-        paintResumo(t, off);
+        paintNext(t, off);
         paintRot();
         paintUpgrades();
       }
@@ -2902,7 +2818,7 @@
         document.body.classList.toggle("fmt-par", isPar());
         document.getElementById("rot-panel").hidden = !is15();
         const h = document.getElementById("teams-h");
-        if (h) h.textContent = isPar() ? "2. Suas rotações 1.5× (full + parcial)" : is15() ? "2. Suas rotações 1.5×" : "2. Seus times";
+        if (h) h.textContent = isPar() ? "Montagem: 4 rotações (full + parcial)" : is15() ? "Montagem: rotações 1.5×" : "Montagem: seus times";
       }
 
       function syncControls() {
@@ -3676,23 +3592,6 @@
         document.body.classList.toggle("det-on", state.rot.det);
         save();
       });
-      document.getElementById("rot-sticky-go").addEventListener("click", function () {
-        document.getElementById("rot-out").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
-      });
-      var rotOutVisible;
-      if ("IntersectionObserver" in window) {
-        new IntersectionObserver(function (es) {
-          rotOutVisible = es[0].isIntersecting;
-          syncSticky();
-        }, { threshold: 0.05 }).observe(document.getElementById("rot-out"));
-      }
-      function syncSticky() {
-        const st = document.getElementById("rot-sticky");
-        const res = is15() ? rotResult() : null;
-        const show = !!res && rotOutVisible === false;
-        st.hidden = !show;
-        document.documentElement.classList.toggle("has-sticky", show);
-      }
       bindInt("rotPct", 10, 200, function () { return state.rot.pct; }, function (v) { state.rot.pct = v; });
       bindInt("rotP", 1, 6, function () { return state.rot.maxP; }, function (v) { state.rot.maxP = v; });
       window.addEventListener("hashchange", function () {
