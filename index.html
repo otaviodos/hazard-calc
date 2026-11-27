@@ -152,7 +152,7 @@
     .hz td.best .who { color: var(--on-gold); }
     .hz td.ok input, .hz td.ok .who { color: var(--ok); }
     .hz td.part input, .hz td.part .who { color: var(--warn); }
-    .hz td.no input { color: var(--muted); opacity: 0.6; }
+    .hz td.no input { color: var(--muted); }
     .who { display: block; font-size: var(--fs-1); font-weight: 800; line-height: 1; min-height: 0.7rem; padding-bottom: 3px; letter-spacing: 0.04em; }
     input.cell {
       width: 100%; background: transparent; border: 0; border-radius: 0; padding: 7px 2px 1px; text-align: center;
@@ -254,7 +254,6 @@
     /* resumo do Hazard: time mais fraco também por texto */ /* tabela de Hazard */ .hz th { padding: 10px 4px; font-size: var(--fs-1); }
     .hz tbody tr:nth-child(even) td:not(.col-sel):not(.best) { background: rgba(148, 163, 184, .035); }
     .hz tbody tr:hover td:not(.best) { background-color: rgba(148, 163, 184, .07); }
-    .hz td.no input { opacity: .75; }
     input.cell { padding: 8px 2px 2px; }
     /* tabela de precisão */
     .legend { gap: 8px 20px; }
@@ -350,7 +349,7 @@
     .rot-steps { margin: 0 0 8px; padding-left: 20px; font-size: var(--fs-2); line-height: 1.6; }
     .rot-steps code, .rot-rules code { font-family: var(--font-num); }
     .rot-rules { margin: 0 0 12px; }
-    .rot-rules > summary { cursor: pointer; font-size: var(--fs-2); font-weight: 600; color: var(--text-2); }
+    .rot-rules > summary { cursor: pointer; padding: 4px 0; font-size: var(--fs-2); font-weight: 600; color: var(--text-2); }
     .rot-rules > .hint { margin-top: 6px; max-width: 110ch; }
     .rl-role { font-size: var(--fs-1); font-weight: 800; letter-spacing: .03em; padding: 1px 5px; border-radius: var(--r-1); border: 1px solid var(--line-strong); color: var(--muted); }
     .rl-role.r-offtank { color: var(--blue-2); border-color: rgba(147, 197, 253, .5); }
@@ -426,7 +425,7 @@
       .rb-why { font-size: var(--fs-1); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
       .rb-runes { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -10px; padding: 0 10px 2px; }
       .rb-runes::-webkit-scrollbar { display: none; }
-      .rchip { min-height: 40px; flex: none; }
+      .rchip { min-height: 44px; flex: none; }
       .page-nav a { min-height: 40px; }
     }
     .eff-medal { font-size: var(--fs-1); color: var(--gold); margin-top: 2px; }
@@ -521,12 +520,7 @@
       .st-row > .st-af .in { width: 140px; }
       .st-d, .st-af .in { font-size: var(--fs-3); }
     }
-    .par-top { display: flex; align-items: center; gap: 8px 18px; flex-wrap: wrap; margin-bottom: 12px; padding: 12px 14px; border: 1px solid var(--line-strong); border-radius: var(--r-2); background: var(--sunken); }
-    .pt-lab { font-size: var(--fs-1); font-weight: 600; color: var(--muted); }
     .pr-hz { font-size: var(--fs-2); font-weight: 600; margin-left: 4px; }
-    .pt-big { font-size: var(--fs-5); font-weight: 800; letter-spacing: -0.02em; line-height: 1; }
-    .pt-txt { font-size: var(--fs-2); line-height: 1.5; color: var(--muted); }
-    .pt-txt b { color: var(--text); }
     .pr-grid { display: flex; flex-direction: column; gap: 12px; }
     .pr-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
     .pr { border: 1px solid var(--line-strong); border-radius: var(--r-2); padding: 12px; background: var(--sunken); display: flex; flex-direction: column; gap: 8px; min-width: 0; }
@@ -534,7 +528,6 @@
     .pr-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
     .pr-h b { font-size: var(--fs-2); }
     .pr-tot { font-family: var(--font-num); font-size: var(--fs-4); font-weight: 600; }
-    .pr-no { color: var(--bad-2); font-size: var(--fs-2); font-weight: 600; }
     .pr-row { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto 130px; gap: 8px; align-items: center; }
     .pr-n { width: 22px; height: 22px; border-radius: 50%; background: var(--line-strong); color: var(--muted); font-size: var(--fs-1); font-weight: 800; display: grid; place-items: center; }
     .pr-fix { font-weight: 600; padding-left: 4px; }
@@ -615,6 +608,7 @@
     .mon.mini .eff { text-align: left; margin-top: 2px; }
     .mont-hint { margin: -4px 0 14px; }
     .mont-hint a, .pr-hint { color: var(--blue-2); }
+    a.pr-hint { display: inline-flex; align-items: center; min-height: 24px; }
     body.fmt-15 .mont-hint { display: none; }
     /* ===== Lista única de pokémon ===== */
     .plist { display: flex; flex-direction: column; gap: 4px; }
@@ -702,6 +696,7 @@
       .star { min-width: 44px; min-height: 44px; }
       .st-b { min-width: 44px; }
       .chk input, .berry input { width: 20px; height: 20px; }
+      a.pr-hint, #tbl-sec.editing input.cell[data-c="6"] { min-height: 44px; }
     }
     body { font-variant-numeric: tabular-nums; }
     small { font-size: var(--fs-1); }
@@ -1631,7 +1626,7 @@
           if (nx != null) L.push(hzTxt(off + 1) + " pede " + fmt(nx) + " pts em cada pokémon.");
         } else {
           const slack = weak - need(off, r.id);
-          L.push("Quem segura: <b>" + teamLabel(wi) + "</b> com " + fmt(weak) + (slack < 2000 ? " <span class=\"rb-warn\">(folga de " + kfmt(slack) + ", dentro da margem de erro)</span>" : "") + ".");
+          L.push("Quem segura: <b>" + teamLabel(wi) + "</b> com " + fmt(weak) + (slack >= 0 && slack < 2000 ? " <span class=\"rb-warn\">(folga de " + kfmt(slack) + ", dentro da margem de erro)</span>" : "") + ".");
           if (off + 1 < state.table.length) L.push(hzTxt(off + 1) + " pede " + reqK(off + 1, r.id) + "k: falta " + kfmt(need(off + 1, r.id) - weak) + ".");
           else L.push("É o Hazard máximo da tabela.");
         }
@@ -1943,7 +1938,7 @@
             const dmgLine = shortT.length
               ? "<span class=\"nx-no\">" + shortT.map(function (k) {
                   const f = reqD - t[k];
-                  return "" + teamLabel(k) + " falta " + kfmt(f) + " (+" + fmt(Math.ceil(f / t[k] * 1000) / 10) + "%)";
+                  return "" + teamLabel(k) + " falta " + kfmt(f) + (t[k] > 0 ? " (+" + fmt(Math.ceil(f / t[k] * 1000) / 10) + "%)" : "");
                 }).join("<br>") + "</span>"
               : "<span class=\"nx-ok\">✓ " + (is15() ? "as " + NT() + " rotações têm" : "os " + NT() + " times têm") + "</span>";
             const shortM = state.mons.filter(function (m) { return precOf(m) + 1e-9 < reqP; });
@@ -2470,10 +2465,7 @@
         const res = rotResult();
         if (!res) { pout.innerHTML = "<div class=\"box neutral\">Marque 2 Offtank FULL, 2 PARCIAIS e 2 DMG FULL para ver as 4 rotações.</div>"; return; }
         const r = RUNES[state.rune];
-        const t = totals();
-        const off = official(state.rune, t);
         const ev = res.ev, sl = ev.s;
-        const nx = off + 1 < state.table.length ? off + 1 : -1;
         const hzB = function (v) { const h = hzOf(v); return "<span class=\"pr-hz\" style=\"color:" + r.color + "\">" + (h < 0 ? "abaixo do Hz 0" : hzTxt(h)) + "</span>"; };
         const row = function (n, pi, tag, d, est) {
           return "<div class=\"pr-row\"><span class=\"pr-n\">" + n + "</span><span class=\"pr-fix\">" + nm(pi) + "</span><span class=\"par-tag " + (tag === "FULL" ? "full" : "parc") + "\">" + tag + "</span><span class=\"pr-d\">" + (est ? "~" : "") + fmt(Math.round(d)) + "</span></div>";
@@ -2483,9 +2475,9 @@
           const seqA = g.est ? [] : parSeq(pk.A, pk.pa, false);
           const cmd = seqA.length ? comboCmd(seqA) : "";
           let noteA;
-          if (g.est) noteA = "<div class=\"pr-note warn\">Falta anotar as skills do " + nm(g.p) + " (tabela acima): por enquanto é estimativa.</div>";
-          else if (!g.hasStun) noteA = "<div class=\"pr-note warn\">Marque o ⚡ Stun do " + nm(g.p) + " (tabela acima).</div>";
-          else if (buffMissing(state.mons[g.p])) noteA = "<div class=\"pr-note warn\">" + nm(g.p) + ": falta o dano antes e depois do buff da " + buffMissing(state.mons[g.p]) + " (tabela acima). Sem isso a conta não soma o buff.</div>";
+          if (g.est) noteA = "<div class=\"pr-note warn\">Falta anotar as skills do " + nm(g.p) + " (lista Pokémon, abaixo): por enquanto é estimativa.</div>";
+          else if (!g.hasStun) noteA = "<div class=\"pr-note warn\">Marque o ⚡ Stun do " + nm(g.p) + " (lista Pokémon, abaixo).</div>";
+          else if (buffMissing(state.mons[g.p])) noteA = "<div class=\"pr-note warn\">" + nm(g.p) + ": falta o dano antes e depois do buff da " + buffMissing(state.mons[g.p]) + " (lista Pokémon, abaixo). Sem isso a conta não soma o buff.</div>";
           else noteA = cmd ? "<button type=\"button\" class=\"pr-cmd\" data-cmd=\"" + esc(cmd) + "\"><code>" + esc(cmd) + "</code><span class=\"rl-cp\">Copiar</span></button>"
             : "<div class=\"pr-note\">Não usa skill aqui: só lura.</div>";
           const head = function (ro, i) { return "<div class=\"pr-h\"><b>Rotação " + (i + 1) + "</b><span class=\"pr-tot\">" + fmt(ro.tot) + " " + hzB(ro.tot) + "</span></div>"; };
@@ -2494,14 +2486,8 @@
             "<div class=\"pr" + (rb.tot === res.min ? " bad" : "") + "\">" + head(rb, gi * 2 + 1) + row(1, g.p, "PARCIAL", pk.dB, g.est) +
               "<div class=\"pr-note\">Abre com o ⚡ e usa todo o restante.</div>" + row(2, sl[gi * 3 + 2], "FULL", g.fd) + "</div></div>";
         }).join("");
-        const wIdx = res.rots.findIndex(function (ro) { return ro.tot === res.min; });
-        let top = "<div class=\"par-top\"><div><div class=\"pt-lab\">Até onde chega</div><div class=\"pt-big\" style=\"color:" + r.color + "\">" + (off < 0 ? "Abaixo do Hazard 0" : hzTxt(off)) + "</div></div>" +
-          "<div class=\"pt-txt\">Runa " + r.id + " · rotação mais fraca: <b>Rotação " + (wIdx + 1) + "</b> com <b>" + fmt(res.min) + "</b>";
-        if (nx >= 0) top += "<br>" + hzTxt(nx) + " pede " + reqK(nx, state.rune) + "k por rotação: falta " + kfmt(Math.max(0, need(nx, state.rune) - res.min)) + ".";
-        const pCap = precCap(state.mons);
-        if (pCap < ev.hd) top += "<br><span class=\"pr-no\">A precisão segura em " + hzTxt(pCap) + ".</span>";
-        if (state.rot.pct !== 100) top += "<br>Meta: " + state.rot.pct + "% do dano do Hazard.";
-        top += "</div></div>";
+        // o Hazard, quem segura e o que falta já estão na barra do topo; aqui só a meta, se mudou
+        const top = state.rot.pct !== 100 ? "<p class=\"hint\">Meta por rotação: " + state.rot.pct + "% do dano do Hazard (muda em Ajustes).</p>" : "";
         let warn = "";
         [ev.A, ev.B].forEach(function (g) {
           const full = monDmg(state.mons[g.p]);
@@ -2564,7 +2550,7 @@
           const m = state.mons[u.i];
           const hz = u.off > U.base.off ? "<span class=\"hz-up\">" + hzTxt(U.base.off) + " → " + hzTxt(u.off) + "</span>" : "";
           return "<div class=\"upg-r" + (n === 0 ? " top" : "") + "\"><span class=\"upg-what\"><b>" + shortName(m) + "</b> · " + u.op.txt + "<small>" + u.op.sub + "</small></span>" +
-            "<span class=\"upg-gain\">+" + kfmt(u.gain) + " na " + lim + hz + "</span>" +
+            "<span class=\"upg-gain\">+" + kfmt(u.gain) + (isPar() ? " na " : " no ") + lim + hz + "</span>" +
             "<button type=\"button\" class=\"btn\" data-upg=\"" + u.i + ":" + u.op.k + "\">Testar</button></div>";
         }).join("") : "<p class=\"pc-sub\">Nenhuma melhoria de star, held, Brute Berry ou Boost sobe o dano " + doLim + " agora.</p>";
         const top = document.getElementById("upg-top");
@@ -2617,7 +2603,7 @@
         paintSkillSums();
         const res = rotResult();
         if (!res) {
-          out.innerHTML = "<div class=\"box neutral\">As rotações e os comandos aparecem aqui assim que você anotar o dano das skills nos cards abaixo.</div>";
+          out.innerHTML = "<div class=\"box neutral\">As rotações e os comandos aparecem aqui assim que você anotar o dano das skills na lista Pokémon, logo abaixo (botão Skills).</div>";
           return;
         }
         const r = RUNES[state.rune];
@@ -2645,14 +2631,14 @@
         const noSt = res.rots.filter(function (x) { return x.noStun; }).length;
         if (noSt) {
           const have = state.mons.reduce(function (a, m) { return a + (m.role === "DMG" ? 0 : m.skills.filter(function (x) { return x.t === "cc" || x.t === "sil"; }).length); }, 0);
-          L.push("<p class=\"st-no\">" + noSt + (noSt > 1 ? " rotações ficaram" : " rotação ficou") + " sem stun/silence. O primeiro pokémon de cada rotação precisa abrir com stun ou silence: são precisos " + N +
+          L.push("<p class=\"st-no\">" + noSt + (noSt > 1 ? " rotações ficaram" : " rotação ficou") + " sem stun/silence. O primeiro pokémon de cada rotação precisa abrir com stun ou silence: são necessários " + N +
             " (1 por rotação) de OFFTANK/FLEX, e hoje há " + have + ". Marque ⚡ Stun ou 🔇 Silence nas skills dos OFFTANK/FLEX ou diminua o número de rotações.</p>");
         }
         const noTk = res.rots.filter(function (x) { return x.noTank; }).length;
         if (noTk) {
           const tanks = state.mons.filter(function (m) { return m.role !== "DMG" && m.skills.some(function (x) { return x.d > 0; }); }).length;
-          L.push("<p class=\"st-no\">" + noTk + (noTk > 1 ? " rotações ficaram" : " rotação ficou") + " sem OFFTANK/FLEX. Com " + N + " rotações e cada pokémon em no máximo 2, são precisos pelo menos " + Math.ceil(N / 2) +
-            " pokémon que não sejam DMG, com skills anotadas (hoje: " + tanks + "). Marque o papel nos cards ou diminua o número de rotações.</p>");
+          L.push("<p class=\"st-no\">" + noTk + (noTk > 1 ? " rotações ficaram" : " rotação ficou") + " sem OFFTANK/FLEX. Com " + N + " rotações e cada pokémon em no máximo 2, são necessários pelo menos " + Math.ceil(N / 2) +
+            " pokémon que não sejam DMG, com skills anotadas (hoje: " + tanks + "). Marque o papel na lista Pokémon ou diminua o número de rotações.</p>");
         }
         if (res.nCC > N) L.push("<p class=\"hint\">" + res.nCC + " stuns para " + N + " rotações: no máximo " + N + " são usados (1 por rotação).</p>");
         if (res.nSil > N) L.push("<p class=\"hint\">" + res.nSil + " silences para " + N + " rotações: no máximo " + N + " são usadas (1 por rotação).</p>");
