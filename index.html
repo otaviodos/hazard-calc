@@ -99,10 +99,8 @@
     .mon:hover { border-color: var(--muted); }
     .mon input, .mon select { user-select: text; -webkit-user-select: text; cursor: text; }
     .mon select { cursor: pointer; }
-    .mon-top { display: flex; align-items: center; gap: 8px; }
     .grip { flex-shrink: 0; width: 22px; text-align: center; color: var(--muted); font-size: var(--fs-3); line-height: 1; letter-spacing: -2px; touch-action: none; padding: 6px 0; }
     .tsel { width: 58px; flex-shrink: 0; padding-left: 8px; padding-right: 4px; }
-    .mon-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
     .slot-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 6px; min-height: 26px; }
     .slot-row .slot { margin: 0 0 0 2px; }
     .slot-row .tsel { width: 52px; flex-shrink: 0; padding: 2px 2px 2px 8px; font-size: var(--fs-1); }
@@ -110,46 +108,13 @@
     .slot.dmg { color: var(--blue); }
     .slot.extra { color: var(--warn); }
     .slot.bad::after { content: " · papel diferente da posição"; color: var(--warn); text-transform: none; letter-spacing: 0; font-weight: 600; }
-    .srow { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
-    .slab { width: 44px; font-size: var(--fs-1); font-weight: 800; color: var(--gold); }
-    .srow.test .slab { color: var(--tc); }
-    .srow.test .star:hover, .srow.test .star.on { color: var(--tc); }
     .mon.testing { border-color: var(--tc); box-shadow: 0 0 0 1px var(--tc); }
     .eff.test { color: var(--tc); }
     .eff.test strong { color: var(--tc); }
-    .brute-row { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 8px; margin-top: 8px; padding: 6px 8px; border: 1px solid var(--line-strong); border-radius: var(--r-2); background: var(--sunken); font-size: var(--fs-2); }
-    .brute-row:has(input:checked) { border-color: rgba(248, 113, 113, .6); }
-    .brute-name { font-weight: 600; color: var(--bad-2); margin-right: auto; display: inline-flex; align-items: center; gap: 6px; }
-    .brute-name small { font-weight: 600; color: var(--muted); }
-    .bchk { display: inline-flex; align-items: center; gap: 5px; min-height: 32px; padding: 2px 8px; border: 1px solid var(--line-strong); border-radius: var(--r-2); cursor: pointer; font-weight: 600; color: var(--text); }
-    .bchk input { width: 16px; height: 16px; accent-color: var(--bad); cursor: pointer; }
-    .bchk:has(input:checked) { border-color: var(--bad); color: var(--bad-2); }
-    .bchk.test { color: var(--tc); }
-    .bchk.test input { accent-color: var(--tc); }
-    .bchk.test.diff { border-color: var(--tc); background: color-mix(in srgb, var(--tc) 12%, transparent); }
-    .bdot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex: none; }
-    .bdot.red { background: var(--bad); box-shadow: 0 0 0 2px rgba(239, 68, 68, .25); }
-    .bdot.yellow { background: var(--warn); box-shadow: 0 0 0 2px rgba(250, 204, 21, .25); }
-    .held-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
-    .held-row .fld.test { color: var(--tc); }
-    .held-row .fld.test select.diff { border-color: var(--tc); color: var(--tc); }
     .teams-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; align-items: start; }
-    .teams-row.with-cand { grid-template-columns: minmax(0, 3fr) minmax(270px, 1fr); }
-    .cand-col { background: var(--sunken); border: 1px dashed var(--warn); border-radius: var(--r-2); min-width: 0; }
-    .cand-col > header { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
-    .cand-col .btn.small-x { padding: 3px 9px; font-size: var(--fs-1); }
-    .cand-body { display: flex; flex-direction: column; gap: 10px; padding: 12px; }
-    .cand-col .box { margin-top: 0; font-size: var(--fs-2); }
-    .cand-col .opt-lines { font-size: var(--fs-2); }
     #toggle-cand[aria-pressed="true"] { border-color: var(--warn); color: var(--warn); }
     .mon.cand { cursor: default; border-style: dashed; }
     .opt-lines { margin: 6px 0 0; line-height: 1.6; }
-    .teams-row.with-cand .mon { padding: 8px; }
-    .teams-row.with-cand .mon-top { gap: 4px; }
-    .teams-row.with-cand .grip { width: 14px; letter-spacing: -3px; font-size: var(--fs-3); }
-    .teams-row.with-cand .mon .name { padding-left: 8px; padding-right: 6px; }
-    .teams-row.with-cand .teams-grid { gap: 10px; }
-    .teams-row.with-cand .zone { padding: 8px; }
     .stars { display: inline-flex; gap: 2px; }
     .star { background: transparent; border: 0; padding: 0 1px; font-size: var(--fs-5); line-height: 1; color: var(--line-strong); cursor: pointer; }
     .star:hover { color: var(--gold); }
@@ -164,7 +129,6 @@
     .mon.drop-swap::after { content: "trocar"; position: absolute; top: -9px; right: 12px; background: var(--gold); color: var(--on-gold); font-size: var(--fs-1); font-weight: 800; padding: 1px 8px; border-radius: 999px; }
     .ghost { position: fixed; z-index: 1000; margin: 0; pointer-events: none; transform: rotate(2deg); box-shadow: 0 18px 44px rgba(0, 0, 0, 0.55); border-color: var(--gold); background: var(--raise); cursor: grabbing; }
     body.is-dragging, body.is-dragging * { user-select: none !important; -webkit-user-select: none !important; cursor: grabbing !important; }
-    .fld { display: flex; flex-direction: column; gap: 3px; font-size: var(--fs-1); color: var(--muted); font-weight: 600; min-width: 0; }
     .mon .name { font-weight: 600; }
     .box { border-radius: var(--r-2); padding: 11px 14px; font-size: var(--fs-2); margin-top: 4px; }
     .box.tip { background: rgba(110, 231, 183, 0.08); border: 1px solid rgba(110, 231, 183, 0.35); }
@@ -202,27 +166,11 @@
     .in.small { width: 84px; }
     input.cell[readonly] { cursor: default; }
     #model-note { margin-bottom: 14px; }
-    .prec-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: end; margin-top: 8px; }
     .berry { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-2); font-weight: 600; color: var(--text); background: var(--sunken); border: 1px solid var(--line-strong); border-radius: var(--r-2); padding: 7px 10px; cursor: pointer; white-space: nowrap; }
     .berry input { width: 16px; height: 16px; accent-color: var(--gold); cursor: pointer; }
     .berry:has(input:checked) { border-color: var(--gold); color: var(--gold); }
-    .prec-out { font-size: var(--fs-1); text-align: right; margin-top: 4px; font-variant-numeric: tabular-nums; }
-    .prec-bar { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; margin-bottom: 12px; }
-    .prec-bar .in.small { width: 74px; }
-    .prec-bar .eq { font-size: var(--fs-1); color: var(--muted); font-variant-numeric: tabular-nums; }
-    table.pt { width: 100%; border-collapse: collapse; font-size: var(--fs-2); }
-    .pt th { text-align: right; color: var(--muted); font-size: var(--fs-1); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--line-strong); white-space: nowrap; }
-    .pt th:first-child, .pt td:first-child { text-align: left; }
-    .pt td { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: right; font-variant-numeric: tabular-nums; vertical-align: middle; }
-    .pt td.c { text-align: center; }
-    .pt .in { width: 64px; padding: 4px 6px; text-align: right; }
-    .pt input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--gold); cursor: pointer; }
-    .pt .tot { font-weight: 800; }
     .st-ok { color: var(--ok); font-weight: 600; }
     .st-no { color: var(--bad); font-weight: 600; }
-    .pt tr.cand-row td { color: var(--muted); }
-    .pt tr.cand-row td:first-child { font-style: italic; }
-    .pt .who-t { color: var(--muted); font-size: var(--fs-1); margin-left: 6px; }
     .prec-sum { margin-top: 12px; font-size: var(--fs-2); }
     .prec-sum p { margin: 3px 0; }
     .hz td.pp { color: var(--muted); font-size: var(--fs-2); }
@@ -233,13 +181,8 @@
     .legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 12px; font-size: var(--fs-1); color: var(--muted); }
     .legend i { display: inline-block; width: 11px; height: 11px; border-radius: var(--r-1); margin-right: 6px; vertical-align: -1px; }
     .foot { margin-top: 10px; }
-    @media (max-width: 1250px) {
-      .teams-row.with-cand { grid-template-columns: 1fr; }
-      .cand-body { display: grid; grid-template-columns: minmax(260px, 360px) minmax(0, 1fr); align-items: start; }
-    }
     @media (max-width: 900px) {
       .teams-grid, .teams-grid.f3 { grid-template-columns: 1fr; }
-      .cand-body { grid-template-columns: 1fr; }
       .zone { min-height: 110px; }
     }
     body { font-family: var(--font-ui); line-height: 1.5; font-size: var(--fs-3); -webkit-font-smoothing: antialiased; }
@@ -251,19 +194,17 @@
     .hint { font-size: var(--fs-2); line-height: 1.55; }
     section.card { padding: 20px 22px 22px; margin-bottom: 20px; border-color: var(--line); }
     .head { margin-bottom: 14px; }
-    /* números: monoespaçada tabular para leitura rápida e alinhada */ .in.num, input.cell, .ttot, .pt td:not(:first-child), .hz td, .eff strong, .tbonus .in { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
-    .prec-out, .prec-bar .eq, .opt-lines { font-variant-numeric: tabular-nums; }
+    /* números: monoespaçada tabular para leitura rápida e alinhada */ .in.num, input.cell, .ttot, .hz td, .eff strong, .tbonus .in { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
+    .opt-lines { font-variant-numeric: tabular-nums; }
     .ttot { font-size: var(--fs-4); font-weight: 600; }
-    /* texto mínimo de 12px */ .slot, .slab, .fld, .hz th .hz-b, .tweak, .tcount, .pt th, .pt .who-t, .who, .hz td.pv, .legend, .mon.drop-swap::after, .slot-row .tsel, .cand-col .btn.small-x, .mlabel, .eff, .prec-out { font-size: var(--fs-1); }
+    /* texto mínimo de 12px */ .slot, .hz th .hz-b, .tweak, .tcount, .who, .hz td.pv, .legend, .mon.drop-swap::after, .slot-row .tsel, .mlabel, .eff { font-size: var(--fs-1); }
     .who { min-height: 0.8rem; letter-spacing: 0.02em; }
-    .slot, .slab { }
-    .fld { gap: 4px; font-weight: 600; }
+    .slot { }
     /* controles: alvo mínimo, cursor e transição curta */ select { cursor: pointer; }
     .btn { min-height: 34px; padding: 6px 14px; font-weight: 600; border-color: var(--line-strong); display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
     .btn:hover { background: var(--raise); border-color: var(--muted); }
     .btn.gold { box-shadow: 0 1px 0 rgba(0, 0, 0, .25); }
     .btn.gold:hover { background: var(--gold); filter: brightness(1.08); }
-    .cand-col .btn.small-x { min-height: 28px; }
     .seg { border-color: var(--line-strong); background: var(--sunken); }
     .seg label { min-height: 34px; display: inline-flex; align-items: center; padding: 6px 14px; }
     .seg label:hover { color: var(--text); }
@@ -274,7 +215,7 @@
     .stars { gap: 3px; }
     .berry { min-height: 36px; }
     .berry:hover { border-color: var(--muted); }
-    .pt input[type=checkbox], .chk input, .berry input { width: 18px; height: 18px; }
+    .chk input, .berry input { width: 18px; height: 18px; }
     .chk { min-height: 34px; color: var(--text-2); }
     .btn, .seg label, .mon, .in, .star, .berry, input.cell, .team {
       transition: background-color .18s var(--ease), border-color .18s var(--ease), color .18s var(--ease), box-shadow .18s var(--ease), opacity .18s var(--ease);
@@ -285,24 +226,16 @@
     .seg label:has(input:focus-visible) { outline: 2px solid var(--ring); outline-offset: -2px; }
     .star:focus-visible { outline: 2px solid var(--ring); outline-offset: 1px; }
     input.cell:focus { box-shadow: inset 0 0 0 2px var(--ring); }
-    /* runas: estado selecionado também por texto, não só cor */ /* como usar (recolhível) */ .howto { margin: -4px 0 14px; border: 1px solid var(--line); border-radius: var(--r-2); background: var(--sunken); }
-    .howto > summary { cursor: pointer; list-style: none; padding: 9px 14px; font-size: var(--fs-2); font-weight: 600; color: var(--text-2); display: flex; align-items: center; gap: 8px; }
-    .howto > summary::-webkit-details-marker { display: none; }
-    .howto > summary::before { content: "▸"; color: var(--muted); transition: transform .18s var(--ease); }
-    .howto[open] > summary::before { transform: rotate(90deg); }
-    .howto > summary:hover { color: var(--text); }
-    .howto > .hint { padding: 0 14px 12px; max-width: 110ch; }
+    /* runas: estado selecionado também por texto, não só cor */ /* como usar (recolhível) */
     /* times e cards */ .team { background: var(--sunken); border-color: var(--line); border-radius: var(--r-2); }
     .team > header, .team > footer { padding: 11px 14px; }
     .tname { font-size: var(--fs-3); }
     .tweak { padding: 2px 10px; }
     .mon { background: var(--panel); border-color: var(--line-strong); border-radius: var(--r-2); }
     .mon:hover { border-color: var(--line-hover); }
-    .mon-fields, .held-row, .prec-row { gap: 10px; }
     .tbonus { padding: 9px 14px; }
     .grip { color: var(--muted); }
     .mon:hover .grip { color: var(--muted); }
-    .cand-col { border-radius: var(--r-2); }
     /* caixas de status */ .box { border-radius: var(--r-2); padding: 12px 16px; line-height: 1.55; }
     .box.tip { background: rgba(74, 222, 128, .07); border-color: rgba(74, 222, 128, .32); }
     .box.warn { color: var(--warn-2); background: rgba(251, 191, 36, .08); border-color: rgba(251, 191, 36, .35); }
@@ -311,12 +244,9 @@
     .hz tbody tr:hover td:not(.best) { background-color: rgba(148, 163, 184, .07); }
     .hz td.no input { opacity: .75; }
     input.cell { padding: 8px 2px 2px; }
-    /* tabela de precisão */ .pt th { padding: 8px; }
-    .pt td { padding: 8px; }
-    .pt tbody tr:hover td { background: rgba(148, 163, 184, .05); }
+    /* tabela de precisão */
     .legend { gap: 8px 20px; }
-    /* ===== Resumo ===== */
-    .rs-next { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    /* ===== Resumo ===== */ .rs-next { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
     .nx { background: var(--sunken); border: 1px solid var(--line); border-radius: var(--r-2); padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
     .nx-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
     .nx-h { font-size: var(--fs-4); font-weight: 800; }
@@ -348,13 +278,11 @@
       .head { margin-bottom: 10px; }
       /* sem zoom automático no iPhone ao tocar num campo */ .in, select, input.cell, .tbonus .in { font-size: var(--fs-3); }
       .slot-row .tsel { font-size: var(--fs-3); width: 60px; padding: 2px 2px 2px 10px; }
-      /* Resumo: Hazard oficial em cima, times lado a lado */
-      .rs-next { gap: 8px; }
+      /* Resumo: Hazard oficial em cima, times lado a lado */ .rs-next { gap: 8px; }
       .nx { padding: 12px; }
       .nx-line { grid-template-columns: 64px minmax(0, 1fr); }
-      /* Runas: 2 por linha, compactas */
-      /* Barra de ferramentas da seção 2 em grade */ section.card > .head > .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
-      .tools > .seg, .tools > .chk, .tools > .fmt-seg, .tools > .dmg-medal { grid-column: 1 / -1; }
+      /* Runas: 2 por linha, compactas */ /* Barra de ferramentas da seção 2 em grade */ section.card > .head > .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+      .tools > .seg, .tools > .chk, .tools > .fmt-seg { grid-column: 1 / -1; }
       .tools > .seg { display: grid; grid-template-columns: 1fr 1fr; }
       .tools > .seg label { justify-content: center; }
       .tools > .btn { width: 100%; }
@@ -363,8 +291,7 @@
       .grip { width: 34px !important; min-height: 40px; display: flex; align-items: center; justify-content: center; font-size: var(--fs-4) !important; letter-spacing: -3px; color: var(--muted); border-radius: var(--r-2); background: var(--sunken); }
       .stars { gap: 2px; }
       .star { min-width: 30px; min-height: 30px; font-size: var(--fs-5); }
-      /* Tabela de precisão: só o que muda por pokémon (treino/Berry já estão no card, medalha é igual para todos) */ .pt th:nth-child(2), .pt td:nth-child(2), .pt th:nth-child(3), .pt td:nth-child(3), .pt th:nth-child(4), .pt td:nth-child(4) { display: none; }
-      .pt th, .pt td { padding: 8px 6px; }
+      /* Tabela de precisão: só o que muda por pokémon (treino/Berry já estão no card, medalha é igual para todos) */
       /* Barra do modelo: um grupo por linha */ .model-bar { gap: 10px; }
       .mgroup { width: 100%; }
       .head .tools .btn { flex: 1; }
@@ -398,27 +325,12 @@
     }
     body.page-efet h1::after { content: " · Efetividade"; color: var(--gold); }
     body.page-efet .btn.gold { color: #1A0B33; }
-    .mult-box { margin-top: 10px; padding: 10px; border: 1px solid var(--line-strong); border-radius: var(--r-2); background: var(--sunken); }
-    .mult-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: var(--fs-1); font-weight: 600; color: var(--gold); margin-bottom: 8px; }
-    .mult-in { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); font-weight: 600; }
-    .mult-in .in { width: 70px; min-height: 32px; padding: 4px 8px; }
-    .mult-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-    .mchip { min-height: 30px; padding: 4px 9px; border-radius: 999px; border: 1px solid var(--line-strong); background: transparent; color: var(--muted); font-size: var(--fs-2); font-weight: 600; cursor: pointer; font-family: var(--font-num); }
-    .mchip:hover { color: var(--text); border-color: var(--muted); }
-    .mchip.low.on { background: rgba(248, 113, 113, .16); border-color: var(--bad); color: var(--bad-2); }
-    .mchip.neutral.on { background: rgba(148, 163, 184, .18); border-color: var(--text-2); color: var(--text-2); }
-    .mchip.high.on { background: rgba(74, 222, 128, .16); border-color: var(--ok); color: var(--ok-2); }
-    .mchip.on::before { content: "✓ "; }
     .eff-mult { margin-top: 2px; color: var(--gold); }
     .eff-mult strong { color: var(--gold); font-size: var(--fs-2); }
     @media (max-width: 640px) {
       .page-nav a { min-height: 48px; font-size: var(--fs-2); }
-      .mchip { min-height: 34px; padding: 4px 10px; font-size: var(--fs-2); }
-      .mult-in .in { font-size: var(--fs-3); }
     }
     /* ===== Formato 1.5× ===== */ body.fmt-15 section.card > .head .tools > .seg { display: none; }
-    body.fmt-15:not(.det-on) .mon-det, body.fmt-15:not(.det-on) .tools .chk:has(#useTests), body.fmt-15:not(.det-on) #clear-tests { display: none; }
-    .mon.m15 .mon-det { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line-strong); }
     .dev-note { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 0 0 12px; padding: 10px 12px; border: 1px dashed var(--buff); border-radius: var(--r-2); background: rgba(167, 139, 250, .08); font-size: var(--fs-2); line-height: 1.5; }
     .dev-tag { font-size: var(--fs-1); font-weight: 800; padding: 2px 8px; border-radius: var(--r-1); background: var(--buff); color: var(--on-gold); }
     .dev-user { font-family: var(--font-num); color: var(--buff-2); user-select: all; }
@@ -427,7 +339,6 @@
     .rot-rules { margin: 0 0 12px; }
     .rot-rules > summary { cursor: pointer; font-size: var(--fs-2); font-weight: 600; color: var(--text-2); }
     .rot-rules > .hint { margin-top: 6px; max-width: 110ch; }
-    .role15 { margin: 10px 0 8px; }
     .rl-role { font-size: var(--fs-1); font-weight: 800; letter-spacing: .03em; padding: 1px 5px; border-radius: var(--r-1); border: 1px solid var(--line-strong); color: var(--muted); }
     .rl-role.r-offtank { color: var(--blue-2); border-color: rgba(147, 197, 253, .5); }
     .rl-role.r-dmg { color: var(--bad-2); border-color: rgba(252, 165, 165, .5); }
@@ -436,8 +347,6 @@
     .rc-tk { margin: 4px 0; font-size: var(--fs-1); font-weight: 600; color: var(--bad-2); }
     .rl-empty { margin-top: 6px; padding: 6px 8px; border: 1px dashed var(--line); border-radius: var(--r-2); font-size: var(--fs-1); color: var(--muted); display: flex; align-items: center; gap: 8px; }
     .rl-empty .rl-key { background: var(--line-strong); color: var(--muted); }
-    .m15-note { margin: 8px 0 0; font-size: var(--fs-1); line-height: 1.45; color: var(--muted); }
-    .m15-test { margin: 0 0 8px; padding: 6px 8px; border: 1px solid rgba(96, 165, 250, .5); border-radius: var(--r-2); font-size: var(--fs-1); color: var(--blue-2); }
     .fmt-seg { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 4px; min-height: 44px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--sunken); min-width: 330px; }
     .fmt-seg button { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; padding: 4px 10px; border: 0; background: transparent; border-radius: 999px; color: var(--muted); font-weight: 600; font-size: var(--fs-2); cursor: pointer; transition: color .18s; }
     .fmt-seg button small { font-size: var(--fs-1); font-weight: 400; }
@@ -447,13 +356,9 @@
     .fmt-seg button:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
     .fmt-knob { position: absolute; z-index: 0; top: 4px; bottom: 4px; left: 4px; width: calc((100% - 8px) / 4); border-radius: 999px; background: var(--gold); transform: translateX(calc(100% * var(--i, 0))); transition: transform .22s cubic-bezier(.2,.7,.3,1); }
     body.page-efet .fmt-seg button.on, body.page-efet .fmt-seg button.on small { color: #1A0B33; }
-    body.fmt-15 #toggle-cand, body.fmt-15 .grip, body.fmt-15 .slot-row .tsel, body.fmt-15 .howto { display: none !important; }
-    .teams-grid.f15 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    body.fmt-15 #toggle-cand, body.fmt-15 .grip, body.fmt-15 .slot-row .tsel { display: none !important; }
     body.fmt-15 .mon { cursor: default; }
     .rot-panel { margin-bottom: 14px; }
-    .dmg-medal { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-2); font-weight: 600; color: var(--gold); padding: 4px 6px 4px 10px; border: 1px solid var(--line-strong); border-radius: var(--r-2); }
-    .dmg-medal .in { width: 64px; min-height: 32px; text-align: right; }
-    .dmg-medal span { color: var(--muted); }
     .visit-stats { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 4px 0 0; font-size: var(--fs-2); color: var(--muted); }
     .visit-stats[hidden] { display: none; }
     .vs-i b { color: var(--text); font-variant-numeric: tabular-nums; }
@@ -462,8 +367,7 @@
     td.bn.xp { color: var(--ok-2); }
     td.bn.lt { color: var(--warn-2); }
     td.bn.sc { color: var(--pink); }
-    /* ===== Topo ===== */
-    header.top { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px 24px; margin-bottom: 16px; }
+    /* ===== Topo ===== */ header.top { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 12px 24px; margin-bottom: 16px; }
     .top-id { display: flex; align-items: flex-start; gap: 14px; min-width: 0; }
     .top-tools { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
     .top-tools .page-nav { margin: 0; }
@@ -475,8 +379,7 @@
       .top-tools .data-tools { display: grid; grid-template-columns: 1fr 1fr; }
       .top-tools .data-tools .hint { grid-column: 1 / -1; }
     }
-    /* ===== Barra de resultado (fixa no topo) ===== */
-    .rbar { position: sticky; top: 0; z-index: 30; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px 20px; margin: 0 0 16px; padding: 10px 16px; border: 1px solid var(--line-strong); border-radius: var(--r-2); background: color-mix(in srgb, var(--panel) 94%, transparent); backdrop-filter: blur(8px); box-shadow: 0 8px 24px rgba(0, 0, 0, .35); }
+    /* ===== Barra de resultado (fixa no topo) ===== */ .rbar { position: sticky; top: 0; z-index: 30; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px 20px; margin: 0 0 16px; padding: 10px 16px; border: 1px solid var(--line-strong); border-radius: var(--r-2); background: color-mix(in srgb, var(--panel) 94%, transparent); backdrop-filter: blur(8px); box-shadow: 0 8px 24px rgba(0, 0, 0, .35); }
     .rb-main { display: flex; align-items: center; gap: 16px; min-width: 0; }
     .rb-hz { margin: 0; display: flex; align-items: baseline; gap: 8px; white-space: nowrap; }
     .rb-l { font-size: var(--fs-2); font-weight: 600; color: var(--muted); }
@@ -514,20 +417,7 @@
       .page-nav a { min-height: 40px; }
     }
     .eff-medal { font-size: var(--fs-1); color: var(--gold); margin-top: 2px; }
-    .adj-row.adj-t { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; padding: 10px 0; border-bottom: 1px solid var(--line); }
-    .adj-t > .pr-name { flex: 0 0 170px; }
-    .adj-g select.in { width: auto; }
-    .adj-g .stars { display: inline-flex; }
-    .adj-g { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-    .adj-l { font-size: var(--fs-1); color: var(--muted); font-weight: 600; }
-    .adj-g select.in { min-height: 32px; padding: 2px 6px; font-size: var(--fs-2); }
-    .adj-g select.diff, .adj-n.diff { border-color: var(--blue); color: var(--blue-2); }
-    .adj-n { width: 56px; min-height: 32px; text-align: right; }
-    .adj-g .star { min-width: 22px; min-height: 28px; }
-    @media (max-width: 760px) { .adj-t > .pr-name { flex-basis: 100%; } }
     /* sugestões de melhoria */ .upg { margin-top: 14px; border: 1px solid var(--line-strong); border-radius: var(--r-2); padding: 14px; background: var(--sunken); }
-    .upg-h { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px 12px; margin-bottom: 8px; }
-    .upg-h b { font-size: var(--fs-2); }
     .upg-list { display: flex; flex-direction: column; gap: 6px; }
     .upg-r { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--r-2); font-size: var(--fs-2); }
     .upg-r.top { border-color: var(--gold); background: rgba(244, 208, 63, .06); }
@@ -537,14 +427,13 @@
     .upg-gain .hz-up { display: block; font-size: var(--fs-1); color: var(--gold); }
     .upg-tests { margin-top: 8px; font-size: var(--fs-2); color: var(--blue-2); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     @media (max-width: 760px) { .upg-r { grid-template-columns: 1fr auto; } .upg-r .btn { grid-column: 1 / -1; } }
-    @media (max-width: 760px) { .dmg-medal { width: 100%; justify-content: space-between; } .fmt-seg { width: 100%; min-width: 0; } }
+    @media (max-width: 760px) { .fmt-seg { width: 100%; min-width: 0; } }
     /* ===== 1.5× par (full + parcial) ===== */ .par-only { display: none; }
     body.fmt-par .par-only { display: block; }
-    body.fmt-par .par-hide, body.fmt-par .role15 { display: none !important; }
+    body.fmt-par .par-hide { display: none !important; }
     .ps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
     .par-rh { margin: 16px 0 10px; font-size: var(--fs-3); }
-    .teams-grid.fpar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    @media (max-width: 760px) { .ps, .teams-grid.fpar { grid-template-columns: 1fr; } }
+    @media (max-width: 760px) { .ps { grid-template-columns: 1fr; } }
     /* 1.5× par: configuração */ .pc-card { border: 1px solid var(--line-strong); border-radius: var(--r-2); padding: 14px; background: var(--sunken); margin-bottom: 12px; min-width: 0; }
     .pc-h { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; margin-bottom: 10px; }
     .pc-h b { font-size: var(--fs-2); }
@@ -571,22 +460,9 @@
     .pr-cnt { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; font-size: var(--fs-2); font-weight: 600; }
     .c-ok { color: var(--ok); }
     .c-no { color: var(--bad-2); }
-    .pc-skills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-    @media (max-width: 1100px) { .pc-skills { grid-template-columns: minmax(0, 1fr); } .pc-skills .st-l { display: inline; } }
-    .pc-skills .pc-card { margin-bottom: 12px; }
-    .pc-adj { margin: 0 0 12px; border: 1px solid var(--line-strong); border-radius: var(--r-2); padding: 10px 14px; background: var(--sunken); }
-    .pc-adj > summary { cursor: pointer; font-size: var(--fs-2); font-weight: 600; color: var(--muted); }
-    .adj-rows { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
-    .adj-row { display: grid; grid-template-columns: minmax(120px, 190px) auto auto auto; gap: 8px 16px; align-items: center; font-size: var(--fs-2); }
-    .adj-chk { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
-    .adj-chk input { width: 16px; height: 16px; accent-color: var(--gold); }
-    .adj-tr { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); }
-    .adj-tr .in { width: 70px; min-height: 32px; text-align: right; }
     /* tabela de skills */ .st { display: flex; flex-direction: column; gap: 4px; }
     .st-row { display: grid; grid-template-columns: 30px minmax(80px, 1fr) auto; gap: 6px; align-items: center; padding: 2px 4px; border-radius: var(--r-2); border: 1px solid transparent; }
     .st.has-b .st-row { grid-template-columns: 30px minmax(80px, 1fr) auto 52px 104px; }
-    .pc-skills .st-l { display: none; }
-    .pc-skills .st-b { min-width: 34px; padding: 2px 6px; }
     .st-head { font-size: var(--fs-1); font-weight: 600; color: var(--muted); padding-bottom: 0; }
     .st-k { font-size: var(--fs-2); font-weight: 800; color: var(--gold); }
     .st-d { min-height: 36px; text-align: right; width: 100%; }
@@ -609,19 +485,6 @@
     .st-row.is-tg { border-color: rgba(167, 139, 250, .7); background: rgba(167, 139, 250, .08); }
     .st-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; margin-top: 6px; font-size: var(--fs-1); color: var(--muted); }
     .st-warn { color: var(--bad-2); font-weight: 600; }
-    .teams-grid .st-head { display: none; }
-    .teams-grid .st-row, .teams-grid .st.has-b .st-row { grid-template-columns: 30px minmax(0, 1fr) auto; grid-template-areas: "k d seg" "x rb af"; row-gap: 4px; padding: 4px; }
-    .teams-grid .st-row > .st-k { grid-area: k; }
-    .teams-grid .st-row > .st-d { grid-area: d; }
-    .teams-grid .st-row > .st-seg { grid-area: seg; }
-    .teams-grid .st-row > .st-c { grid-area: rb; justify-self: start; display: inline-flex; align-items: center; gap: 6px; min-height: 30px; }
-    .teams-grid .st-row > .st-af { grid-area: af; }
-    .teams-grid .st-row > span:empty { display: none; }
-    .teams-grid .st-row > .st-rb::after { content: "recebe ▲"; font-size: var(--fs-1); color: var(--muted); white-space: nowrap; }
-    .teams-grid .st-row.is-buff > .st-src { display: none; }
-    .teams-grid .st-row > .st-af .in { width: 120px; }
-    .teams-grid .st-l { display: none; }
-    .teams-grid .st-b { min-width: 34px; padding: 2px 6px; }
     @media (max-width: 760px) {
       .prow { grid-template-columns: auto auto; justify-content: start; gap: 6px 8px; padding: 8px 0; border-bottom: 1px solid var(--line); }
       .prow > .pr-name { grid-column: 1 / -1; }
@@ -629,12 +492,9 @@
       .pr-seg .pr-rb { min-width: 0; padding: 4px 10px; }
       .pr-hint { text-align: left; }
       .pr-in { font-size: var(--fs-3); }
-      .pc-skills { grid-template-columns: 1fr; }
-      .adj-row { grid-template-columns: 1fr 1fr; }
-      .adj-row .pr-name { grid-column: 1 / -1; }
       .st-l { display: none; }
       .st-head { display: none; }
-      .st-row, .st.has-b .st-row { grid-template-columns: 30px minmax(0, 1fr) auto; grid-template-areas: "k d seg" "x rb af"; row-gap: 4px; padding: 4px; }
+      .st-row, .st.has-b .st-row { grid-template-columns: 30px minmax(0, 1fr) auto; grid-template-areas: "k d rb" "x seg seg" "x af af"; row-gap: 4px; padding: 4px; }
       .st-row > .st-k { grid-area: k; }
       .st-row > .st-d { grid-area: d; }
       .st-row > .st-seg { grid-area: seg; }
@@ -643,7 +503,9 @@
       .st-row > span:empty { display: none; }
       .st-row > .st-rb::after { content: "recebe ▲"; font-size: var(--fs-1); color: var(--muted); white-space: nowrap; }
       .st-row.is-buff > .st-src { display: none; }
-      .st-row > .st-af .in { width: 120px; }
+      .st-row > .st-af { display: flex; align-items: center; gap: 8px; }
+      .st-row > .st-af::before { content: "Depois do buff"; font-size: var(--fs-1); color: var(--buff-2); white-space: nowrap; }
+      .st-row > .st-af .in { width: 140px; }
       .st-d, .st-af .in { font-size: var(--fs-3); }
     }
     .par-top { display: flex; align-items: center; gap: 8px 18px; flex-wrap: wrap; margin-bottom: 12px; padding: 12px 14px; border: 1px solid var(--line-strong); border-radius: var(--r-2); background: var(--sunken); }
@@ -702,12 +564,8 @@
     .rk.bf { border-color: var(--buff); color: var(--buff-2); }
     .rk.tgt small { color: var(--ok); font-weight: 600; }
     .rk-arrow { margin: 0 3px 0 0; color: var(--buff-2); }
-    @media (max-width: 1100px) { .teams-grid.f15 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-    @media (max-width: 900px) { .teams-grid.f15 { grid-template-columns: 1fr; } }
     @media (max-width: 640px) {
       .fmt-seg button small { display: none; }
-      .brute-name { flex-basis: 100%; }
-      .bchk { flex: 1; justify-content: center; }
       .fmt-seg { min-width: 0; width: 100%; }
       .fmt-seg button { font-size: var(--fs-2); padding: 4px 4px; }
     }
@@ -737,11 +595,100 @@
       .rot-cards .rc { scroll-snap-align: start; }
       .rot-bar .in { font-size: var(--fs-3); }
     }
+    /* ===== Montagem: cards compactos ===== */ .mon.mini { padding: 8px 10px; }
+    .mon.mini .slot-row { margin-bottom: 4px; }
+    .mon.mini .grip { margin-right: 2px; }
+    .mi-name { font-weight: 600; font-size: var(--fs-3); line-height: 1.3; overflow-wrap: anywhere; }
+    .mon.mini .eff { text-align: left; margin-top: 2px; }
+    .mont-hint { margin: -4px 0 14px; }
+    .mont-hint a, .pr-hint { color: var(--blue-2); }
+    body.fmt-15 .mont-hint { display: none; }
+    /* ===== Lista única de pokémon ===== */
+    .plist { display: flex; flex-direction: column; gap: 4px; }
+    .pk-head, .pk-main { display: grid; grid-template-columns: var(--pk-cols); gap: 6px; align-items: center; }
+    .pk-head { padding: 0 10px 6px; border-bottom: 1px solid var(--line-strong); font-size: var(--fs-1); font-weight: 600; color: var(--muted); }
+    .pk-head span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .pk-head .r { text-align: right; }
+    .plist:not(.cards) .pk-prec > span { display: block; white-space: nowrap; }
+    .pk-skb { padding: 4px 8px; white-space: nowrap; }
+    .pk { padding: 6px 10px; border: 1px solid transparent; border-radius: var(--r-2); }
+    .pk:nth-child(even) { background: rgba(148, 163, 184, .035); }
+    .pk:hover { border-color: var(--line); }
+    .pk.testing { border-color: color-mix(in srgb, var(--tc) 55%, transparent); }
+    .pk.cand { border: 1px dashed var(--warn); background: color-mix(in srgb, var(--warn) 6%, transparent); }
+    .pkf { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .pkl { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    .pkf .in { min-height: 34px; padding: 4px 8px; }
+    .pk-name .in { font-weight: 600; }
+    .pk-where { font-size: var(--fs-1); color: var(--muted); padding-left: 2px; }
+    .pk .stars { gap: 0; }
+    .pk .star { font-size: var(--fs-4); min-width: 24px; min-height: 30px; }
+    .pk-chk { display: inline-flex; align-items: center; gap: 6px; min-height: 34px; font-size: var(--fs-1); color: var(--text-2); cursor: pointer; white-space: nowrap; }
+    .plist:not(.cards) .pk-main .pk-chk > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .pk-chk input { width: 18px; height: 18px; accent-color: var(--gold); cursor: pointer; }
+    .pk-out { font-size: var(--fs-2); }
+    .pk-prec { font-size: var(--fs-1); font-weight: 600; }
+    .pk-used { font-weight: 800; text-align: right; }
+    .pk-used.test { color: var(--tc); }
+    .pk-act .btn { width: 100%; }
+    .pk-sum { display: none; }
+    .pk-test { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin: 6px 0 2px; padding: 6px 10px; border-radius: var(--r-1); background: color-mix(in srgb, var(--tc) 8%, transparent); border: 1px dashed color-mix(in srgb, var(--tc) 40%, transparent); }
+    .pk-test .pkf { flex-direction: row; align-items: center; gap: 6px; }
+    .pk-test .pkl { position: static; width: auto; height: auto; overflow: visible; clip: auto; font-size: var(--fs-1); color: var(--tc); font-weight: 600; }
+    .pk-test .in { width: auto; }
+    .pk-test .in.num { width: 72px; }
+    .pk-test .in.diff, .pk-test .diff .pk-chk { border-color: var(--tc); color: var(--blue-2); }
+    .pk-test .star.on { color: var(--tc); }
+    .pk-test-l { font-size: var(--fs-1); font-weight: 800; color: var(--tc); }
+    .pk-tdiff { margin-left: auto; font-size: var(--fs-2); font-weight: 600; color: var(--muted); }
+    .pk-tdiff.on { color: var(--tc); }
+    .pk-skills { margin: 8px 0 4px; padding: 10px; border: 1px solid var(--line-strong); border-radius: var(--r-2); background: var(--sunken); }
+    .pk-candbar { display: flex; justify-content: flex-end; margin-top: 6px; }
+    /* lista estreita: cada pokémon vira um bloco com rótulos */
+    .plist.cards .pk-head { display: none; }
+    .plist.cards .pk { padding: 10px 12px; border: 1px solid var(--line); background: var(--sunken); margin-bottom: 4px; }
+    .plist.cards .pk-main { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px 12px; align-items: end; }
+    .plist.cards .pkl { position: static; width: auto; height: auto; overflow: visible; clip: auto; font-size: var(--fs-1); color: var(--muted); font-weight: 600; }
+    .plist.cards .pk-name { grid-column: 1 / -1; }
+    .plist:not(.cards) .pkf .in { font-size: var(--fs-2); padding: 4px 6px; }
+    .pk-skills .st { max-width: 780px; }
+    .plist.cards .pk-used { text-align: left; }
+    /* celular: fechado mostra nome, papel e dano; tocar abre */ @media (max-width: 760px) {
+      .pk-sum { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; grid-template-areas: "n d c" "w d c"; align-items: center; gap: 0 10px; width: 100%; min-height: 48px; padding: 4px 2px; border: 0; background: transparent; color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+      .pk-sum-n { grid-area: n; font-weight: 600; overflow-wrap: anywhere; }
+      .pk-sum-w { grid-area: w; font-size: var(--fs-1); color: var(--muted); }
+      .pk-sum-d { grid-area: d; font-weight: 800; }
+      .pk-chev { grid-area: c; color: var(--muted); transition: transform .15s var(--ease); }
+      .pk.open .pk-chev { transform: rotate(180deg); }
+      .pk:not(.open) .pk-main, .pk:not(.open) .pk-test, .pk:not(.open) .pk-skills, .pk:not(.open) .pk-candbar { display: none; }
+      .pk.open .pk-sum { margin-bottom: 8px; border-bottom: 1px solid var(--line); border-radius: 0; }
+      .plist.cards .pk-main { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+      .plist.cards .pk-stars { grid-column: 1 / -1; }
+      .pk .pk-where { display: none; }
+      .pk .star { min-width: 40px; min-height: 44px; }
+      .pk-test .in.num { width: 88px; }
+    }
+    /* ===== Blocos recolhíveis (Melhorias, Ajustes) ===== */ details.card.fold { padding: 0; margin-bottom: 20px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
+    details.fold > summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; min-height: 52px; padding: 14px 22px; cursor: pointer; list-style: none; }
+    details.fold > summary::-webkit-details-marker { display: none; }
+    details.fold > summary::before { content: "▸"; color: var(--muted); transition: transform .15s var(--ease); align-self: center; }
+    details.fold[open] > summary::before { transform: rotate(90deg); }
+    .fold-t { font-size: var(--fs-4); font-weight: 600; }
+    .fold-s { font-size: var(--fs-2); color: var(--muted); min-width: 0; }
+    details.fold > summary:hover .fold-t { color: var(--gold); }
+    details.fold > :not(summary) { padding: 0 22px 20px; }
+    #upgrades > .pc-sub { margin-bottom: 10px; }
+    .adj-grid { display: flex; flex-direction: column; gap: 12px; }
+    body:not(.fmt-15) .only15 { display: none; }
+    @media (max-width: 760px) {
+      details.fold > summary { padding: 12px 14px; }
+      details.fold > :not(summary) { padding: 0 14px 16px; }
+    }
     /* ===== Alvos de toque: 44px no celular ===== */ @media (max-width: 760px) {
-      .btn, .seg label, .in, select, .pr-rb, .st-b, .mchip, .page-nav a, .fmt-seg button, .bchk, .berry, .chk, summary, .st-rb, .adj-chk, .rl-copy, .pr-cmd { min-height: 44px; }
+      .btn, .seg label, .in, select, .pr-rb, .st-b, .page-nav a, .fmt-seg button, .berry, .chk, summary, .st-rb, .rl-copy, .pr-cmd { min-height: 44px; }
       .star { min-width: 44px; min-height: 44px; }
       .st-b { min-width: 44px; }
-      .chk input, .adj-chk input, .berry input, .bchk input { width: 20px; height: 20px; }
+      .chk input, .berry input { width: 20px; height: 20px; }
     }
     body { font-variant-numeric: tabular-nums; }
     small { font-size: var(--fs-1); }
@@ -797,38 +744,20 @@
             <button type="button" role="radio" data-fmt="1.5">1.5×<small>rotações por skill</small></button>
             <button type="button" role="radio" data-fmt="1.5p">1.5× par<small>full + parcial</small></button>
           </div>
-          <label class="dmg-medal" title="Simula uma medalha de dano: soma essa % ao dano de todos os pokémon (o dano que você anotou é sem ela)">▲ Medalha de dano
-            <input class="in num" id="dmgMedalIn" inputmode="decimal" aria-label="Medalha de dano, em %" /><span>%</span></label>
-          <label class="dmg-medal" title="Quanto de dano cada +1 de Boost dá (se não souber o exato, use um chute)">Boost
-            <input class="in num" id="boostPctIn" inputmode="decimal" aria-label="% de dano por +1 de Boost" /><span>% por +1</span></label>
-          <button type="button" class="btn" id="toggle-cand" aria-pressed="false" aria-controls="cand-col">+ Testar Pokémon novo</button>
-          <label class="chk"><input type="checkbox" id="useTests" />Considerar testes (stars e held)</label>
-          <button type="button" class="btn" id="clear-tests">Limpar testes</button>
-          <div class="seg" role="radiogroup" aria-label="Dano usado no cálculo">
-            <label><input type="radio" name="basis" value="agora" />Usar dano Agora</label>
-            <label><input type="radio" name="basis" value="depois" />Usar dano Depois</label>
-          </div>
         </div>
       </div>
-      <details class="howto">
-        <summary>Como usar: arrastar cards, stars, held e posições</summary>
-        <p class="hint">Arraste os cards: solte sobre outro card para trocar de time, ou na área do time para adicionar. No celular, arraste pelo ⋮⋮. O dano digitado deve ser o dano com as stars ATUAIS (linha amarela): ele não é recalculado. A linha azul e o Held teste são testes: suba uma estrela ou um Held e o dano sobe pelo bônus, o card fica azul. A 1ª posição de cada time é o OFFTANK e a 2ª é o DMG: os cards se reorganizam sozinhos pelo papel. DMG/OFFTANK joga na posição que o parceiro deixar livre.</p>
-      </details>
+      <p class="hint mont-hint">Arraste um card para trocar de time (no celular, pelo ⋮⋮) ou use o seletor A/B/C. A 1ª posição é o OFFTANK e a 2ª o DMG; DMG/OFFTANK entra onde sobrar. Os dados de cada pokémon ficam na lista <a href="#pk-sec">Pokémon</a>.</p>
       <div class="rot-panel" id="rot-panel" hidden>
         <div class="rot-bar">
           <div class="mgroup par-hide"><label class="mlabel" for="rotN">Rotações</label>
             <input class="in num small" id="rotN" inputmode="numeric" /></div>
           <div class="mgroup par-hide"><label class="mlabel" for="rotP">Máx. pokémon por rotação</label>
             <input class="in num small" id="rotP" inputmode="numeric" /></div>
-          <div class="mgroup"><label class="mlabel" for="rotPct">Meta por rotação</label>
-            <input class="in num small" id="rotPct" inputmode="numeric" aria-describedby="rotPctHelp" /><span class="mlabel">% do dano do Hazard</span>
-            <span class="hint" id="rotPctHelp">quanto cada rotação precisa matar</span></div>
-          <label class="chk par-hide"><input type="checkbox" id="rotDet" />Mostrar raridade, stars e held nos cards</label>
         </div>
         <div class="dev-note par-hide" role="note"><span class="dev-tag">Em desenvolvimento</span><span>O formato 1.5× ainda está sendo ajustado e pode ter erros. Sugestões ou problemas? Fale no Discord com <b class="dev-user">Otavio5885</b>.</span></div>
         <div id="par-cfg" class="par-only"></div>
         <ol class="rot-steps par-hide">
-          <li><b>Anote</b> o dano de cada skill nos cards abaixo. Enter vai para a próxima; dá para colar vários números de uma vez.</li>
+          <li><b>Anote</b> o dano de cada skill na lista <a href="#pk-sec">Pokémon</a> (botão Skills). Enter vai para a próxima; dá para colar vários números de uma vez.</li>
           <li>Marque <b>⚡ Stun</b>, <b>🔇 Silence</b> e <b>▲ Buff</b>. No buff, escolha a skill que ele aumenta e anote quanto ela passa a dar.</li>
           <li><b>Copie</b> o <code>!autocombo</code> de cada pokémon nas rotações.</li>
         </ol>
@@ -839,32 +768,35 @@
       </div>
       <div class="teams-row" id="teams-row">
         <div id="teams"></div>
-        <aside class="cand-col" id="cand-col" hidden>
-          <header><span class="tname">Pokémon novo</span><button type="button" class="btn small-x" id="close-cand" aria-label="Fechar Pokémon novo">Fechar</button></header>
-          <div class="cand-body">
-            <div id="cand"></div>
-            <div id="cand-out"></div>
-          </div>
-        </aside>
       </div>
       <div id="suggest"></div>
+      <div id="cand-out"></div>
       <div id="par-out" class="par-only"></div>
       <div id="next"></div>
-      <div id="upgrades"></div>
     </section>
 
-    <section class="card">
+    <section class="card" id="pk-sec" aria-labelledby="pk-h">
       <div class="head">
-        <h2>Precisão dos seus pokémon</h2>
-        <p class="hint">Treino e Berry ficam no card de cada pokémon. Cada um precisa ter sozinho a precisão do Hazard. 1 ponto = 0,2%.</p>
+        <h2 id="pk-h">Pokémon</h2>
+        <div class="tools">
+          <div class="seg" role="radiogroup" aria-label="Dano usado na conta">
+            <label title="Usa o dano que você mediu agora"><input type="radio" name="basis" value="agora" />Dano agora</label>
+            <label title="Usa a coluna Dano depois (o que você mediu depois de uma melhoria)"><input type="radio" name="basis" value="depois" />Dano depois</label>
+          </div>
+          <label class="chk" title="Mostra, embaixo de cada pokémon, star, held, Boost e Brute Berry de teste"><input type="checkbox" id="useTests" />Simular mudanças</label>
+          <button type="button" class="btn" id="clear-tests">Limpar testes</button>
+          <button type="button" class="btn" id="toggle-cand" aria-pressed="false">+ Testar Pokémon novo</button>
+        </div>
       </div>
-      <div class="prec-bar">
-        <div class="mgroup"><label class="mlabel" for="medalIn">Medalhas (todos)</label>
-          <input class="in num small" id="medalIn" inputmode="decimal" /><span class="mlabel">%</span><span class="eq" id="medalEq"></span></div>
-      </div>
-      <div class="table-wrap"><table class="pt" id="pt"></table></div>
+      <p class="hint pk-hint">Edite aqui uma vez: vale para todos os formatos. O dano é o que você mediu com a star, o held e o Boost atuais.</p>
+      <div id="plist" class="plist"></div>
       <div class="prec-sum" id="precSum"></div>
     </section>
+
+    <details class="card fold" id="upg-sec" data-fold="upg">
+      <summary><span class="fold-t">Melhorias sugeridas</span><span class="fold-s" id="upg-top"></span></summary>
+      <div id="upgrades"></div>
+    </details>
 
     <section class="card">
       <div class="head">
@@ -902,6 +834,22 @@
       </div>
       <p class="hint foot">Precisão em pontos (1 ponto = 0,2%), editável. Em "Hazard máximo" você aumenta a tabela além do 17: o dano segue a fórmula e a precisão continua subindo no mesmo passo das últimas linhas. Cada um dos 6 pokémon precisa ter a precisão do Hazard; o Hazard oficial já considera isso.</p>
     </section>
+    <details class="card fold" id="adj-sec" data-fold="adj">
+      <summary><span class="fold-t">Ajustes</span><span class="fold-s" id="adj-top"></span></summary>
+      <div class="adj-grid">
+        <div class="mgroup"><label class="mlabel" for="dmgMedalIn">Medalha de dano (teste)</label>
+          <input class="in num small" id="dmgMedalIn" inputmode="decimal" /><span class="mlabel">%</span>
+          <span class="hint">soma essa % ao dano de todos; o dano anotado é sem ela</span></div>
+        <div class="mgroup"><label class="mlabel" for="medalIn">Medalha de precisão (todos)</label>
+          <input class="in num small" id="medalIn" inputmode="decimal" /><span class="mlabel">%</span><span class="eq hint" id="medalEq"></span></div>
+        <div class="mgroup"><label class="mlabel" for="boostPctIn">Boost: dano por +1</label>
+          <input class="in num small" id="boostPctIn" inputmode="decimal" /><span class="mlabel">%</span>
+          <span class="hint">se não souber o exato, use um chute</span></div>
+        <div class="mgroup only15"><label class="mlabel" for="rotPct">Meta por rotação (1.5×)</label>
+          <input class="in num small" id="rotPct" inputmode="numeric" /><span class="mlabel">% do dano do Hazard</span>
+          <span class="hint">quanto cada rotação precisa matar</span></div>
+      </div>
+    </details>
     <footer class="site-foot">Calculadora de Hazard · criado por <strong>Morthus</strong> · Titan 3 Server</footer>
   </div>
 
@@ -1040,10 +988,9 @@
         runes: document.getElementById("runes"),
         teams: document.getElementById("teams"),
         suggest: document.getElementById("suggest"),
-        cand: document.getElementById("cand"),
+        plist: document.getElementById("plist"),
         candOut: document.getElementById("cand-out"),
         table: document.getElementById("hz"),
-        pt: document.getElementById("pt"),
         precSum: document.getElementById("precSum")
       };
 
@@ -1328,127 +1275,44 @@
           .map(function (x) { return x.m; });
       }
 
-      function cardHtml(m, idx, isCand) {
-        const roleOpts = function (cur) {
-          return [["", "Papel"], ["OFFTANK", "OFFTANK"], ["DMG", "DMG"], ["FLEX", "DMG/OFFTANK"]].map(function (o) {
-            return "<option value=\"" + o[0] + "\"" + (cur === o[0] ? " selected" : "") + ">" + o[1] + "</option>";
-          }).join("");
-        };
-        const tierOpts = function (cur) {
-          return TIERS.map(function (t) {
-            return "<option value=\"" + t.id + "\"" + (cur === t.id ? " selected" : "") + " title=\"+" + t.pct + "% por star\">" + t.name + "</option>";
-          }).join("");
-        };
-        const teamOpts = function (cur) {
-          return LETTERS.slice(0, NT()).map(function (l, i) {
-            return "<option value=\"" + i + "\"" + (cur === i ? " selected" : "") + ">" + l + "</option>";
-          }).join("");
-        };
-        const slotInfo = function (i, role) {
-          const fx = role === "FLEX" ? " · flex" : "";
-          const fx2 = fx;
-          if (i === 0) return { text: "1ª posição · OFFTANK" + fx, cls: "slot" + (role === "DMG" ? " bad" : "") };
-          if (is3() && i < 3) {
-            const rl = role === "OFFTANK" ? "OFFTANK" : role === "FLEX" ? "flex" : "DMG";
-            return { text: (i + 1) + "ª posição · " + rl, cls: "slot" + (role === "OFFTANK" ? "" : " dmg") };
-          }
-          if (i === 1) return { text: "2ª posição · DMG" + fx2, cls: "slot dmg" + (role === "OFFTANK" ? " bad" : "") };
-          return { text: "Extra · fora do " + (is3() ? "3×3" : "2×2×2"), cls: "slot extra" };
-        };
-        const sl = isCand ? { text: "Candidato · ainda fora dos times", cls: "slot extra" } : isPar() ? parSlotInfo(idx) : is15() ? { text: "Pokémon " + (idx + 1), cls: "slot" } : slotInfo(idx, m.role);
-        const row = function (kind, level, label) {
-          let h = "";
-          for (let n = 1; n <= 5; n++) {
-            h += "<button type=\"button\" class=\"star" + (n <= level ? " on" : "") + "\" data-star=\"" + n + "\" data-kind=\"" + kind + "\" aria-label=\"" + label + ": " + n + " star" + (n > 1 ? "s" : "") + "\" aria-pressed=\"" + (n <= level) + "\">" + (n <= level ? "★" : "☆") + "</button>";
-          }
-          return "<div class=\"srow " + kind + "\"><span class=\"slab\">" + label + "</span><span class=\"stars\" role=\"group\" aria-label=\"Stars " + label + "\">" + h + "</span></div>";
-        };
-        const heldOpts = function (cur) {
-          return HELDS.map(function (v, i) {
-            return "<option value=\"" + i + "\"" + (cur === i ? " selected" : "") + ">" + (i === 0 ? "Sem Held" : "ATK " + i + " (+" + v + "%)") + "</option>";
-          }).join("");
-        };
-        const starsRows = row("cur", m.stars, "Atual") + row("test", tStars(m), "Teste");
-        const bruteRow = "<div class=\"brute-row\" role=\"group\" aria-label=\"Brute Berry, +" + BRUTE + "% de dano\">" +
-          "<span class=\"brute-name\"><i class=\"bdot red\" aria-hidden=\"true\"></i>Brute Berry <small>+" + BRUTE + "% dano</small></span>" +
-          "<label class=\"bchk\" title=\"Marque se o dano que você anotou já foi testado com a Brute Berry\"><input type=\"checkbox\" data-f=\"brute\"" + (m.brute ? " checked" : "") + " />já no dano</label>" +
-          "<label class=\"bchk test" + (tBrute(m) !== !!m.brute ? " diff" : "") + "\" title=\"Simula colocar (ou tirar) a Brute Berry\"><input type=\"checkbox\" data-f=\"bruteTest\"" + (tBrute(m) ? " checked" : "") + " />teste</label>" +
-          "</div>";
-        const stars = starsRows +
-          "<div class=\"held-row\">" +
-            "<label class=\"fld\">Held atual<select class=\"in\" data-f=\"held\">" + heldOpts(m.held) + "</select></label>" +
-            "<label class=\"fld test\">Held teste<select class=\"in" + (tHeld(m) !== m.held ? " diff" : "") + "\" data-f=\"heldTest\">" + heldOpts(tHeld(m)) + "</select></label>" +
-          "</div>" + boostRowHtml(m) + bruteRow +
-          (isEff() ? "<div class=\"mult-box\"><div class=\"mult-head\"><span>Efetividade (multiplicador)</span>" +
-            "<label class=\"mult-in\">×<input class=\"in num\" data-f=\"mult\" inputmode=\"decimal\" value=\"" + fmt(multNum(m.mult)) + "\" aria-label=\"Multiplicador de efetividade\" /></label></div>" +
-            "<div class=\"mult-chips\" role=\"group\" aria-label=\"Multiplicador de efetividade\">" + MULTS.map(function (v) {
-              const on = multNum(m.mult) === v;
-              return "<button type=\"button\" class=\"mchip" + (on ? " on" : "") + (v === 1 ? " neutral" : v < 1 ? " low" : " high") + "\" data-mult=\"" + v + "\" aria-pressed=\"" + on + "\">" + multTxt(v) + (v === 1 ? " neutro" : "") + "</button>";
-            }).join("") + "</div></div>" : "") +
-          (is15() && !isCand ? skillTableHtml(m) : "") +
-          "<div class=\"prec-row\">" +
-            "<label class=\"fld\">Precisão treino (pts)<input class=\"in num\" data-f=\"train\" inputmode=\"decimal\" value=\"" + fmt(m.train) + "\" /></label>" +
-            "<label class=\"berry\"><input type=\"checkbox\" data-f=\"berry\"" + (m.berry ? " checked" : "") + " /><i class=\"bdot yellow\" aria-hidden=\"true\"></i>Focus Berry +" + BERRY + "</label>" +
-          "</div>" +
-          "<div class=\"prec-out\" data-prec></div>";
-        const top = isCand
-          ? "<div class=\"mon-top\"><input class=\"in name\" data-f=\"name\" aria-label=\"Nome do pokémon novo\" value=\"" + esc(m.name) + "\" placeholder=\"Nome do Pokémon novo\" /></div>"
-          : "<div class=\"mon-top\">" +
-              "<span class=\"grip\" title=\"Arraste para mover\" aria-hidden=\"true\">⋮⋮</span>" +
-              "<input class=\"in name\" data-f=\"name\" aria-label=\"Nome do pokémon\" value=\"" + esc(m.name) + "\" placeholder=\"Nome\" />" +
-            "</div>";
-        const tsel = isCand ? "" : "<select class=\"in tsel\" data-f=\"team\" aria-label=\"Mover para o time\" title=\"Mover para o time\">" + teamOpts(m.team) + "</select>";
-        if (is15() && !isCand) {
-          // 1.5×: nome, skills e precisão na frente; o resto fica em "detalhes" (opcional)
-          const heldRow = "<div class=\"held-row\">" +
-            "<label class=\"fld\">Held atual<select class=\"in\" data-f=\"held\">" + heldOpts(m.held) + "</select></label>" +
-            "<label class=\"fld test\">Held teste<select class=\"in" + (tHeld(m) !== m.held ? " diff" : "") + "\" data-f=\"heldTest\">" + heldOpts(tHeld(m)) + "</select></label>" +
-            "</div>";
-          const multBox = isEff() ? "<div class=\"mult-box\"><div class=\"mult-head\"><span>Efetividade (multiplicador)</span>" +
-            "<label class=\"mult-in\">×<input class=\"in num\" data-f=\"mult\" inputmode=\"decimal\" value=\"" + fmt(multNum(m.mult)) + "\" aria-label=\"Multiplicador de efetividade\" /></label></div>" +
-            "<div class=\"mult-chips\" role=\"group\" aria-label=\"Multiplicador de efetividade\">" + MULTS.map(function (v) {
-              const on = multNum(m.mult) === v;
-              return "<button type=\"button\" class=\"mchip" + (on ? " on" : "") + (v === 1 ? " neutral" : v < 1 ? " low" : " high") + "\" data-mult=\"" + v + "\" aria-pressed=\"" + on + "\">" + multTxt(v) + (v === 1 ? " neutro" : "") + "</button>";
-            }).join("") + "</div></div>" : "";
-          return "<div class=\"mon m15" + (testActive(m) ? " testing" : "") + "\" data-id=\"" + m.id + "\">" +
-            "<div class=\"slot-row\"><div class=\"" + sl.cls + "\">" + sl.text + "</div></div>" + top +
-            "<label class=\"fld role15\">Papel<select class=\"in\" data-f=\"role\">" + roleOpts(m.role) + "</select></label>" +
-            (testActive(m) ? "<p class=\"m15-test\">Teste de star/held ativo: o dano das skills está ajustado por ele (marque “Mostrar papel, raridade, stars e held” para ver).</p>" : "") +
-            skillTableHtml(m) + multBox +
-            bruteRow +
-            "<div class=\"prec-row\">" +
-              "<label class=\"fld\">Precisão treino (pts)<input class=\"in num\" data-f=\"train\" inputmode=\"decimal\" value=\"" + fmt(m.train) + "\" /></label>" +
-              "<label class=\"berry\"><input type=\"checkbox\" data-f=\"berry\"" + (m.berry ? " checked" : "") + " /><i class=\"bdot yellow\" aria-hidden=\"true\"></i>Focus Berry +" + BERRY + "</label>" +
-            "</div>" +
-            "<div class=\"prec-out\" data-prec></div>" +
-            "<div class=\"mon-det\">" +
-              "<div class=\"mon-fields\">" +
-                "<label class=\"fld\">Raridade<select class=\"in\" data-f=\"tier\">" + tierOpts(m.tier) + "</select></label>" +
-              "</div>" +
-              "<div class=\"stars-box\">" + starsRows + heldRow + boostRowHtml(m) +
-                "<p class=\"m15-note\">No 1.5× a conta usa o dano das skills acima. Star, held e Brute Berry <b>atuais</b> já estão dentro do que você anotou e não mudam nada; só a diferença para o <b>teste</b> muda o dano das skills. O \"Dano\" total do pokémon vale para o 2×2×2 e o 3×3.</p></div>" +
-            "</div>" +
-            "</div>";
+      const ROLE_OPTS = [["", "Sem papel"], ["OFFTANK", "OFFTANK"], ["DMG", "DMG"], ["FLEX", "DMG/OFFTANK"]];
+      function optRole(cur) {
+        return ROLE_OPTS.map(function (o) { return "<option value=\"" + o[0] + "\"" + (cur === o[0] ? " selected" : "") + ">" + o[1] + "</option>"; }).join("");
+      }
+      function optTier(cur) {
+        return TIERS.map(function (t) { return "<option value=\"" + t.id + "\"" + (cur === t.id ? " selected" : "") + " title=\"+" + t.pct + "% por star\">" + t.name + "</option>"; }).join("");
+      }
+      function optHeld(cur) {
+        return HELDS.map(function (v, i) { return "<option value=\"" + i + "\"" + (cur === i ? " selected" : "") + " title=\"+" + v + "% de dano\">" + (i === 0 ? "Sem Held" : "ATK " + i + " · " + v + "%") + "</option>"; }).join("");
+      }
+      function starBtns(kind, level, label) {
+        let h = "";
+        for (let n = 1; n <= 5; n++) {
+          h += "<button type=\"button\" class=\"star" + (n <= level ? " on" : "") + "\" data-star=\"" + n + "\" data-kind=\"" + kind + "\" aria-label=\"" + label + ": " + n + " star" + (n > 1 ? "s" : "") + "\" aria-pressed=\"" + (n <= level) + "\">" + (n <= level ? "★" : "☆") + "</button>";
         }
-        return "<div class=\"mon" + (isCand ? " cand" : "") + (testActive(m) ? " testing" : "") + "\" data-id=\"" + m.id + "\">" +
-          "<div class=\"slot-row\"><div class=\"" + sl.cls + "\">" + sl.text + "</div>" + tsel + "</div>" + top +
-          "<div class=\"mon-fields\">" +
-            "<label class=\"fld\">Papel<select class=\"in\" data-f=\"role\">" + roleOpts(m.role) + "</select></label>" +
-            "<label class=\"fld\">Raridade<select class=\"in\" data-f=\"tier\">" + tierOpts(m.tier) + "</select></label>" +
-            "<label class=\"fld\">Dano (stars atuais)<input class=\"in num\" data-f=\"now\" inputmode=\"decimal\" placeholder=\"" + (isCand ? "ex.: 330.000" : "") + "\" value=\"" + (isCand && !m.now ? "" : fmt(m.now)) + "\" /></label>" +
-            "<label class=\"fld\">Dano depois<input class=\"in num\" data-f=\"after\" inputmode=\"decimal\" placeholder=\"igual\" value=\"" + (m.after == null ? "" : fmt(m.after)) + "\" /></label>" +
-          "</div>" +
-          "<div class=\"stars-box\">" + stars + "<div class=\"eff\" data-eff=\"" + m.id + "\" style=\"margin-top:6px\"></div></div>" +
+        return "<span class=\"stars\" role=\"group\" aria-label=\"" + label + "\">" + h + "</span>";
+      }
+      // posição do card no time (2×2×2 e 3×3)
+      function slotInfo(i, role) {
+        const fx = role === "FLEX" ? " · flex" : "";
+        if (i === 0) return { text: "1ª posição · OFFTANK" + fx, cls: "slot" + (role === "DMG" ? " bad" : "") };
+        if (is3() && i < 3) {
+          const rl = role === "OFFTANK" ? "OFFTANK" : role === "FLEX" ? "flex" : "DMG";
+          return { text: (i + 1) + "ª posição · " + rl, cls: "slot" + (role === "OFFTANK" ? "" : " dmg") };
+        }
+        if (i === 1) return { text: "2ª posição · DMG" + fx, cls: "slot dmg" + (role === "OFFTANK" ? " bad" : "") };
+        return { text: "Extra · fora do " + (is3() ? "3×3" : "2×2×2"), cls: "slot extra" };
+      }
+      // card compacto da Montagem: só posição, nome, papel e o dano usado (os dados ficam na lista)
+      function cardMini(m, idx) {
+        const sl = slotInfo(idx, m.role);
+        const teamOpts = LETTERS.slice(0, NT()).map(function (l, i) { return "<option value=\"" + i + "\"" + (m.team === i ? " selected" : "") + ">" + l + "</option>"; }).join("");
+        return "<div class=\"mon mini" + (testActive(m) ? " testing" : "") + "\" data-id=\"" + m.id + "\">" +
+          "<div class=\"slot-row\"><span class=\"grip\" title=\"Arraste para mover\" aria-hidden=\"true\">⋮⋮</span><span class=\"" + sl.cls + "\">" + sl.text + "</span>" +
+          "<select class=\"in tsel\" data-f=\"team\" aria-label=\"Mover " + esc(m.name || "pokémon") + " para o time\" title=\"Mover para o time\">" + teamOpts + "</select></div>" +
+          "<div class=\"mi-name\">" + esc(m.name || "sem nome") + "</div>" +
+          "<div class=\"eff\" data-eff=\"" + m.id + "\"></div>" +
           "</div>";
-      }
-
-      function boostRowHtml(m) {
-        return "<div class=\"held-row\">" +
-          "<label class=\"fld\">Boost atual<input class=\"in num\" data-f=\"boost\" inputmode=\"numeric\" value=\"" + (m.boost || 0) + "\" aria-label=\"Boost atual\" /></label>" +
-          "<label class=\"fld test\">Boost teste<input class=\"in num" + (tBoost(m) !== (m.boost || 0) ? " diff" : "") + "\" data-f=\"boostTest\" inputmode=\"numeric\" placeholder=\"igual\" value=\"" + (m.boostTest == null ? "" : m.boostTest) + "\" aria-label=\"Boost para testar\" /></label></div>";
-      }
-      function buildCand() {
-        el.cand.innerHTML = cardHtml(state.cand, 0, true);
       }
 
       // skill que recebe o buff no teste: a escolhida, ou a mais forte do pokémon
@@ -1521,37 +1385,151 @@
       }
 
       function buildRoster() {
-        const card = function (m, idx) { return cardHtml(m, idx, false); };
         const pc = document.getElementById("par-cfg");
         if (isPar()) {
           el.teams.innerHTML = "";
           buildParCfg();
-          buildCand();
-          buildPrec();
-          return;
+        } else {
+          if (pc) pc.innerHTML = "";
+          el.teams.innerHTML = is15() ? "" : "<div class=\"teams-grid" + (is3() ? " f3" : "") + "\">" + TEAMS().map(function (t) {
+            const members = sortedMembers(t);
+            const body = members.length
+              ? members.map(cardMini).join("")
+              : "<div class=\"zone-empty\">Arraste um pokémon para cá</div>";
+            return "<article class=\"team\" data-team=\"" + t + "\">" +
+              "<header><span class=\"tname\">" + teamLabel(t) + "</span><span class=\"tcount\" data-count=\"" + t + "\"></span><span class=\"tweak\" data-weak=\"" + t + "\" hidden>mais fraco</span></header>" +
+              "<div class=\"zone\">" + body + "</div>" +
+              "<div class=\"tbonus\"><label for=\"tp" + t + "\">Bônus do time</label><input class=\"in num\" id=\"tp" + t + "\" data-tpct=\"" + t + "\" inputmode=\"decimal\" value=\"" + fmt(state.teamPct[t]) + "\" aria-label=\"Percentual extra de dano do " + teamLabel(t) + "\" /><span>%</span></div>" +
+              "<footer><span class=\"hint\" data-tlabel=\"" + t + "\">Total do time</span><span class=\"ttot\" data-total=\"" + t + "\"></span><span class=\"thaz\" data-thaz=\"" + t + "\"></span></footer>" +
+              "</article>";
+          }).join("") + "</div>";
         }
-        if (pc) pc.innerHTML = "";
+        buildList();
+      }
+
+      // ===== Lista única de pokémon: edita uma vez, vale para todos os formatos =====
+      const SKOPEN = {}, PKOPEN = {};
+      function skOpen(m, idx) {
+        if (!is15() || m.id === "cand") return false;
+        if (Object.prototype.hasOwnProperty.call(SKOPEN, m.id)) return SKOPEN[m.id];
+        return isPar() ? parIsPartial(idx) : true;
+      }
+      function pkWhere(m, idx) {
+        if (m.id === "cand") return "Pokémon novo";
+        if (isPar()) { const r = parRoles()[idx]; return r === "pa" ? "OFFTANK · PARCIAL" : r === "otf" ? "OFFTANK · FULL" : r === "dmg" ? "DAMAGE · FULL" : "sem papel no par"; }
+        if (is15()) return "";
+        return teamLabel(m.team);
+      }
+      // colunas da lista em tabela: [css, largura mínima]; sem espaço, a lista vira blocos
+      function pkCols() {
+        const c = [["minmax(150px, 1.6fr)", 150], ["108px", 108], ["138px", 138], ["92px", 92]];
+        if (state.basis === "depois") c.push(["92px", 92]);
+        c.push(["120px", 120], ["118px", 118], ["48px", 48], ["40px", 40], ["48px", 48], ["40px", 40]);
+        if (isEff()) c.push(["64px", 64]);
+        c.push(["minmax(64px, 1fr)", 64], ["84px", 84]);
+        if (is15()) c.push(["80px", 80]);
+        return c;
+      }
+      function listMode() {
+        const need = Number(el.plist.getAttribute("data-need")) || 0;
+        el.plist.classList.toggle("cards", el.plist.clientWidth < need);
+      }
+      function pkHead() {
+        const L = [["Pokémon", ""], ["Raridade", ""], ["Papel", "Posição no 2×2×2/3×3 e quem abre no 1.5×"], [isEff() ? "Dano neutro" : "Dano", "Dano medido, com star, held e Boost atuais"]];
+        if (state.basis === "depois") L.push(["Dano depois", "Dano medido depois de uma melhoria"]);
+        L.push(["★ atual", ""], ["Held", ""], ["Boost", ""], ["Brute", "Brute Berry já no dano anotado (+" + BRUTE + "%)"], ["Treino", "Precisão de treino, em pontos"], ["Focus", "Focus Berry: +" + BERRY + " pts de precisão"]);
+        if (isEff()) L.push(["Efetiv.", "Multiplicador de efetividade no alvo"]);
+        L.push(["Precisão", "Total de precisão e até que Hazard ela dá"], ["Na conta", "Dano que entra no cálculo", "r"]);
+        if (is15()) L.push(["", ""]);
+        return "<div class=\"pk-head\" aria-hidden=\"true\">" + L.map(function (x) { return "<span" + (x[1] ? " title=\"" + x[1] + "\"" : "") + (x[2] ? " class=\"" + x[2] + "\"" : "") + ">" + x[0] + "</span>"; }).join("") + "</div>";
+      }
+      function pkRowHtml(m, idx) {
+        const isC = m.id === "cand";
+        const nm = esc(m.name || (isC ? "Pokémon novo" : "sem nome"));
+        const lab = function (t, inner, cls, title) {
+          return "<label class=\"pkf" + (cls ? " " + cls : "") + "\"" + (title ? " title=\"" + title + "\"" : "") + "><span class=\"pkl\">" + t + "</span>" + inner + "</label>";
+        };
+        const num = function (f, val, ph, mode) {
+          return "<input class=\"in num\" data-f=\"" + f + "\" inputmode=\"" + (mode || "decimal") + "\" value=\"" + val + "\"" + (ph ? " placeholder=\"" + ph + "\"" : "") + " />";
+        };
+        const chk = function (f, on, txt) {
+          return "<span class=\"pk-chk\"><input type=\"checkbox\" data-f=\"" + f + "\"" + (on ? " checked" : "") + " /><span>" + txt + "</span></span>";
+        };
+        const where = pkWhere(m, idx);
+        const cells = [
+          lab("Pokémon", "<input class=\"in name\" data-f=\"name\" value=\"" + esc(m.name) + "\" placeholder=\"" + (isC ? "Nome do Pokémon novo" : "Nome") + "\" />" +
+            (where ? "<span class=\"pk-where\">" + where + "</span>" : ""), "pk-name"),
+          lab("Raridade", "<select class=\"in\" data-f=\"tier\">" + optTier(m.tier) + "</select>"),
+          lab("Papel", "<select class=\"in\" data-f=\"role\">" + optRole(m.role) + "</select>"),
+          lab(isEff() ? "Dano neutro" : "Dano", num("now", isC && !m.now ? "" : fmt(m.now), isC ? "ex.: 330.000" : ""))
+        ];
+        if (state.basis === "depois") cells.push(lab("Dano depois", num("after", m.after == null ? "" : fmt(m.after), "igual")));
+        cells.push(
+          "<div class=\"pkf pk-stars\" role=\"group\" aria-label=\"Stars atuais de " + nm + "\"><span class=\"pkl\">★ atual</span>" + starBtns("cur", m.stars, "Atual") + "</div>",
+          lab("Held", "<select class=\"in\" data-f=\"held\">" + optHeld(m.held) + "</select>"),
+          lab("Boost", num("boost", String(m.boost || 0), "", "numeric")),
+          lab("Brute Berry", chk("brute", m.brute, "no dano"), "", "Marque se o dano anotado já tem a Brute Berry (+" + BRUTE + "%)"),
+          lab("Treino (pts)", num("train", fmt(m.train))),
+          lab("Focus Berry", chk("berry", m.berry, "+" + BERRY), "", "Focus Berry: +" + BERRY + " pts de precisão")
+        );
+        if (isEff()) cells.push(lab("Efetividade ×", "<input class=\"in num\" data-f=\"mult\" inputmode=\"decimal\" value=\"" + fmt(multNum(m.mult)) + "\" />"));
+        cells.push(
+          "<div class=\"pkf pk-out\"><span class=\"pkl\">Precisão</span><span class=\"pk-prec\" data-prec></span></div>",
+          "<div class=\"pkf pk-out\"><span class=\"pkl\">Na conta</span><span class=\"pk-used\" data-used></span></div>"
+        );
+        const so = skOpen(m, idx);
         if (is15()) {
-          const order = isPar() ? parCfg().pa.slice() : state.mons.map(function (m, i) { return i; });
-          el.teams.innerHTML = (isPar() ? (order.length ? "<h3 class=\"par-rh\">Skills dos PARCIAIS</h3>" : "") : "") + "<div class=\"teams-grid f15" + (isPar() ? " fpar" : "") + "\">" + order.map(function (i) { return card(state.mons[i], i); }).join("") + "</div>";
-          buildCand();
-          buildPrec();
-          return;
+          const cnt = m.skills.filter(function (x) { return x.d > 0; }).length;
+          cells.push("<div class=\"pkf pk-act\"><button type=\"button\" class=\"btn pk-skb\" data-skx=\"" + m.id + "\" aria-expanded=\"" + so + "\">" + (so ? "▴ " : "▾ ") + "Skills" + (cnt ? " " + cnt : "") + "</button></div>");
         }
-        el.teams.innerHTML = "<div class=\"teams-grid" + (is3() ? " f3" : "") + "\">" + TEAMS().map(function (t) {
-          const members = sortedMembers(t);
-          const body = members.length
-            ? members.map(card).join("")
-            : "<div class=\"zone-empty\">Arraste um pokémon para cá</div>";
-          return "<article class=\"team\" data-team=\"" + t + "\">" +
-            "<header><span class=\"tname\">" + teamLabel(t) + "</span><span class=\"tcount\" data-count=\"" + t + "\"></span><span class=\"tweak\" data-weak=\"" + t + "\" hidden>mais fraco</span></header>" +
-            "<div class=\"zone\">" + body + "</div>" +
-            "<div class=\"tbonus\"><label for=\"tp" + t + "\">Bônus do time</label><input class=\"in num\" id=\"tp" + t + "\" data-tpct=\"" + t + "\" inputmode=\"decimal\" value=\"" + fmt(state.teamPct[t]) + "\" aria-label=\"Percentual extra de dano do " + teamLabel(t) + "\" /><span>%</span></div>" +
-            "<footer><span class=\"hint\" data-tlabel=\"" + t + "\">Total do time</span><span class=\"ttot\" data-total=\"" + t + "\"></span><span class=\"thaz\" data-thaz=\"" + t + "\"></span></footer>" +
-            "</article>";
-        }).join("") + "</div>";
-        buildCand();
-        buildPrec();
+        const test = state.useTests
+          ? "<div class=\"pk-test\" role=\"group\" aria-label=\"Simulação de " + nm + "\"><span class=\"pk-test-l\">Simular</span>" +
+            "<div class=\"pkf\" role=\"group\" aria-label=\"Stars de teste\"><span class=\"pkl\">★ teste</span>" + starBtns("test", tStars(m), "Teste") + "</div>" +
+            lab("Held teste", "<select class=\"in" + (tHeld(m) !== m.held ? " diff" : "") + "\" data-f=\"heldTest\">" + optHeld(tHeld(m)) + "</select>") +
+            lab("Boost teste", "<input class=\"in num" + (tBoost(m) !== (m.boost || 0) ? " diff" : "") + "\" data-f=\"boostTest\" inputmode=\"numeric\" placeholder=\"igual\" value=\"" + (m.boostTest == null ? "" : m.boostTest) + "\" />") +
+            lab("Brute teste", chk("bruteTest", tBrute(m), "com Brute"), tBrute(m) !== !!m.brute ? "diff" : "") +
+            "<span class=\"pk-tdiff\" data-tdiff></span></div>"
+          : "";
+        const open = !!PKOPEN[m.id] || isC;
+        return "<div class=\"pk pmon" + (open ? " open" : "") + (isC ? " cand" : "") + (testActive(m) ? " testing" : "") + "\" data-id=\"" + m.id + "\">" +
+          "<button type=\"button\" class=\"pk-sum\" data-pkx=\"" + m.id + "\" aria-expanded=\"" + open + "\"><span class=\"pk-sum-n\">" + nm + "</span>" +
+            (where ? "<span class=\"pk-sum-w\">" + where + "</span>" : "") + "<span class=\"pk-sum-d\" data-sumd></span><span class=\"pk-chev\" aria-hidden=\"true\">▾</span></button>" +
+          "<div class=\"pk-main\">" + cells.join("") + "</div>" + test +
+          (so ? "<div class=\"pk-skills\">" + skillTableHtml(m) + "</div>" : "") +
+          (isC ? "<div class=\"pk-candbar\"><button type=\"button\" class=\"btn\" data-close-cand>Tirar o Pokémon novo</button></div>" : "") +
+          "</div>";
+      }
+      function buildList() {
+        const rows = state.mons.map(function (m, i) { return pkRowHtml(m, i); });
+        if (state.showCand && !is15()) rows.push(pkRowHtml(state.cand, -1));
+        const cols = pkCols();
+        el.plist.style.setProperty("--pk-cols", cols.map(function (x) { return x[0]; }).join(" "));
+        el.plist.setAttribute("data-need", String(cols.reduce(function (a, x) { return a + x[1]; }, 0) + 6 * (cols.length - 1) + 24));
+        el.plist.innerHTML = pkHead() + rows.join("");
+        listMode();
+      }
+      function paintList() {
+        el.plist.querySelectorAll(".pk").forEach(function (row) {
+          const m = findMon(row.getAttribute("data-id"));
+          if (!m) return;
+          const d = monDmg(m);
+          const t = testActive(m);
+          row.classList.toggle("testing", t);
+          const used = row.querySelector("[data-used]");
+          if (used) {
+            used.textContent = d > 0 ? fmt(d) : "—";
+            used.classList.toggle("test", t);
+          }
+          const sd = row.querySelector("[data-sumd]");
+          if (sd) sd.textContent = d > 0 ? fmt(d) : "";
+          const td = row.querySelector("[data-tdiff]");
+          if (td) {
+            const base = Math.round(eff(m) * medalF() * (isEff() ? multNum(m.mult) : 1));
+            const dl = d - base;
+            td.textContent = t && base > 0 ? "= " + fmt(d) + " (" + (dl >= 0 ? "+" : "−") + fmt(Math.abs(dl)) + ")" : "sem mudança";
+            td.classList.toggle("on", t);
+          }
+        });
       }
 
       // bônus por nível de Hazard (Experiência +5%, Loot +0,5%, Shiny Charm +2%)
@@ -1771,12 +1749,9 @@
       }
 
       function syncCandCol() {
-        const col = document.getElementById("cand-col");
         const btn = document.getElementById("toggle-cand");
-        col.hidden = !state.showCand || is15();
-        document.getElementById("teams-row").classList.toggle("with-cand", state.showCand && !is15());
         btn.setAttribute("aria-pressed", String(state.showCand));
-        btn.textContent = state.showCand ? "− Ocultar Pokémon novo" : "+ Testar Pokémon novo";
+        btn.textContent = state.showCand ? "− Tirar Pokémon novo" : "+ Testar Pokémon novo";
       }
 
       function paintCand() {
@@ -1784,14 +1759,6 @@
         if (is15()) { el.candOut.innerHTML = ""; el.candOut._rows = null; return; }
         if (!state.showCand) { el.candOut.innerHTML = ""; el.candOut._rows = null; return; }
         const c = state.cand;
-        const cardEl = el.cand.querySelector(".mon");
-        if (cardEl) cardEl.classList.toggle("testing", testActive(c));
-        const n = el.cand.querySelector("[data-eff=\"cand\"]");
-        if (n) {
-          const e = effHtml(c);
-          n.className = e.cls;
-          n.innerHTML = e.html;
-        }
         const out = el.candOut;
         if (!(monDmg(c) > 0)) {
           out.innerHTML = "<div class=\"box neutral\">Digite o dano do Pokémon novo, com as stars e o Held que ele tem agora, para ver onde ele entra e quem ele substitui.</div>";
@@ -1885,51 +1852,10 @@
         paint();
       }
 
-      function precRows() {
-        const rows = [];
-        if (is15()) {
-          state.mons.forEach(function (m) { rows.push({ m: m, team: "" }); });
-          return rows;
-        }
-        TEAMS().forEach(function (t) {
-          sortedMembers(t).forEach(function (m) { rows.push({ m: m, team: LETTERS[t] }); });
-        });
-        if (state.showCand && (state.cand.name || state.cand.now > 0)) rows.push({ m: state.cand, team: "novo" });
-        return rows;
-      }
-
-      function buildPrec() {
-        el.pt.innerHTML = "<thead><tr><th>Pokémon</th><th>Treino</th><th>Berry</th><th>Medalhas</th><th>Total</th><th>%</th><th>Dá até</th></tr></thead><tbody>" +
-          precRows().map(function (x) {
-            const m = x.m;
-            return "<tr data-id=\"" + m.id + "\"" + (m.id === "cand" ? " class=\"cand-row\"" : "") + ">" +
-              "<td><span data-pn></span><span class=\"who-t\">" + x.team + "</span></td>" +
-              "<td data-ptr></td><td data-pbe></td><td data-pmed></td>" +
-              "<td class=\"tot\" data-ptot></td><td data-ppct></td><td data-pst></td></tr>";
-          }).join("") + "</tbody>";
-      }
-
       function paintPrec() {
-        const hasCand = state.showCand && !!(state.cand.name || state.cand.now > 0);
-        if ((el.pt.querySelector("tr[data-id=\"cand\"]") != null) !== hasCand) buildPrec();
         const medalPts = state.medal / PT_PCT;
-        document.getElementById("medalEq").textContent = "= " + fmt(medalPts) + " pts";
+        document.getElementById("medalEq").textContent = "= " + fmt(medalPts) + " pts para cada pokémon";
         const dH = dmgHz(state.rune, totals());
-        el.pt.querySelectorAll("tbody tr").forEach(function (tr) {
-          const m = findMon(tr.getAttribute("data-id"));
-          if (!m) return;
-          const p = precOf(m);
-          const capM = precCap([m]);
-          tr.querySelector("[data-pn]").textContent = m.name || "sem nome";
-          tr.querySelector("[data-ptr]").textContent = fmt(m.train);
-          tr.querySelector("[data-pbe]").textContent = m.berry ? "+" + BERRY : "—";
-          tr.querySelector("[data-pmed]").textContent = fmt(medalPts);
-          tr.querySelector("[data-ptot]").textContent = fmt(p);
-          tr.querySelector("[data-ppct]").textContent = fmt(p * PT_PCT) + "%";
-          const st = tr.querySelector("[data-pst]");
-          st.className = capM < dH ? "st-no" : "st-ok";
-          st.textContent = hzTxt(capM);
-        });
         const six = state.mons;
         const pMin = precMin(six);
         const low = six.filter(function (m) { return precOf(m) === pMin; }).map(function (m) { return esc(m.name || "sem nome"); });
@@ -1948,13 +1874,13 @@
         }
         el.precSum.innerHTML = L.join("");
         state.mons.concat([state.cand]).forEach(function (m) {
-          const n = document.querySelector(".mon[data-id=\"" + m.id + "\"] [data-prec]");
+          const n = el.plist.querySelector(".pk[data-id=\"" + m.id + "\"] [data-prec]");
           if (!n) return;
           const p = precOf(m);
           const capM = precCap([m]);
-          n.className = "prec-out " + (capM < dH ? "st-no" : "st-ok");
-          n.textContent = "= " + fmt(p) + " pts (" + fmt(p * PT_PCT) + "%) · dá até " + hzTxt(capM);
-          n.title = "Treino " + fmt(m.train) + " + Berry " + (m.berry ? BERRY : 0) + " + medalhas " + fmt(state.medal / PT_PCT) + " pts. Vermelho: a precisão dele segura o Hazard que o dano permite.";
+          n.className = "pk-prec " + (capM < dH ? "st-no" : "st-ok");
+          n.innerHTML = "<span>" + fmt(p) + " pts</span> <span>até " + capM + "</span>";
+          n.title = fmt(p * PT_PCT) + "% de precisão. Treino " + fmt(m.train) + " + Berry " + (m.berry ? BERRY : 0) + " + medalhas " + fmt(state.medal / PT_PCT) + " pts. Vermelho: a precisão dele segura o Hazard que o dano permite.";
         });
       }
 
@@ -2467,7 +2393,6 @@
         rest.filter(function (x) { return (!ccFirst || !x.cc) && tg.has(x); }).sort(function (a, b) { return a.k - b.k; }).forEach(function (x) { seq.push(tg.get(x)); seq.push(x); });
         return seq;
       }
-      let PARADJ_OPEN = false;
       function buildParCfg() {
         const pc = document.getElementById("par-cfg");
         if (!pc) return;
@@ -2484,7 +2409,7 @@
           const kind = cur === "dmg"
             ? btn(i, "full", "FULL", true, true, "r-full") + btn(i, "pa", "PARCIAL", false, true, "r-pa")
             : btn(i, "full", "FULL", cur === "otf", !isTk, "r-full") + btn(i, "pa", "PARCIAL", cur === "pa", !isTk || (cur !== "pa" && nPa >= 2), "r-pa");
-          const dmg = cur === "pa" ? "<span class=\"pr-hint\">skills abaixo ↓</span>"
+          const dmg = cur === "pa" ? "<a class=\"pr-hint\" href=\"#pk-sec\">skills na lista ↓</a>"
             : cur ? "<input class=\"in num pr-in\" data-f=\"now\" inputmode=\"decimal\" placeholder=\"dano do combo\" value=\"" + (m.now > 0 ? fmt(m.now) : "") + "\" aria-label=\"Dano do combo de " + nm(i) + "\" />"
             : "<span class=\"pr-hint\">escolha o papel</span>";
           return "<div class=\"pmon prow\" data-id=\"" + m.id + "\"><span class=\"pr-name\">" + nm(i) + "</span>" +
@@ -2495,36 +2420,7 @@
         const cnt = cntOne("OFFTANK", nTk, 4) + cntOne("DAMAGE", nDm, 2) + cntOne("PARCIAL (dos Offtanks)", nPa, 2);
         const roleCard = "<div class=\"pc-card\"><div class=\"pc-h\"><b>Pokémon e papéis</b><span class=\"pc-sub\">4 OFFTANK e 2 DAMAGE · 2 dos Offtanks fazem PARCIAL (dividem as skills entre duas rotações)</span></div>" +
           "<div class=\"prows\">" + rows + "</div><div class=\"pr-cnt\">" + cnt + "</div></div>";
-        const pa = parCfg().pa;
-        const skillCards = pa.length
-          ? "<div class=\"pc-skills\">" + pa.map(function (i) {
-            const m = state.mons[i];
-            return "<div class=\"pc-card\"><div class=\"pc-h\"><b>Skills do " + nm(i) + "</b><span class=\"par-tag parc\">PARCIAL</span></div>" +
-              "<p class=\"pc-sub\">Marque o ⚡ Stun (ele abre a 2ª rotação). Se tiver ▲ Buff, assinale a skill que recebe e anote o dano depois do buff.</p>" + skillTableHtml(m) + "</div>";
-          }).join("") + "</div>"
-          : "";
-        const heldSel = function (f, cur, diff) {
-          return "<select class=\"in" + (diff ? " diff" : "") + "\" data-f=\"" + f + "\">" + HELDS.map(function (v, k) { return "<option value=\"" + k + "\"" + (cur === k ? " selected" : "") + ">" + (k === 0 ? "Sem Held" : "ATK " + k) + "</option>"; }).join("") + "</select>";
-        };
-        const starBtns = function (m, kind, level) {
-          let h = "";
-          for (let n = 1; n <= 5; n++) h += "<button type=\"button\" class=\"star" + (n <= level ? " on" : "") + "\" data-star=\"" + n + "\" data-kind=\"" + kind + "\" aria-label=\"" + (kind === "test" ? "Teste" : "Atual") + ": " + n + " star\">" + (n <= level ? "★" : "☆") + "</button>";
-          return "<span class=\"stars\">" + h + "</span>";
-        };
-        const adj = "<details class=\"pc-adj\"" + (PARADJ_OPEN ? " open" : "") + "><summary>Testes e ajustes: estrelas, held, Boost, Brute Berry e precisão</summary>" +
-          "<p class=\"pc-sub\">“Atual” é o que já está no dano anotado. “Teste” simula a mudança: o dano de todas as rotações se ajusta.</p><div class=\"adj-rows\">" +
-          state.mons.map(function (m, i) {
-            return "<div class=\"pmon adj-row adj-t\" data-id=\"" + m.id + "\"><span class=\"pr-name\">" + nm(i) + (testActive(m) ? " <span class=\"par-tag parc\">TESTE</span>" : "") + "</span>" +
-              "<span class=\"adj-g\"><span class=\"adj-l\">★ atual</span>" + starBtns(m, "cur", m.stars) + "<span class=\"adj-l\">teste</span>" + starBtns(m, "test", tStars(m)) + "</span>" +
-              "<span class=\"adj-g\"><span class=\"adj-l\">Held</span>" + heldSel("held", m.held, false) + "<span class=\"adj-l\">teste</span>" + heldSel("heldTest", tHeld(m), tHeld(m) !== m.held) + "</span>" +
-              "<span class=\"adj-g\"><span class=\"adj-l\">Boost +</span><input class=\"in num adj-n\" data-f=\"boost\" inputmode=\"numeric\" value=\"" + (m.boost || 0) + "\" /><span class=\"adj-l\">teste +</span><input class=\"in num adj-n" + (tBoost(m) !== (m.boost || 0) ? " diff" : "") + "\" data-f=\"boostTest\" inputmode=\"numeric\" placeholder=\"igual\" value=\"" + (m.boostTest == null ? "" : m.boostTest) + "\" /></span>" +
-              "<label class=\"adj-chk\"><input type=\"checkbox\" data-f=\"brute\"" + (m.brute ? " checked" : "") + " />Brute Berry já no dano</label>" +
-              "<label class=\"adj-tr\">Treino<input class=\"in num\" data-f=\"train\" inputmode=\"decimal\" value=\"" + fmt(m.train) + "\" /></label>" +
-              "<label class=\"adj-chk\"><input type=\"checkbox\" data-f=\"berry\"" + (m.berry ? " checked" : "") + " />Focus Berry +" + BERRY + "</label></div>";
-          }).join("") + "</div></details>";
-        pc.innerHTML = roleCard + skillCards + adj;
-        const d = pc.querySelector(".pc-adj");
-        if (d) d.addEventListener("toggle", function () { PARADJ_OPEN = d.open; });
+        pc.innerHTML = roleCard;
       }
       // resultado do 1.5× par (a configuração é desenhada por buildParCfg)
       function paintPar() {
@@ -2616,12 +2512,14 @@
         const box = document.getElementById("upgrades");
         if (!box) return;
         const U = upgList();
+        const sec = document.getElementById("upg-sec");
+        if (sec) sec.hidden = !U;
         if (!U) { box.innerHTML = ""; return; }
         const lim = isPar() ? "rotação mais fraca" : "time mais fraco", doLim = (isPar() ? "da " : "do ") + lim;
         const tested = state.mons.filter(testActive);
         const tests = tested.length
           ? "<div class=\"upg-tests\">Testes ativos: " + tested.map(function (m) { return shortName(m); }).join(", ") + " <button type=\"button\" class=\"btn\" data-upg-clear>Limpar testes</button></div>"
-          : (!state.useTests ? "<div class=\"upg-tests\">“Considerar testes” está desligado: ao testar, ele é ligado.</div>" : "");
+          : (!state.useTests ? "<div class=\"upg-tests\">“Simular mudanças” está desligado: ao testar, ele é ligado.</div>" : "");
         const rows = U.list.length ? U.list.map(function (u, n) {
           const m = state.mons[u.i];
           const hz = u.off > U.base.off ? "<span class=\"hz-up\">" + hzTxt(U.base.off) + " → " + hzTxt(u.off) + "</span>" : "";
@@ -2629,8 +2527,13 @@
             "<span class=\"upg-gain\">+" + kfmt(u.gain) + " na " + lim + hz + "</span>" +
             "<button type=\"button\" class=\"btn\" data-upg=\"" + u.i + ":" + u.op.k + "\">Testar</button></div>";
         }).join("") : "<p class=\"pc-sub\">Nenhuma melhoria de star, held, Brute Berry ou Boost sobe o dano " + doLim + " agora.</p>";
-        box.innerHTML = "<div class=\"upg\"><div class=\"upg-h\"><b>Melhorias sugeridas</b><span class=\"pc-sub\">O que mais sobe o dano " + doLim + " (" + (isPar() ? "é ela" : "é ele") + " que segura o Hazard), uma mudança por vez.</span></div>" +
-          "<div class=\"upg-list\">" + rows + "</div>" + tests + "</div>";
+        const top = document.getElementById("upg-top");
+        if (top) {
+          const b = U.list[0];
+          top.textContent = b ? "melhor agora: " + (state.mons[b.i].name || "sem nome") + " · " + b.op.txt + " (+" + kfmt(b.gain) + (b.off > U.base.off ? ", " + hzTxt(U.base.off) + " → " + hzTxt(b.off) : "") + ")" : "nada sobe o dano agora";
+        }
+        box.innerHTML = "<p class=\"pc-sub\">O que mais sobe o dano " + doLim + " (" + (isPar() ? "é ela" : "é ele") + " que segura o Hazard), uma mudança por vez.</p>" +
+          "<div class=\"upg-list\">" + rows + "</div>" + tests;
       }
       let ROTCACHE = null, ROTKEY = "", ROTMEMO = null;
       function rotResult() {
@@ -2773,6 +2676,13 @@
         paintNext(t, off);
         paintRot();
         paintUpgrades();
+        paintList();
+        paintFolds();
+      }
+      // resumo de "Ajustes" quando ele está fechado
+      function paintFolds() {
+        const a = document.getElementById("adj-top");
+        if (a) a.textContent = "medalha de dano " + fmt(state.dmgMedal) + "% · precisão " + fmt(state.medal) + "% · Boost " + fmt(state.boostPct) + "% por +1" + (is15() ? " · meta " + state.rot.pct + "%" : "");
       }
 
       function paintModel() {
@@ -2826,8 +2736,6 @@
         document.getElementById("rotN").value = String(state.rot.n);
         document.getElementById("rotP").value = String(state.rot.maxP);
         document.getElementById("rotPct").value = String(state.rot.pct);
-        document.getElementById("rotDet").checked = !!state.rot.det;
-        document.body.classList.toggle("det-on", !!state.rot.det);
         document.getElementById("useTests").checked = state.useTests;
         document.querySelectorAll("input[name='basis']").forEach(function (i) { i.checked = i.value === state.basis; });
         document.querySelectorAll("input[name='basechip']").forEach(function (i) { i.checked = Number(i.value) === state.base; });
@@ -2849,7 +2757,7 @@
 
       function onCards(type, fn) {
         el.teams.addEventListener(type, fn);
-        el.cand.addEventListener(type, fn);
+        el.plist.addEventListener(type, fn);
         document.getElementById("par-cfg").addEventListener(type, fn);
       }
 
@@ -3016,6 +2924,29 @@
         paint();
       });
 
+      el.plist.addEventListener("click", function (ev) {
+        const sk = ev.target.closest("[data-skx]");
+        if (sk) {
+          const id = sk.getAttribute("data-skx");
+          const idx = state.mons.findIndex(function (m) { return m.id === id; });
+          SKOPEN[id] = !skOpen(state.mons[idx], idx);
+          buildList();
+          paint();
+          const back = el.plist.querySelector("[data-skx=\"" + id + "\"]");
+          if (back) back.focus();
+          return;
+        }
+        const px = ev.target.closest("[data-pkx]");
+        if (px) {
+          const id = px.getAttribute("data-pkx");
+          PKOPEN[id] = !PKOPEN[id];
+          const row = px.closest(".pk");
+          row.classList.toggle("open", PKOPEN[id]);
+          px.setAttribute("aria-expanded", String(PKOPEN[id]));
+          return;
+        }
+        if (ev.target.closest("[data-close-cand]")) setShowCand(false);
+      });
       el.candOut.addEventListener("click", function (ev) {
         const b = ev.target.closest("[data-apply]");
         if (!b) return;
@@ -3039,6 +2970,7 @@
         i.addEventListener("change", function () {
           state.basis = i.value;
           save();
+          buildList();
           paint();
         });
       });
@@ -3166,13 +3098,12 @@
         const inp = document.getElementById(id);
         inp.addEventListener("input", function () {
           const raw = inp.value.replace(/%|pts/gi, "").trim();
-          if (opt && raw === "") { inp.classList.remove("invalid"); apply(null); save(); buildPrec(); paint(); return; }
+          if (opt && raw === "") { inp.classList.remove("invalid"); apply(null); save(); paint(); return; }
           const v = parseNum(raw);
           if (!Number.isFinite(v)) { inp.classList.add("invalid"); return; }
           inp.classList.remove("invalid");
           apply(v);
           save();
-          if (opt) buildPrec();
           paint();
         });
         inp.addEventListener("blur", function () { inp.classList.remove("invalid"); inp.value = show(); });
@@ -3185,11 +3116,10 @@
       function setShowCand(v) {
         state.showCand = v;
         save();
-        buildPrec();
+        buildRoster();
         paint();
       }
       document.getElementById("toggle-cand").addEventListener("click", function () { setShowCand(!state.showCand); });
-      document.getElementById("close-cand").addEventListener("click", function () { setShowCand(false); });
 
       document.getElementById("useTests").addEventListener("change", function (ev) {
         state.useTests = ev.target.checked;
@@ -3434,7 +3364,7 @@
       function paintSoon() { clearTimeout(paintTimer); paintTimer = setTimeout(paint, 120); }
       // campos da tabela de skills: nos cards do 1.5× e na configuração do 1.5× par
       const parCfgEl = document.getElementById("par-cfg");
-      function onSk(type, fn) { el.teams.addEventListener(type, fn); parCfgEl.addEventListener(type, fn); }
+      function onSk(type, fn) { el.plist.addEventListener(type, fn); }
       onSk("input", function (ev) {
         const a = skRef("data-sk", ev.target);
         if (a) {
@@ -3587,11 +3517,6 @@
         inp.addEventListener("focus", function () { inp.select(); });
       }
       bindInt("rotN", 1, 6, function () { return state.rot.n; }, function (v) { state.rot.n = v; });
-      document.getElementById("rotDet").addEventListener("change", function (ev) {
-        state.rot.det = ev.target.checked;
-        document.body.classList.toggle("det-on", state.rot.det);
-        save();
-      });
       bindInt("rotPct", 10, 200, function () { return state.rot.pct; }, function (v) { state.rot.pct = v; });
       bindInt("rotP", 1, 6, function () { return state.rot.maxP; }, function (v) { state.rot.maxP = v; });
       window.addEventListener("hashchange", function () {
@@ -3601,6 +3526,13 @@
         window.scrollTo(0, 0);
       });
 
+      if ("ResizeObserver" in window) new ResizeObserver(listMode).observe(el.plist);
+      else window.addEventListener("resize", listMode);
+      document.querySelectorAll("details[data-fold]").forEach(function (d) {
+        const k = "hazard-calc:fold:" + d.getAttribute("data-fold");
+        try { if (localStorage.getItem(k) === "1") d.open = true; } catch (e) { /* sem storage */ }
+        d.addEventListener("toggle", function () { try { localStorage.setItem(k, d.open ? "1" : "0"); } catch (e) { /* sem storage */ } });
+      });
       load();
       if (location.hash === "#rotacao") { state.format = "1.5"; history.replaceState(null, "", location.pathname); }
       applyPage();
