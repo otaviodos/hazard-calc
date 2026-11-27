@@ -650,6 +650,16 @@
     .upg { margin-top: 14px; border: 1px solid var(--line-strong); border-radius: 12px; padding: 14px; background: var(--sunken); }
     .upg-h { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px 12px; margin-bottom: 8px; }
     .upg-h b { font-size: 0.95rem; }
+    .upg > summary { cursor: pointer; list-style: none; }
+    .upg > summary::-webkit-details-marker { display: none; }
+    .upg:not([open]) > summary { margin-bottom: 0; }
+    .upg:not([open]) .upg-desc, .upg[open] .upg-best { display: none; }
+    .upg-best { color: var(--text); }
+    .upg-tg { margin-left: auto; font-size: 0.8rem; font-weight: 600; color: var(--muted); white-space: nowrap; }
+    .upg-tg::after { content: "Ocultar ▴"; }
+    .upg:not([open]) .upg-tg::after { content: "Mostrar ▾"; }
+    .upg > summary:hover .upg-tg { color: var(--text); }
+    .upg > summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; border-radius: 6px; }
     .upg-list { display: flex; flex-direction: column; gap: 6px; }
     .upg-r { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; font-size: 0.85rem; }
     .upg-r.top { border-color: var(--gold); background: rgba(244, 208, 63, .06); }
@@ -2876,6 +2886,9 @@
         UPGMEMO = { base: base, list: out.slice(0, 8) };
         return UPGMEMO;
       }
+      // Melhorias sugeridas: dá para ocultar; cada navegador lembra a escolha
+      let UPG_OPEN = true;
+      try { if (localStorage.getItem("hazard-calc:fold:upg") === "0") UPG_OPEN = false; } catch (e) { /* sem storage */ }
       function paintUpgrades() {
         const box = document.getElementById("upgrades");
         if (!box) return;
@@ -2890,11 +2903,13 @@
           const m = state.mons[u.i];
           const hz = u.off > U.base.off ? "<span class=\"hz-up\">" + hzTxt(U.base.off) + " → " + hzTxt(u.off) + "</span>" : "";
           return "<div class=\"upg-r" + (n === 0 ? " top" : "") + "\"><span class=\"upg-what\"><b>" + shortName(m) + "</b> · " + u.op.txt + "<small>" + u.op.sub + "</small></span>" +
-            "<span class=\"upg-gain\">+" + kfmt(u.gain) + " na " + lim + hz + "</span>" +
+            "<span class=\"upg-gain\">+" + kfmt(u.gain) + (isPar() ? " na " : " no ") + lim + hz + "</span>" +
             "<button type=\"button\" class=\"btn\" data-upg=\"" + u.i + ":" + u.op.k + "\">Testar</button></div>";
         }).join("") : "<p class=\"pc-sub\">Nenhuma melhoria de star, held, Brute Berry ou Boost sobe o dano " + doLim + " agora.</p>";
-        box.innerHTML = "<div class=\"upg\"><div class=\"upg-h\"><b>Melhorias sugeridas</b><span class=\"pc-sub\">O que mais sobe o dano " + doLim + " (" + (isPar() ? "é ela" : "é ele") + " que segura o Hazard), uma mudança por vez.</span></div>" +
-          "<div class=\"upg-list\">" + rows + "</div>" + tests + "</div>";
+        const b0 = U.list[0];
+        const best = b0 ? "melhor agora: " + shortName(state.mons[b0.i]) + " · " + b0.op.txt + " (+" + kfmt(b0.gain) + ")" : "nada sobe o dano agora";
+        box.innerHTML = "<details class=\"upg\"" + (UPG_OPEN ? " open" : "") + "><summary class=\"upg-h\"><b>Melhorias sugeridas</b><span class=\"pc-sub upg-desc\">O que mais sobe o dano " + doLim + " (" + (isPar() ? "é ela" : "é ele") + " que segura o Hazard), uma mudança por vez.</span><span class=\"pc-sub upg-best\">" + best + "</span><span class=\"upg-tg\" aria-hidden=\"true\"></span></summary>" +
+          "<div class=\"upg-list\">" + rows + "</div>" + tests + "</details>";
       }
       let ROTCACHE = null, ROTKEY = "", ROTMEMO = null;
       function rotResult() {
@@ -3466,6 +3481,11 @@
         buildRoster();
         paint();
       });
+      document.getElementById("upgrades").addEventListener("toggle", function (ev) {
+        if (!ev.target.classList || !ev.target.classList.contains("upg") || !ev.target.isConnected) return;
+        UPG_OPEN = ev.target.open;
+        try { localStorage.setItem("hazard-calc:fold:upg", UPG_OPEN ? "1" : "0"); } catch (e) { /* sem storage */ }
+      }, true);
       document.getElementById("upgrades").addEventListener("click", function (ev) {
         const c = ev.target.closest("[data-upg-clear]");
         if (c) { clearTests(); save(); syncControls(); buildRoster(); paint(); return; }
